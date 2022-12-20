@@ -1,10 +1,10 @@
 tasks:
   - name: Install Python
     init: pyenv install 3.10.7 && pyenv global 3.10.7
-  - name: Install and Start Sandbox
-    init: git clone https://github.com/algorand/sandbox && /workspace/bootcamp/sandbox/sandbox up dev -v
-  - name: Get Status
-    command: python --version && docker --version && /workspace/bootcamp/sandbox/sandbox status
+  - name: Install and initialize Sandbox
+    init: git clone https://github.com/algorand/sandbox && /workspace/bootcamp/sandbox/sandbox up dev -v && /workspace/bootcamp/sandbox/sandbox down 
+  - name: Start Sandbox
+    command: /workspace/bootcamp/sandbox/sandbox reset
 vscode:
   extensions:
     - ms-python.python
