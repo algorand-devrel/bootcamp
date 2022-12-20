@@ -1,12 +1,11 @@
+image:
+  file: .gitpod.Dockerfile
 tasks:
   - name: Install Python
     init: pyenv install 3.10.7 && pyenv global 3.10.7
     command: exit
   - name: Install and initialize Sandbox
     init: git clone https://github.com/algorand/sandbox && /workspace/bootcamp/sandbox/sandbox up dev -v && /workspace/bootcamp/sandbox/sandbox down 
-    command: exit
-  - name: Install SDK
-    init: pip install py-algorand-sdk
     command: exit
   - name: Sandbox
     command: /workspace/bootcamp/sandbox/sandbox reset
