@@ -1,0 +1,6 @@
+tasks:
+  - name: Install Python
+    init: pyenv install 3.10.7 && pyenv global 3.10.7
+vscode:
+  extensions:
+    - ms-python.python
