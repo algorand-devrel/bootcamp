@@ -35,7 +35,4 @@ def main() :
     account_info = algod_client.account_info(addr3)
     print("{} balance: {} microAlgos".format(account_info.get('address'),account_info.get('amount')) + "\n")
 
-    account_info = algod_client.account_info(addr1)
-    print("Account information: {}".format(
-        json.dumps(account_info, indent=4)))
 main()

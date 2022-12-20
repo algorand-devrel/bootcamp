@@ -32,7 +32,7 @@ def main() :
     # build unsigned transaction
     params = algod_client.suggested_params()
     sender = addr2
-    index = 5 # this is the asset-index returned by asset_create.py
+    index = 2 # ensure this matches the asset-index returned by asset_create.py
     unsigned_txn = transaction.AssetOptInTxn(sender, params, index)
     
     # sign transaction

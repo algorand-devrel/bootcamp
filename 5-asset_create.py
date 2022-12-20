@@ -33,7 +33,8 @@ def main() :
     params = algod_client.suggested_params()
     unsigned_txn = transaction.AssetConfigTxn(sender=addr1,
             sp=params,
-            total=10000,   # Fungible tokens have total issuance greater than 1
+            total=10000,  # Fungible tokens have total issuance greater than 1
+            decimals=2    # Fungible tokens typically have decimals greater than 0
             default_frozen=False,
             unit_name="FUNTOK",
             asset_name="Fun Token",
@@ -44,7 +45,6 @@ def main() :
             clawback="",
             url="https://path/to/my/fungible/asset/metadata.json",
             metadata_hash="", # Typically include hash of metadata.json (bytes) 
-            decimals=2    # Fungible tokens typically have decimals greater than 0
     )
     
     # sign transaction
