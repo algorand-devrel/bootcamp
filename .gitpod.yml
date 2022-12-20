@@ -4,7 +4,7 @@ tasks:
   - name: Install and Start Sandbox
     init: git clone https://github.com/algorand/sandbox && /workspace/bootcamp/sandbox/sandbox up dev -v
   - name: Get Status
-    command: python --version docker --version /workspace/bootcamp/sandbox/sandbox status
+    command: python --version && docker --version && /workspace/bootcamp/sandbox/sandbox status
 vscode:
   extensions:
     - ms-python.python
