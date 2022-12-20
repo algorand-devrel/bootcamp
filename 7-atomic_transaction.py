@@ -40,8 +40,8 @@ def main() :
     # build unsigned asset transfer transaction
     sender = addr1
     receiver = addr2
-    amount = 10
-    index = 5   # this is the asset-index returned by asset_create.py 
+    amount = 100 # remember this ASA has 2 decimal places, so this is 1.00 FUNTOK 
+    index = 2 # ensure this matches the asset-index returned by asset_create.py
     txn_2 = transaction.AssetTransferTxn(sender, params, receiver, amount, index)
 
     # group transactions

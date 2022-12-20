@@ -28,13 +28,13 @@ def main() :
     algod_client = algod.AlgodClient(algod_token, algod_address)
 
     # check account details
-    account_info = algod_client.account_info(addr1)
+    account_info = algod_client.account_info(addr3)
     print("Account information: {}".format(
         json.dumps(account_info, indent=4)))
     account_info = algod_client.account_info(addr2)
     print("Account information: {}".format(
         json.dumps(account_info, indent=4)))
-    account_info = algod_client.account_info(addr3)
+    account_info = algod_client.account_info(addr1)
     print("Account information: {}".format(
         json.dumps(account_info, indent=4)))
 main()
