@@ -67,9 +67,9 @@ Sample output:
 
 Set environment variables for default account addresses for CLI usage:
 ```
-ADDR1=$($SANDBOX goal account list | awk 'FNR==1{ print $2 }')
-ADDR2=$($SANDBOX goal account list | awk 'FNR==2{ print $2 }')
-ADDR3=$($SANDBOX goal account list | awk 'FNR==3{ print $2 }')
+ADDR1=$(./sandbox goal account list | awk 'FNR==1{ print $2 }')
+ADDR2=$(./sandbox goal account list | awk 'FNR==2{ print $2 }')
+ADDR3=$(./sandbox goal account list | awk 'FNR==3{ print $2 }')
 ```
 
 Display an account _Balance Record_ using:
