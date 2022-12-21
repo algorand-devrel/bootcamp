@@ -64,4 +64,9 @@ def main() :
     print("Transaction information: {}".format(
         json.dumps(confirmed_txn, indent=4)))
 
+    # write the asset index to an environment file
+    f = open('asset.env', 'w+')
+    f.write(f'ASSET_INDEX={confirmed_txn["asset-index"]}')
+    f.close()
+
 main()
