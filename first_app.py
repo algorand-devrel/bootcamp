@@ -9,7 +9,7 @@ class App(Application):
 
     @external
     def foo(self, *, output: abi.String):
-        return Seq(output.set(Bytes("Hello World")))
+        return output.set(Bytes("Hello World"))
 
 
 app = App(version=8)
