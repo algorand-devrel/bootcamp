@@ -16,9 +16,7 @@ algod_token = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 def get_asset_index(default_index = 2):
     # try to read the asset index from our environment file
     try:
-        for line in open('asset.env', 'r'):
-            if "ASSET_INDEX=" in line:
-                index = int(line.removeprefix("ASSET_INDEX="))
+        index = int(open('asset.index', 'r').readline())
     # otherwise return the default index
     except:
         index = default_index
@@ -43,7 +41,7 @@ def main() :
     # build unsigned transaction
     params = algod_client.suggested_params()
     sender = addr2
-    index = get_asset_index(2) # ensure this matches the asset-index returned by asset_create.py
+    index = get_asset_index(default_index = 2) # ensure this matches the asset-index returned by asset_create.py
     unsigned_txn = transaction.AssetOptInTxn(sender, params, index)
     
     # sign transaction

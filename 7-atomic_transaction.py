@@ -17,9 +17,7 @@ algod_token = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 def get_asset_index(default_index = 2):
     # try to read the asset index from our environment file
     try:
-        for line in open('asset.env', 'r'):
-            if "ASSET_INDEX=" in line:
-                index = int(line.removeprefix("ASSET_INDEX="))
+        index = int(open('asset.index', 'r').readline())
     # otherwise return the default index
     except:
         index = default_index
@@ -52,7 +50,7 @@ def main() :
     sender = addr1
     receiver = addr2
     amount = 100 # remember this ASA has 2 decimal places, so this is 1.00 FUNTOK 
-    index = get_asset_index(2) # ensure this matches the asset-index returned by asset_create.py
+    index = get_asset_index(default_index = 2) # ensure this matches the asset-index returned by asset_create.py
     txn_2 = transaction.AssetTransferTxn(sender, params, receiver, amount, index)
 
     # group transactions

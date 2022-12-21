@@ -65,8 +65,8 @@ def main() :
         json.dumps(confirmed_txn, indent=4)))
 
     # write the asset index to an environment file
-    f = open('asset.env', 'w+')
-    f.write(f'ASSET_INDEX={confirmed_txn["asset-index"]}')
+    f = open('asset.index', 'w+')
+    f.write(f'{confirmed_txn["asset-index"]}')
     f.close()
 
 main()
