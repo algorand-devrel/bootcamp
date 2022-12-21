@@ -34,7 +34,7 @@ def main() :
     unsigned_txn = transaction.AssetConfigTxn(sender=addr1,
             sp=params,
             total=10000,  # Fungible tokens have total issuance greater than 1
-            decimals=2    # Fungible tokens typically have decimals greater than 0
+            decimals=2,    # Fungible tokens typically have decimals greater than 0
             default_frozen=False,
             unit_name="FUNTOK",
             asset_name="Fun Token",
