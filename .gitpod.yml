@@ -1,9 +1,6 @@
 tasks:
   - name: Install Python
-    init: pyenv install 3.10.7 && pyenv global 3.10.7
-    command: exit
-  - name: Install Beaker-PyTeal
-    init: python -m pip install beaker-pyteal && exit
+    init: pyenv install 3.10.7 && pyenv global 3.10.7 && python3 -m pip install beaker-pyteal
     command: exit
   - name: Install and initialize Sandbox
     init: git clone https://github.com/algorand/sandbox && /workspace/bootcamp/sandbox/sandbox up dev -v && /workspace/bootcamp/sandbox/sandbox down 
