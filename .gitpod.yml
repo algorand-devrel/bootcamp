@@ -10,8 +10,10 @@ tasks:
     command: exit
   - name: Sandbox
     command: /workspace/bootcamp/sandbox/sandbox reset
+  - name: dAppFlow Explorer
+    command: cd /workspace/bootcamp/dappflow/ && yarn start
   - name: Bootcamp
-    command: echo "run this script `python 2-account_balance.py`"
+    command: echo "run this script: python 2-account_balance.py"
 vscode:
   extensions:
     - ms-python.python
