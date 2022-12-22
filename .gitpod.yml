@@ -1,16 +1,27 @@
-image:
-  file: .gitpod.Dockerfile
 tasks:
   - name: Install Python
     init: pyenv install 3.10.7 && pyenv global 3.10.7
     command: exit
+  - name: Install Beaker-PyTeal
+    init: python -m pip install beaker-pyteal && exit
+    command: exit
   - name: Install and initialize Sandbox
     init: git clone https://github.com/algorand/sandbox && /workspace/bootcamp/sandbox/sandbox up dev -v && /workspace/bootcamp/sandbox/sandbox down 
     command: exit
+  - name: Install dAppFlow
+    init: git clone https://github.com/algodesk-io/dappflow
+    command: cd /workspace/bootcamp/dappflow/ && yarn && exit
   - name: Sandbox
     command: /workspace/bootcamp/sandbox/sandbox reset
   - name: Bootcamp
     command: python 2-account_balance.py
+  - name: dAppFlow
+    command: cd /workspace/bootcamp/dappflow/ && yarn start
 vscode:
   extensions:
     - ms-python.python
+ports:
+  - name: dAppFlow
+    description: dAppFlow Blockchain Explorer
+    port: 3000
+    onOpen: open-browser
