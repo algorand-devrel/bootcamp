@@ -10,13 +10,11 @@ tasks:
     command: exit
   - name: Install dAppFlow
     init: git clone https://github.com/algodesk-io/dappflow
-    command: cd /workspace/bootcamp/dappflow/ && yarn && exit
+    command: cd /workspace/bootcamp/dappflow/ && exit
   - name: Sandbox
     command: /workspace/bootcamp/sandbox/sandbox reset
   - name: Bootcamp
     command: python 2-account_balance.py
-  - name: dAppFlow
-    command: cd /workspace/bootcamp/dappflow/ && yarn start
 vscode:
   extensions:
     - ms-python.python
