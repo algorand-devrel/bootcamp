@@ -21,4 +21,13 @@ ports:
   - name: dAppFlow
     description: dAppFlow Blockchain Explorer
     port: 3000
+    visibility: public
     onOpen: open-browser
+  - name: algod
+    description: algod
+    port: 4001
+    visibility: public
+  - name: indexer
+    description: indexer
+    port: 8980
+    visibility: public
