@@ -6,8 +6,8 @@ tasks:
     init: git clone https://github.com/algorand/sandbox && /workspace/bootcamp/sandbox/sandbox up dev -v && /workspace/bootcamp/sandbox/sandbox down 
     command: exit
   - name: Install dAppFlow
-    init: git clone https://github.com/algodesk-io/dappflow
-    command: cd /workspace/bootcamp/dappflow/ && yarn && exit
+    init: git clone https://github.com/algodesk-io/dappflow && cd /workspace/bootcamp/dappflow/
+    command: yarn && exit
   - name: Sandbox
     command: /workspace/bootcamp/sandbox/sandbox reset
   - name: Bootcamp
