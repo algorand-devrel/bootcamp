@@ -1,6 +1,9 @@
 tasks:
   - name: Install Python
-    init: pyenv install 3.10.7 && pyenv global 3.10.7
+    init: pyenv install 3.10.7 && pyenv global 3.10.7 && python3 -m pip install beaker-pyteal
+    command: exit
+  - name: Bootcamp
+    command: echo "Please right click on README.md then 'Open Preview' to get started."
 vscode:
   extensions:
     - ms-python.python
