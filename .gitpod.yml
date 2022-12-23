@@ -30,4 +30,4 @@ ports:
   - name: indexer
     description: indexer
     port: 8980
-    visibility: public
+    visibility: public 
