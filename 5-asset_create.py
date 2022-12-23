@@ -34,7 +34,7 @@ def main() :
     unsigned_txn = transaction.AssetConfigTxn(sender=addr1,
             sp=params,
             total=10000,  # Fungible tokens have total issuance greater than 1
-            decimals=2    # Fungible tokens typically have decimals greater than 0
+            decimals=2,    # Fungible tokens typically have decimals greater than 0
             default_frozen=False,
             unit_name="FUNTOK",
             asset_name="Fun Token",
@@ -63,5 +63,10 @@ def main() :
 
     print("Transaction information: {}".format(
         json.dumps(confirmed_txn, indent=4)))
+
+    # write the asset index to an environment file
+    f = open('asset.index', 'w+')
+    f.write(f'{confirmed_txn["asset-index"]}')
+    f.close()
 
 main()
