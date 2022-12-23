@@ -31,6 +31,7 @@ Open a new terminal window and navigate to your desired install directory.
 ```
 git clone https://github.com/algorand/sandbox
 cd sandbox
+SANDBOX=$PWD/sandbox
 ```
 
 ### Starting a local private Algorand network
