@@ -2,32 +2,8 @@ tasks:
   - name: Install Python
     init: pyenv install 3.10.7 && pyenv global 3.10.7 && python3 -m pip install beaker-pyteal
     command: exit
-  - name: Install and initialize Sandbox
-    init: git clone https://github.com/algorand/sandbox && /workspace/bootcamp/sandbox/sandbox up dev -v && /workspace/bootcamp/sandbox/sandbox down 
-    command: exit
-  - name: Install dAppFlow
-    init: git clone https://github.com/algodesk-io/dappflow && cd /workspace/bootcamp/dappflow/ && yarn 
-    command: exit
-  - name: Sandbox
-    command: /workspace/bootcamp/sandbox/sandbox reset
-  - name: dAppFlow Explorer
-    command: cd /workspace/bootcamp/dappflow/ && yarn start
   - name: Bootcamp
-    command: echo "run this script: python 2-account_balance.py"
+    command: echo "Please right click on README.md then 'Open Preview' to get started."
 vscode:
   extensions:
     - ms-python.python
-ports:
-  - name: dAppFlow
-    description: dAppFlow Blockchain Explorer
-    port: 3000
-    visibility: public
-    onOpen: open-browser
-  - name: algod
-    description: algod
-    port: 4001
-    visibility: public
-  - name: indexer
-    description: indexer
-    port: 8980
-    visibility: public 

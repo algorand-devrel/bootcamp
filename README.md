@@ -1,5 +1,9 @@
 # Algorand Developer Bootcamp
 
+## Video Recordings
+- [Session #1](https://youtu.be/O7ueVpg2URc)
+- [Session #2](https://youtu.be/LBjBIf_4CLQ)
+
 ## Integrated Development Environment (IDE)
 [Gitpod](https://www.gitpod.io/) provides a browser-based IDE which is free to use for up to 50 hours per month (registration required).
   1. Browse to [https://gitpod.io/workspaces](https://gitpod.io/workspaces)
