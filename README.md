@@ -31,7 +31,6 @@ Open a new terminal window and navigate to your desired install directory.
 ```
 git clone https://github.com/algorand/sandbox
 cd sandbox
-SANDBOX=$PWD/sandbox
 ```
 
 ### Starting a local private Algorand network
@@ -229,7 +228,7 @@ Open 5-create_asset.py
 unsigned_txn = AssetConfigTxn(sender=addr1,
         sp=params,
         total=10000,   # Fungible tokens have total issuance greater than 1
-        decimals=2    # Fungible tokens typically have decimals greater than 0
+        decimals=2,    # Fungible tokens typically have decimals greater than 0
         default_frozen=False,
         unit_name="FUNTOK",
         asset_name="Fun Token",
