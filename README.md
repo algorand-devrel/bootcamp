@@ -78,7 +78,7 @@ ADDR3=$($SANDBOX goal account list | awk 'FNR==3{ print $2 }')
 
 Display an account _Balance Record_ using:
 ```
-./sandbox goal account dump --account $ADDR1
+./sandbox goal account dump --address $ADDR1
 ```
 
 #### First Transaction
@@ -86,7 +86,7 @@ Send your first transaction using the `goal` CLI tool:
 
 ```
 ./sandbox goal clerk send --amount 123456789 --from $ADDR1 --to $ADDR2
-./sandbox goal account dump --account $ADDR1
+./sandbox goal account dump --address $ADDR1
 ```
 
 > :information_source: **Notice**
