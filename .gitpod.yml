@@ -1,9 +1,38 @@
+image: joepol/algorand-gitpod:bootcamp-1.0
 tasks:
-  - name: Install Python
-    init: pyenv install 3.10.7 && pyenv global 3.10.7 && python3 -m pip install beaker-pyteal
-    command: exit
-  - name: Bootcamp
-    command: echo "Please right click on README.md then 'Open Preview' to get started."
+  - name: Algorand
+    before: ~/algodeploy/algodeploy.py start
+    init: |
+      gp ports await 5432
+      psql -c 'create database indexer;'
+      gp ports await 4001 
+      algorand-indexer daemon \
+      --loglevel info \
+      --postgres "host=localhost port=5432 user=gitpod dbname=indexer sslmode=disable" \
+      --algod-net "localhost:4001" \
+      --algod-token "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" \
+      --data-dir ~/.algodeploy/localnet/data/Node \
+      --dev-mode
+  - name: dappflow
+    command: serve -s ~/dappflow/
 vscode:
   extensions:
     - ms-python.python
+ports:
+  - name: dappflow
+    port: 3000
+    onOpen: open-preview
+  - name: algod
+    port: 4001
+    visibility: public
+    onOpen: ignore
+  - name: indexer
+    port: 8980
+    visibility: public
+    onOpen: ignore
+  - name: postgres
+    port: 5432
+    onOpen: ignore
+  - name: kmd
+    port: 4002
+    onOpen: ignore
