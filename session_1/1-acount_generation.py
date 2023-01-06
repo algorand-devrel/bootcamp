@@ -1,3 +1,4 @@
+
 from algosdk import account, mnemonic
 
 def generate_algorand_keypair():
