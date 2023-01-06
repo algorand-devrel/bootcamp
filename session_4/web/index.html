@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Beaker Auction</title>
+    </head>
+    <body>
+        <h1>Beaker Auction</h1>
+        <div id='status'>Waiting for application to be created...</div>
+        <label for="accounts">Account: </label>
+        <select id="accounts"></select>
+        <br>
+        <button id="connect">Connect</button>
+        <br>
+        <button id="create" disabled>Create</button>
+        <br>
+        <label for="asa">ASA ID: </label>
+        <input type="number" id="asa" min="0" value="10458941">
+        <br>
+        <label for="asa-amount">ASA Amount: </label>
+        <input type="number" id="asa-amount" min="0" value="1">
+        <br>
+        <button id="start" disabled>Start Auction</button>
+        <br>
+        <label for="amount">Starting/Bid Amount: </label>
+        <input type="number" id="amount" min="0" value="10000">
+        <br>
+        <button id="bid" disabled>Bid</button>
+    </body>
+</html>
