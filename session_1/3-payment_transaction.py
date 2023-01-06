@@ -1,4 +1,5 @@
-from algosdk.future import transaction
+
+from algosdk import transaction
 import json
 import base64
 
@@ -57,5 +58,3 @@ def main() :
         confirmed_txn["txn"]["txn"]["note"]).decode()))
 
 main()
-
-
