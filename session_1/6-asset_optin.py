@@ -1,7 +1,6 @@
-from algosdk import kmd
+from algosdk import kmd, transaction
 from algosdk.wallet import Wallet
 from algosdk.v2client import algod
-from algosdk.future import transaction
 import json
 import base64
 
