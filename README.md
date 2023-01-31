@@ -4,7 +4,7 @@ Get started working on this repo in Gitpod without needing to setup local enviro
 
 A gitpod account is required, but sign-in with Github can be used.
 
-https://gitpod.io/#https://github.com/algorand-devrel/docker-algorand-gitpod
+https://gitpod.io/#https://github.com/algorand-devrel/bootcamp
 
 ## Video Recordings
 - [Session #1](https://youtu.be/5O1-mqCGcc0)
