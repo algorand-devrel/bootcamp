@@ -1,4 +1,6 @@
 # Algorand Developer Bootcamp
+## Gitpod link
+Get started working on this repo in Gitpod without needing to setup local environment: https://gitpod.io/#https://github.com/joe-p/docker-algorand-gitpod
 
 ## Video Recordings
 - [Session #1](https://youtu.be/5O1-mqCGcc0)
