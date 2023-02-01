@@ -10,4 +10,4 @@ https://gitpod.io/#https://github.com/algorand-devrel/bootcamp
 - [Session #1](https://youtu.be/5O1-mqCGcc0)
 - [Session #2](https://youtu.be/nYMR2OY0SWs)
 - [Session #3](https://youtu.be/W3w03pLNUH8)
-- [Session #4]
+- [Session #4](https://youtu.be/GJE_o9aiiLA)
