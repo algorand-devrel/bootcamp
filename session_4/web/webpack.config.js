@@ -5,7 +5,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const WorkboxWebpackPlugin = require('workbox-webpack-plugin')
 const webpack = require('webpack')
 
-const isProduction = process.env.NODE_ENV == 'production'
+const isProduction = process.env.NODE_ENV === 'production'
 
 const config = {
   devtool: 'eval-source-map',
@@ -34,7 +34,7 @@ const config = {
         test: /\.(js)$/,
         exclude: /node_modules\/(?!beaker-ts)/,
         use: {
-          loader: 'babel-loader'
+          loader: 'ts-loader'
         },
         resolve: {
           fullySpecified: false
@@ -56,13 +56,7 @@ const config = {
     noParse: [require.resolve('typescript/lib/typescript.js')]
   },
   resolve: {
-    extensions: ['.tsx', '.ts', '.jsx', '.js', '...'],
-    fallback: {
-      crypto: require.resolve('crypto-browserify'),
-      stream: require.resolve('stream-browserify'),
-      buffer: require.resolve('buffer'),
-      fs: false
-    }
+    extensions: ['.tsx', '.ts', '.jsx', '.js', '...']
   }
 }
 
