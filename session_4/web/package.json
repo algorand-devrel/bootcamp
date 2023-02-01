@@ -1,0 +1,43 @@
+{
+  "name": "beaker-auction",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack --mode=production --node-env=production",
+    "build:dev": "webpack --mode=development",
+    "build:prod": "webpack --mode=production --node-env=production",
+    "watch": "webpack --watch",
+    "serve": "npm run beaker && webpack serve",
+    "lint": "eslint . --ext ts",
+    "fix": "eslint . --ext ts --fix",
+    "beaker": "../auction.py && beaker generate ./app_spec.json ./src/beaker/"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@json-rpc-tools/utils": "^1.7.6",
+    "@randlabs/myalgo-connect": "^1.2.0",
+    "@walletconnect/client": "^1.7.8",
+    "algorand-walletconnect-qrcode-modal": "^1.7.4",
+    "algosdk": "^2.1.0",
+    "beaker-ts": "^0.0.81"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.37.0",
+    "@typescript-eslint/parser": "^5.37.0",
+    "@webpack-cli/generators": "^2.5.0",
+    "eslint": "^8.23.1",
+    "eslint-config-standard": "^17.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-n": "^15.2.5",
+    "eslint-plugin-promise": "^6.0.1",
+    "html-webpack-plugin": "^5.5.0",
+    "ts-loader": "^9.3.0",
+    "typescript": "^4.7.4",
+    "webpack": "^5.73.0",
+    "webpack-cli": "^4.10.0",
+    "webpack-dev-server": "^4.9.2",
+    "workbox-webpack-plugin": "^6.5.3"
+  }
+}

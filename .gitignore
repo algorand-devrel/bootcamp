@@ -1,4 +1,5 @@
-*.json
+abi.json
+*spec.json
 *.teal
 node_modules/
 session_4/web/src/**/*.js
