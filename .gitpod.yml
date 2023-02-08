@@ -1,4 +1,4 @@
-image: joepol/algorand-gitpod:bootcamp-1.0
+image: joepol/algorand-gitpod:bootcamp-1.1
 tasks:
   - name: Algorand
     before: ~/algodeploy/algodeploy.py start
