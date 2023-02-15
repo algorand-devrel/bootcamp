@@ -8,4 +8,4 @@ https://gitpod.io/#https://github.com/algorand-devrel/bootcamp
 
 ## Video Recordings
 
-To be posted once the first session has ended
+- [Session 1](https://youtu.be/4BgJe1MRBSw) - Intro & Developer Environment Setup
