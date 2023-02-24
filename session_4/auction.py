@@ -87,10 +87,12 @@ class Auction(Application):
             Assert(payment.get().amount() > self.highest_bid),
             Assert(payment.get().receiver() == Global.current_application_address()),
             Assert(Txn.sender() == payment.get().sender()),
-            Assert(self.highest_bidder == previous_bidder.address()),
             If(
                 self.highest_bidder != Bytes(""),
-                self.pay(previous_bidder.address(), self.highest_bid),
+                Seq(
+                    Assert(self.highest_bidder == previous_bidder.address()),
+                    self.pay(previous_bidder.address(), self.highest_bid),
+                )
             ),
             self.highest_bid.set(payment.get().amount()),
             self.highest_bidder.set(Txn.sender()),

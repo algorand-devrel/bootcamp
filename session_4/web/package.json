@@ -10,7 +10,7 @@
     "serve": "npm run beaker && webpack serve",
     "lint": "eslint . --ext ts",
     "fix": "eslint . --ext ts --fix",
-    "beaker": "python3 ../auction.py && beaker generate ./contract.json ./src/beaker/"
+    "beaker": "python3 ../auction.py && beaker generate ./application.json ./src/beaker/"
   },
   "keywords": [],
   "author": "",
