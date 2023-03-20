@@ -115,10 +115,7 @@ class Auction(Application):
                     TxnField.fee: Int(0),
                     TxnField.xfer_asset: self.asa,
                     TxnField.asset_receiver: self.highest_bidder,
-                    TxnField.asset_close_to: Seq(
-                        (asa_creator := asset.params().creator_address()),
-                        asa_creator.value(),
-                    ),
+                    TxnField.asset_close_to: self.highest_bidder,
                 }
             ),
         )
