@@ -1,5 +1,6 @@
-image: joepol/algorand-gitpod:bootcamp-2.0
 tasks:
+  - name: install algokit
+    init: pip install pipx && pipx install git+https://github.com/joe-p/algokit-cli.git@gitpod
   - name: algokit localnet
     command: algokit localnet start
 vscode:
