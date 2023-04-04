@@ -1,20 +1,9 @@
-image: joepol/algorand-gitpod:bootcamp-1.1
+image: joepol/algorand-gitpod:bootcamp-2.0
 tasks:
-  - name: Algorand
-    before: ~/algodeploy/algodeploy.py start
-    init: |
-      gp ports await 5432
-      psql -c 'create database indexer;'
-      gp ports await 4001 
-      algorand-indexer daemon \
-      --loglevel info \
-      --postgres "host=localhost port=5432 user=gitpod dbname=indexer sslmode=disable" \
-      --algod-net "localhost:4001" \
-      --algod-token "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" \
-      --data-dir ~/.algodeploy/localnet/data/Node \
-      --dev-mode
+  - name: algokit localnet
+    command: algokit localnet start
   - name: dappflow
-    command: serve -s ~/dappflow/
+    command: gp ports await 8980 && gp ports await 4001 && serve -s ~/dappflow/
 vscode:
   extensions:
     - ms-python.python
