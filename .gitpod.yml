@@ -2,15 +2,10 @@ image: joepol/algorand-gitpod:bootcamp-2.0
 tasks:
   - name: algokit localnet
     command: algokit localnet start
-  - name: dappflow
-    command: gp ports await 8980 && gp ports await 4001 && serve -s ~/dappflow/
 vscode:
   extensions:
     - ms-python.python
 ports:
-  - name: dappflow
-    port: 3000
-    onOpen: open-preview
   - name: algod
     port: 4001
     visibility: public
