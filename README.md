@@ -9,7 +9,7 @@ A gitpod account is required, but sign-in with Github can be used.
 https://gitpod.io/#https://github.com/algorand-devrel/bootcamp
 
 ## Video Recordings
-- [Episode #1](https://youtu.be/EWvaZWOBNSA) Algorand Developer Onbaording with JavaScript SDK & AlgoKit Installation
+- [Episode #1](https://youtu.be/EWvaZWOBNSA) Algorand Developer Onbaording with JavaScript SDK & AlgoKit Installation ([video]()(https://youtu.be/EWvaZWOBNSA))
 - Episode #2
 - Episode #3
 - Episode #4
