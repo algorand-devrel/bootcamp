@@ -24,4 +24,5 @@ ports:
     onOpen: ignore
   - name: kmd
     port: 4002
+    visibility: public
     onOpen: ignore
