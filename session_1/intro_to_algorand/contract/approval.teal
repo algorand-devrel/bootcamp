@@ -1,0 +1,74 @@
+#pragma version 8
+intcblock 0 1
+bytecblock 0x636f756e746572 0x6c6173745f63616c6c65725f6e616d65 0x6c6173745f63616c6c65725f61646472657373
+txna ApplicationArgs 0
+pushbytes 0x20df3a54 // "create(string)void"
+==
+bnz main_l4
+txna ApplicationArgs 0
+pushbytes 0x17b66382 // "increment(string)void"
+==
+bnz main_l3
+err
+main_l3:
+txn OnCompletion
+intc_0 // NoOp
+==
+txn ApplicationID
+intc_0 // 0
+!=
+&&
+assert
+txna ApplicationArgs 1
+callsub increment_1
+intc_1 // 1
+return
+main_l4:
+txn OnCompletion
+intc_0 // NoOp
+==
+txn ApplicationID
+intc_0 // 0
+==
+&&
+assert
+txna ApplicationArgs 1
+callsub create_0
+intc_1 // 1
+return
+
+// create
+create_0:
+proto 1 0
+bytec_0 // "counter"
+intc_0 // 0
+app_global_put
+bytec_2 // "last_caller_address"
+global CreatorAddress
+app_global_put
+bytec_1 // "last_caller_name"
+pushbytes 0x // ""
+app_global_put
+bytec_1 // "last_caller_name"
+frame_dig -1
+extract 2 0
+app_global_put
+retsub
+
+// increment
+increment_1:
+proto 1 0
+bytec_0 // "counter"
+bytec_0 // "counter"
+app_global_get
+intc_1 // 1
++
+app_global_put
+bytec_2 // "last_caller_address"
+txn Sender
+app_global_put
+bytec_1 // "last_caller_name"
+frame_dig -1
+extract 2 0
+app_global_put
+retsub
