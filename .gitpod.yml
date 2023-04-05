@@ -2,10 +2,11 @@ tasks:
   - name: install algokit
     init: > 
       pip install pipx && 
-      pipx install git+https://github.com/joe-p/algokit-cli.git@gitpod &&
-      gp sync-done algokit-install  
+      pipx install git+https://github.com/joe-p/algokit-cli.git@8e9eae7 &&
+      gp sync-done algokit-install  &&
+      exit
   - name: algokit localnet
-    command: gp sync-await algokit-install && algokit localnet start
+    command: gp sync-await algokit-install && algokit localnet start && exit
 vscode:
   extensions:
     - ms-python.python
