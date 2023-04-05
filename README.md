@@ -1,4 +1,6 @@
 # Algorand Developer Bootcamp
+Sign up for future sessions here: https://www.algorand.foundation/events
+
 ## Gitpod link
 Get started working on this repo in Gitpod without needing to setup local environment. 
 
