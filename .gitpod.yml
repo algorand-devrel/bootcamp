@@ -26,3 +26,7 @@ ports:
     port: 4002
     visibility: public
     onOpen: ignore
+  - name: debug port
+    port: 9392
+    onOpen: ignore
+    visibility: public
