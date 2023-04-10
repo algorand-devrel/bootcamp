@@ -46,6 +46,7 @@ exclude = [
     "dist",
     "node_modules",
     "venv",
+    "test_app.py"
 ]
 per-file-ignores = {}
 # Allow unused variables when underscore-prefixed.
@@ -70,4 +71,5 @@ warn_redundant_casts = true
 warn_unused_ignores = true
 allow_untyped_defs = false
 strict_equality = true
+exclude = "test_app.py"
 

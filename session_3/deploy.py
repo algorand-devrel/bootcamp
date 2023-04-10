@@ -1,5 +1,6 @@
+from beaker import client, sandbox
+
 from app import app
-from beaker import sandbox, client
 
 app.build().export("./artifacts")
 

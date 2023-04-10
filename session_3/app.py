@@ -139,7 +139,7 @@ def claim_asset(asset: abi.Asset, asset_creator: abi.Account) -> Expr:
                 TxnField.xfer_asset: app.state.asa,
                 TxnField.asset_amount: app.state.asa_amt,
                 TxnField.asset_receiver: app.state.highest_bidder,
-                # Close to asset creator since they are guranteed to be opted into the asset
+                # Close to asset creator since they are guranteed to be opted in
                 TxnField.asset_close_to: asset_creator.address(),
             }
         ),
