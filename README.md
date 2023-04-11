@@ -11,5 +11,5 @@ https://gitpod.io/#https://github.com/algorand-devrel/bootcamp
 ## Video Recordings
 - [Episode #1](https://youtu.be/EWvaZWOBNSA) Algorand Developer Onbaording with JavaScript SDK & AlgoKit Installation ([video](https://youtu.be/EWvaZWOBNSA))
 - [Episode #2](https://youtu.be/lZmk_VdUkkQ) Building a dApp with Beaker and Deploying with dAppFlow ([video](https://youtu.be/lZmk_VdUkkQ))
-- Episode #3
+- [Episode #3](https://youtu.be/2qjemCySd4g) Building & Debugging dApps with Beaker + PyTeal + PyTest ([video](https://youtu.be/2qjemCySd4g))
 - Episode #4
