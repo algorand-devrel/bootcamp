@@ -10,12 +10,13 @@ const indexerClient = new algosdk.Indexer('', 'https://testnet-idx.algonode.clou
 const contract = new algosdk.ABIContract(appspec.contract)
 
 let auctionAppId: number
+let auctionApp: algokit.ApplicationClient
 
 const accountsMenu = document.getElementById('accounts') as HTMLSelectElement
 const amountInput = document.getElementById('amount') as HTMLInputElement
 const asaInput = document.getElementById('asa') as HTMLInputElement
 const asaAmountInput = document.getElementById('asa-amount') as HTMLInputElement
-const buttonIds = ['create', 'connect', 'start', 'bid']
+const buttonIds = ['create', 'connect', 'start', 'bid', 'claim-bid', 'claim-asset']
 const buttons: { [key: string]: HTMLButtonElement } = {}
 buttonIds.forEach(id => {
   buttons[id] = document.getElementById(id) as HTMLButtonElement
@@ -40,7 +41,7 @@ buttons.create.onclick = async () => {
     signer
   }
 
-  const auctionApp = new algokit.ApplicationClient(
+  auctionApp = new algokit.ApplicationClient(
     {
       app: JSON.stringify(appspec),
       sender,
@@ -136,22 +137,6 @@ buttons.bid.onclick = async () => {
   const readableState = Utils.getReadableState(state)
   const prevBidder = readableState.highest_bidder.address || sender.addr
 
-  /*
-  Not working right now, but this is what a call with algokit will look like...
-
-  const auctionApp = new algokit.ApplicationClient(
-    {
-      app: JSON.stringify(appspec),
-      sender,
-      index: auctionAppId
-    },
-    algodClient,
-    indexerClient
-  )
-
-  await auctionApp.call({ callType: 'normal', method: 'bid', methodArgs: [{ txn: payment, signer }, prevBidder] })
-  */
-
   const atc = new AtomicTransactionComposer()
   atc.addMethodCall(
     {
@@ -167,4 +152,47 @@ buttons.bid.onclick = async () => {
   await atc.execute(algodClient, 3)
 
   document.getElementById('status').innerHTML = `Bid sent! See the app <a href='https://testnet.algoscan.app/app/${auctionAppId}'>here</a>`
+}
+
+buttons['claim-bid'].onclick = async () => {
+  const suggestedParams = await algodClient.getTransactionParams().do()
+  suggestedParams.fee = 2_000
+  suggestedParams.flatFee = true
+
+  const atc = new algosdk.AtomicTransactionComposer()
+
+  atc.addMethodCall(
+    {
+      appID: auctionAppId,
+      method: algosdk.getMethodByName(contract.methods, 'claim_bid'),
+      sender: accountsMenu.selectedOptions[0].value,
+      signer,
+      suggestedParams
+    }
+  )
+
+  atc.execute(algodClient, 3)
+}
+
+buttons['claim-asset'].onclick = async () => {
+  const suggestedParams = await algodClient.getTransactionParams().do()
+  suggestedParams.fee = 2_000
+  suggestedParams.flatFee = true
+
+  const atc = new algosdk.AtomicTransactionComposer()
+
+  const asa = asaInput.valueAsNumber
+  const asaCreator = (await algodClient.getAssetByID(asa).do()).params.creator
+  atc.addMethodCall(
+    {
+      appID: auctionAppId,
+      methodArgs: [asa, asaCreator],
+      method: algosdk.getMethodByName(contract.methods, 'claim_asset'),
+      sender: accountsMenu.selectedOptions[0].value,
+      signer,
+      suggestedParams
+    }
+  )
+
+  atc.execute(algodClient, 3)
 }
