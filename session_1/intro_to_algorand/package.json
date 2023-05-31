@@ -1,0 +1,19 @@
+{
+  "name": "india-hack-shack",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "algosdk": "^2.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.15.8",
+    "@typescript-eslint/eslint-plugin": "^5.55.0",
+    "@typescript-eslint/parser": "^5.55.0",
+    "eslint": "^7.32.0 || ^8.2.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.25.2",
+    "tsx": "^3.12.6",
+    "typescript": "^5.0.2"
+  }
+}
