@@ -1,0 +1,30 @@
+{
+    "name": "BoxStorageDAO",
+    "methods": [
+        {
+            "name": "add_proposal",
+            "args": [
+                {
+                    "type": "string",
+                    "name": "desc"
+                }
+            ],
+            "returns": {
+                "type": "void"
+            }
+        },
+        {
+            "name": "support",
+            "args": [
+                {
+                    "type": "address",
+                    "name": "proposer"
+                }
+            ],
+            "returns": {
+                "type": "void"
+            }
+        }
+    ],
+    "networks": {}
+}

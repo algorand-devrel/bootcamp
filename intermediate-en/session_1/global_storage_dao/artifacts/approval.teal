@@ -1,0 +1,134 @@
+#pragma version 8
+intcblock 0 1
+bytecblock 0x63757272656e745f70726f706f73616c5f6964 0x77696e6e696e675f70726f706f73616c5f766f746573 0x77696e6e696e675f70726f706f73616c
+txn NumAppArgs
+intc_0 // 0
+==
+bnz main_l6
+txna ApplicationArgs 0
+pushbytes 0x885de27f // "add_proposal(string)void"
+==
+bnz main_l5
+txna ApplicationArgs 0
+pushbytes 0xdad62b1d // "support(uint64)void"
+==
+bnz main_l4
+err
+main_l4:
+txn OnCompletion
+intc_0 // NoOp
+==
+txn ApplicationID
+intc_0 // 0
+!=
+&&
+assert
+txna ApplicationArgs 1
+btoi
+callsub support_4
+intc_1 // 1
+return
+main_l5:
+txn OnCompletion
+intc_0 // NoOp
+==
+txn ApplicationID
+intc_0 // 0
+!=
+&&
+assert
+txna ApplicationArgs 1
+callsub addproposal_3
+intc_1 // 1
+return
+main_l6:
+txn OnCompletion
+intc_0 // NoOp
+==
+bnz main_l8
+err
+main_l8:
+txn ApplicationID
+intc_0 // 0
+==
+assert
+callsub create_2
+intc_1 // 1
+return
+
+// prefix_key_gen
+prefixkeygen_0:
+proto 1 1
+pushbytes 0x70726f706f73616c73 // "proposals"
+frame_dig -1
+concat
+retsub
+
+// prefix_key_gen
+prefixkeygen_1:
+proto 1 1
+pushbytes 0x766f746573 // "votes"
+frame_dig -1
+concat
+retsub
+
+// create
+create_2:
+proto 0 0
+bytec_0 // "current_proposal_id"
+intc_0 // 0
+app_global_put
+bytec_2 // "winning_proposal"
+intc_0 // 0
+app_global_put
+bytec_1 // "winning_proposal_votes"
+intc_0 // 0
+app_global_put
+retsub
+
+// add_proposal
+addproposal_3:
+proto 1 0
+bytec_0 // "current_proposal_id"
+app_global_get
+itob
+callsub prefixkeygen_0
+frame_dig -1
+extract 2 0
+app_global_put
+bytec_0 // "current_proposal_id"
+bytec_0 // "current_proposal_id"
+app_global_get
+intc_1 // 1
++
+app_global_put
+retsub
+
+// support
+support_4:
+proto 1 0
+frame_dig -1
+itob
+callsub prefixkeygen_1
+app_global_get
+intc_1 // 1
++
+store 0
+frame_dig -1
+itob
+callsub prefixkeygen_1
+load 0
+app_global_put
+load 0
+bytec_1 // "winning_proposal_votes"
+app_global_get
+>
+bz support_4_l2
+bytec_1 // "winning_proposal_votes"
+load 0
+app_global_put
+bytec_2 // "winning_proposal"
+frame_dig -1
+app_global_put
+support_4_l2:
+retsub

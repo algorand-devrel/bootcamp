@@ -1,0 +1,143 @@
+#pragma version 8
+intcblock 0 1
+bytecblock 0x77696e6e696e675f70726f706f73616c5f766f746573 0x77696e6e696e675f70726f706f73616c 0x70726f706f73616c 0x6861735f766f746564 0x766f746573
+txn NumAppArgs
+intc_0 // 0
+==
+bnz main_l6
+txna ApplicationArgs 0
+pushbytes 0x885de27f // "add_proposal(string)void"
+==
+bnz main_l5
+txna ApplicationArgs 0
+pushbytes 0x25907da5 // "support(account)void"
+==
+bnz main_l4
+err
+main_l4:
+txn OnCompletion
+intc_0 // NoOp
+==
+txn ApplicationID
+intc_0 // 0
+!=
+&&
+assert
+txna ApplicationArgs 1
+intc_0 // 0
+getbyte
+callsub support_3
+intc_1 // 1
+return
+main_l5:
+txn OnCompletion
+intc_0 // NoOp
+==
+txn ApplicationID
+intc_0 // 0
+!=
+&&
+assert
+txna ApplicationArgs 1
+callsub addproposal_2
+intc_1 // 1
+return
+main_l6:
+txn OnCompletion
+intc_0 // NoOp
+==
+bnz main_l10
+txn OnCompletion
+intc_1 // OptIn
+==
+bnz main_l9
+err
+main_l9:
+txn ApplicationID
+intc_0 // 0
+!=
+assert
+callsub optin_1
+intc_1 // 1
+return
+main_l10:
+txn ApplicationID
+intc_0 // 0
+==
+assert
+callsub create_0
+intc_1 // 1
+return
+
+// create
+create_0:
+proto 0 0
+bytec_1 // "winning_proposal"
+pushbytes 0x // ""
+app_global_put
+bytec_0 // "winning_proposal_votes"
+intc_0 // 0
+app_global_put
+retsub
+
+// opt_in
+optin_1:
+proto 0 0
+intc_1 // 1
+return
+
+// add_proposal
+addproposal_2:
+proto 1 0
+txn Sender
+bytec_2 // "proposal"
+app_local_get
+intc_0 // 0
+==
+assert
+txn Sender
+bytec_2 // "proposal"
+frame_dig -1
+extract 2 0
+app_local_put
+retsub
+
+// support
+support_3:
+proto 1 0
+txn Sender
+bytec_3 // "has_voted"
+app_local_get
+intc_0 // 0
+==
+assert
+frame_dig -1
+txnas Accounts
+bytec 4 // "votes"
+app_local_get
+intc_1 // 1
++
+store 0
+frame_dig -1
+txnas Accounts
+bytec 4 // "votes"
+load 0
+app_local_put
+load 0
+bytec_0 // "winning_proposal_votes"
+app_global_get
+>
+bz support_3_l2
+bytec_0 // "winning_proposal_votes"
+load 0
+app_global_put
+bytec_1 // "winning_proposal"
+frame_dig -1
+txnas Accounts
+app_global_put
+support_3_l2:
+txn Sender
+bytec_3 // "has_voted"
+intc_1 // 1
+app_local_put
+retsub
