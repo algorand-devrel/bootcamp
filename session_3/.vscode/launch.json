@@ -1,0 +1,19 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Build & Deploy",
+      "type": "python",
+      "request": "launch",
+      "program": "deploy.py",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "name": "Build",
+      "type": "python",
+      "request": "launch",
+      "program": "app.py",
+      "cwd": "${workspaceFolder}"
+    }
+  ]
+}
