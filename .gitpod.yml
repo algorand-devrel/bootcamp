@@ -1,27 +1,16 @@
-image: joepol/algorand-gitpod:bootcamp-1.0
 tasks:
-  - name: Algorand
-    before: ~/algodeploy/algodeploy.py start
-    init: |
-      gp ports await 5432
-      psql -c 'create database indexer;'
-      gp ports await 4001 
-      algorand-indexer daemon \
-      --loglevel info \
-      --postgres "host=localhost port=5432 user=gitpod dbname=indexer sslmode=disable" \
-      --algod-net "localhost:4001" \
-      --algod-token "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" \
-      --data-dir ~/.algodeploy/localnet/data/Node \
-      --dev-mode
-  - name: dappflow
-    command: serve -s ~/dappflow/
+  - name: algokit localnet
+    command: gp sync-await algokit-install && algokit localnet start && exit
+  - name: install algokit
+    init: > 
+      pip install pipx && 
+      pipx install git+https://github.com/joe-p/algokit-cli.git@fb32942 &&
+      gp sync-done algokit-install  &&
+      exit
 vscode:
   extensions:
     - ms-python.python
 ports:
-  - name: dappflow
-    port: 3000
-    onOpen: open-preview
   - name: algod
     port: 4001
     visibility: public
@@ -35,4 +24,9 @@ ports:
     onOpen: ignore
   - name: kmd
     port: 4002
+    visibility: public
     onOpen: ignore
+  - name: debug port
+    port: 9392
+    onOpen: ignore
+    visibility: public

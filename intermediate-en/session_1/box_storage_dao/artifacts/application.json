@@ -1,0 +1,82 @@
+{
+    "hints": {
+        "add_proposal(string)void": {
+            "call_config": {
+                "no_op": "CALL"
+            }
+        },
+        "support(address)void": {
+            "call_config": {
+                "no_op": "CALL"
+            }
+        }
+    },
+    "source": {
+        "approval": "I3ByYWdtYSB2ZXJzaW9uIDgKaW50Y2Jsb2NrIDAgMQpieXRlY2Jsb2NrIDB4NzYyZCAweDc3Njk2ZTZlNjk2ZTY3NWY3MDcyNmY3MDZmNzM2MTZjNWY3NjZmNzQ2NTczIDB4NzAyZCAweDY4MmQgMHg3NzY5NmU2ZTY5NmU2NzVmNzA3MjZmNzA2ZjczNjE2Ywp0eG4gTnVtQXBwQXJncwppbnRjXzAgLy8gMAo9PQpibnogbWFpbl9sNgp0eG5hIEFwcGxpY2F0aW9uQXJncyAwCnB1c2hieXRlcyAweDg4NWRlMjdmIC8vICJhZGRfcHJvcG9zYWwoc3RyaW5nKXZvaWQiCj09CmJueiBtYWluX2w1CnR4bmEgQXBwbGljYXRpb25BcmdzIDAKcHVzaGJ5dGVzIDB4MjdiNjg4OTIgLy8gInN1cHBvcnQoYWRkcmVzcyl2b2lkIgo9PQpibnogbWFpbl9sNAplcnIKbWFpbl9sNDoKdHhuIE9uQ29tcGxldGlvbgppbnRjXzAgLy8gTm9PcAo9PQp0eG4gQXBwbGljYXRpb25JRAppbnRjXzAgLy8gMAohPQomJgphc3NlcnQKdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMQpjYWxsc3ViIHN1cHBvcnRfMgppbnRjXzEgLy8gMQpyZXR1cm4KbWFpbl9sNToKdHhuIE9uQ29tcGxldGlvbgppbnRjXzAgLy8gTm9PcAo9PQp0eG4gQXBwbGljYXRpb25JRAppbnRjXzAgLy8gMAohPQomJgphc3NlcnQKdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMQpjYWxsc3ViIGFkZHByb3Bvc2FsXzEKaW50Y18xIC8vIDEKcmV0dXJuCm1haW5fbDY6CnR4biBPbkNvbXBsZXRpb24KaW50Y18wIC8vIE5vT3AKPT0KYm56IG1haW5fbDgKZXJyCm1haW5fbDg6CnR4biBBcHBsaWNhdGlvbklECmludGNfMCAvLyAwCj09CmFzc2VydApjYWxsc3ViIGNyZWF0ZV8wCmludGNfMSAvLyAxCnJldHVybgoKLy8gY3JlYXRlCmNyZWF0ZV8wOgpwcm90byAwIDAKYnl0ZWMgNCAvLyAid2lubmluZ19wcm9wb3NhbCIKcHVzaGJ5dGVzIDB4IC8vICIiCmFwcF9nbG9iYWxfcHV0CmJ5dGVjXzEgLy8gIndpbm5pbmdfcHJvcG9zYWxfdm90ZXMiCmludGNfMCAvLyAwCmFwcF9nbG9iYWxfcHV0CnJldHN1YgoKLy8gYWRkX3Byb3Bvc2FsCmFkZHByb3Bvc2FsXzE6CnByb3RvIDEgMApieXRlY18yIC8vICJwLSIKdHhuIFNlbmRlcgpjb25jYXQKYm94X2xlbgpzdG9yZSAxCnN0b3JlIDAKbG9hZCAxCmludGNfMCAvLyAwCj09CmFzc2VydApieXRlY18yIC8vICJwLSIKdHhuIFNlbmRlcgpjb25jYXQKYm94X2RlbApwb3AKYnl0ZWNfMiAvLyAicC0iCnR4biBTZW5kZXIKY29uY2F0CmZyYW1lX2RpZyAtMQpib3hfcHV0CnJldHN1YgoKLy8gc3VwcG9ydApzdXBwb3J0XzI6CnByb3RvIDEgMAppbnRjXzAgLy8gMApkdXBuIDMKYnl0ZWNfMyAvLyAiaC0iCnR4biBTZW5kZXIKY29uY2F0CmJveF9sZW4Kc3RvcmUgMwpzdG9yZSAyCmxvYWQgMwppbnRjXzAgLy8gMAo9PQphc3NlcnQKYnl0ZWNfMCAvLyAidi0iCmZyYW1lX2RpZyAtMQpjb25jYXQKYm94X2xlbgpzdG9yZSA1CnN0b3JlIDQKbG9hZCA1CmJueiBzdXBwb3J0XzJfbDMKc3VwcG9ydF8yX2wxOgpmcmFtZV9kaWcgMQppbnRjXzEgLy8gMQorCmZyYW1lX2J1cnkgMApieXRlY18wIC8vICJ2LSIKZnJhbWVfZGlnIC0xCmNvbmNhdApib3hfZGVsCnBvcApieXRlY18wIC8vICJ2LSIKZnJhbWVfZGlnIC0xCmNvbmNhdApmcmFtZV9kaWcgMAppdG9iCmJveF9wdXQKZnJhbWVfZGlnIDAKYnl0ZWNfMSAvLyAid2lubmluZ19wcm9wb3NhbF92b3RlcyIKYXBwX2dsb2JhbF9nZXQKPgpieiBzdXBwb3J0XzJfbDQKYnl0ZWNfMSAvLyAid2lubmluZ19wcm9wb3NhbF92b3RlcyIKZnJhbWVfZGlnIDAKYXBwX2dsb2JhbF9wdXQKYnl0ZWMgNCAvLyAid2lubmluZ19wcm9wb3NhbCIKZnJhbWVfZGlnIC0xCmFwcF9nbG9iYWxfcHV0CmIgc3VwcG9ydF8yX2w0CnN1cHBvcnRfMl9sMzoKYnl0ZWNfMCAvLyAidi0iCmZyYW1lX2RpZyAtMQpjb25jYXQKYm94X2dldApzdG9yZSA3CnN0b3JlIDYKbG9hZCA3CmFzc2VydApsb2FkIDYKYnRvaQpmcmFtZV9idXJ5IDEKYiBzdXBwb3J0XzJfbDEKc3VwcG9ydF8yX2w0OgppbnRjXzEgLy8gMQpmcmFtZV9idXJ5IDIKYnl0ZWNfMyAvLyAiaC0iCnR4biBTZW5kZXIKY29uY2F0CmJveF9kZWwKcG9wCmJ5dGVjXzMgLy8gImgtIgp0eG4gU2VuZGVyCmNvbmNhdApwdXNoYnl0ZXMgMHgwMCAvLyAweDAwCmludGNfMCAvLyAwCmZyYW1lX2RpZyAyCnNldGJpdApib3hfcHV0CnJldHN1Yg==",
+        "clear": "I3ByYWdtYSB2ZXJzaW9uIDgKcHVzaGludCAwIC8vIDAKcmV0dXJu"
+    },
+    "state": {
+        "global": {
+            "num_byte_slices": 1,
+            "num_uints": 1
+        },
+        "local": {
+            "num_byte_slices": 0,
+            "num_uints": 0
+        }
+    },
+    "schema": {
+        "global": {
+            "declared": {
+                "winning_proposal": {
+                    "type": "bytes",
+                    "key": "winning_proposal",
+                    "descr": ""
+                },
+                "winning_proposal_votes": {
+                    "type": "uint64",
+                    "key": "winning_proposal_votes",
+                    "descr": ""
+                }
+            },
+            "reserved": {}
+        },
+        "local": {
+            "declared": {},
+            "reserved": {}
+        }
+    },
+    "contract": {
+        "name": "BoxStorageDAO",
+        "methods": [
+            {
+                "name": "add_proposal",
+                "args": [
+                    {
+                        "type": "string",
+                        "name": "desc"
+                    }
+                ],
+                "returns": {
+                    "type": "void"
+                }
+            },
+            {
+                "name": "support",
+                "args": [
+                    {
+                        "type": "address",
+                        "name": "proposer"
+                    }
+                ],
+                "returns": {
+                    "type": "void"
+                }
+            }
+        ],
+        "networks": {}
+    },
+    "bare_call_config": {
+        "no_op": "CREATE"
+    }
+}
