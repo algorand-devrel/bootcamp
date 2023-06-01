@@ -1,0 +1,1 @@
+beaker-pyteal==1.0.0b2
