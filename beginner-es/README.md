@@ -11,3 +11,10 @@ Si deseas configurar todo tu entorno, puedes encontrar un video completo en espa
 
 Enlace para windows: [https://youtu.be/Tl_r30fAtlQ](https://youtu.be/lzW2tVO-KAo)
 Enlace para MacOS: [https://youtu.be/lzW2tVO-KAo](https://youtu.be/lzW2tVO-KAo)
+
+## Videos de sesiones
+
+- Sesión 1: Transacciones con el SDK - [https://youtu.be/IMHmMSN-coo](https://youtu.be/IMHmMSN-coo)
+- Sesión 2: Smart Contracts con Beaker y PyTEAL - Pronto
+- Sesión 3: Creación de smart contract de subasta - Pronto
+- Sesión 4: Creación de cliente de subasta - Pronto
