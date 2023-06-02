@@ -1,0 +1,30 @@
+{
+    "name": "GlobalStorageDAO",
+    "methods": [
+        {
+            "name": "add_proposal",
+            "args": [
+                {
+                    "type": "string",
+                    "name": "desc"
+                }
+            ],
+            "returns": {
+                "type": "void"
+            }
+        },
+        {
+            "name": "support",
+            "args": [
+                {
+                    "type": "uint64",
+                    "name": "proposal_id"
+                }
+            ],
+            "returns": {
+                "type": "void"
+            }
+        }
+    ],
+    "networks": {}
+}

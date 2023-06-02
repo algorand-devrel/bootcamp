@@ -1,0 +1,85 @@
+{
+    "hints": {
+        "create(string)void": {
+            "call_config": {
+                "no_op": "CREATE"
+            }
+        },
+        "increment(string)void": {
+            "call_config": {
+                "no_op": "CALL"
+            }
+        }
+    },
+    "source": {
+        "approval": "I3ByYWdtYSB2ZXJzaW9uIDgKaW50Y2Jsb2NrIDAgMQpieXRlY2Jsb2NrIDB4NjM2Zjc1NmU3NDY1NzIgMHg2YzYxNzM3NDVmNjM2MTZjNmM2NTcyNWY2ZTYxNmQ2NSAweDZjNjE3Mzc0NWY2MzYxNmM2YzY1NzI1ZjYxNjQ2NDcyNjU3MzczCnR4bmEgQXBwbGljYXRpb25BcmdzIDAKcHVzaGJ5dGVzIDB4MjBkZjNhNTQgLy8gImNyZWF0ZShzdHJpbmcpdm9pZCIKPT0KYm56IG1haW5fbDQKdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMApwdXNoYnl0ZXMgMHgxN2I2NjM4MiAvLyAiaW5jcmVtZW50KHN0cmluZyl2b2lkIgo9PQpibnogbWFpbl9sMwplcnIKbWFpbl9sMzoKdHhuIE9uQ29tcGxldGlvbgppbnRjXzAgLy8gTm9PcAo9PQp0eG4gQXBwbGljYXRpb25JRAppbnRjXzAgLy8gMAohPQomJgphc3NlcnQKdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMQpjYWxsc3ViIGluY3JlbWVudF8xCmludGNfMSAvLyAxCnJldHVybgptYWluX2w0Ogp0eG4gT25Db21wbGV0aW9uCmludGNfMCAvLyBOb09wCj09CnR4biBBcHBsaWNhdGlvbklECmludGNfMCAvLyAwCj09CiYmCmFzc2VydAp0eG5hIEFwcGxpY2F0aW9uQXJncyAxCmNhbGxzdWIgY3JlYXRlXzAKaW50Y18xIC8vIDEKcmV0dXJuCgovLyBjcmVhdGUKY3JlYXRlXzA6CnByb3RvIDEgMApieXRlY18wIC8vICJjb3VudGVyIgppbnRjXzAgLy8gMAphcHBfZ2xvYmFsX3B1dApieXRlY18yIC8vICJsYXN0X2NhbGxlcl9hZGRyZXNzIgpnbG9iYWwgQ3JlYXRvckFkZHJlc3MKYXBwX2dsb2JhbF9wdXQKYnl0ZWNfMSAvLyAibGFzdF9jYWxsZXJfbmFtZSIKcHVzaGJ5dGVzIDB4IC8vICIiCmFwcF9nbG9iYWxfcHV0CmJ5dGVjXzEgLy8gImxhc3RfY2FsbGVyX25hbWUiCmZyYW1lX2RpZyAtMQpleHRyYWN0IDIgMAphcHBfZ2xvYmFsX3B1dApyZXRzdWIKCi8vIGluY3JlbWVudAppbmNyZW1lbnRfMToKcHJvdG8gMSAwCmJ5dGVjXzAgLy8gImNvdW50ZXIiCmJ5dGVjXzAgLy8gImNvdW50ZXIiCmFwcF9nbG9iYWxfZ2V0CmludGNfMSAvLyAxCisKYXBwX2dsb2JhbF9wdXQKYnl0ZWNfMiAvLyAibGFzdF9jYWxsZXJfYWRkcmVzcyIKdHhuIFNlbmRlcgphcHBfZ2xvYmFsX3B1dApieXRlY18xIC8vICJsYXN0X2NhbGxlcl9uYW1lIgpmcmFtZV9kaWcgLTEKZXh0cmFjdCAyIDAKYXBwX2dsb2JhbF9wdXQKcmV0c3Vi",
+        "clear": "I3ByYWdtYSB2ZXJzaW9uIDgKcHVzaGludCAwIC8vIDAKcmV0dXJu"
+    },
+    "state": {
+        "global": {
+            "num_byte_slices": 2,
+            "num_uints": 1
+        },
+        "local": {
+            "num_byte_slices": 0,
+            "num_uints": 0
+        }
+    },
+    "schema": {
+        "global": {
+            "declared": {
+                "counter": {
+                    "type": "uint64",
+                    "key": "counter",
+                    "descr": "Counter"
+                },
+                "last_caller_address": {
+                    "type": "bytes",
+                    "key": "last_caller_address",
+                    "descr": "Last caller address"
+                },
+                "last_caller_name": {
+                    "type": "bytes",
+                    "key": "last_caller_name",
+                    "descr": "Last caller name"
+                }
+            },
+            "reserved": {}
+        },
+        "local": {
+            "declared": {},
+            "reserved": {}
+        }
+    },
+    "contract": {
+        "name": "Counter",
+        "methods": [
+            {
+                "name": "create",
+                "args": [
+                    {
+                        "type": "string",
+                        "name": "name"
+                    }
+                ],
+                "returns": {
+                    "type": "void"
+                }
+            },
+            {
+                "name": "increment",
+                "args": [
+                    {
+                        "type": "string",
+                        "name": "name"
+                    }
+                ],
+                "returns": {
+                    "type": "void"
+                }
+            }
+        ],
+        "networks": {}
+    },
+    "bare_call_config": {}
+}

@@ -1,0 +1,44 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Start AlgoKit Sandbox",
+      "command": "algokit",
+      "args": [
+        "sandbox",
+        "start"
+      ],
+      "type": "shell",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Stop AlgoKit Sandbox",
+      "command": "algokit",
+      "args": [
+        "sandbox",
+        "stop"
+      ],
+      "type": "shell",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Reset AlgoKit Sandbox",
+      "command": "algokit",
+      "args": [
+        "sandbox",
+        "reset"
+      ],
+      "type": "shell",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    }
+  ]
+}
