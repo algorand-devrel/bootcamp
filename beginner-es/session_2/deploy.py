@@ -18,6 +18,6 @@ app_client = client.ApplicationClient(
 app_client.create()
 app_client.opt_in()
 
-return_value = app_client.call(hello, name="Algofam").return_value
+return_value = app_client.call(hello, name="AlgoLATAM").return_value
 
 print(return_value)

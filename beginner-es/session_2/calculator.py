@@ -45,17 +45,9 @@ def multiply(a: abi.Uint64, b: abi.Uint64, *, output: abi.Uint64) -> Expr:
 def internal_add(a: abi.Uint64, b: abi.Uint64) -> Expr:
     return a.get() + b.get()
 
-# @app.create
-# def create() -> Expr:
-#     return app.initialize_global_state()
-
 @app.opt_in
 def opt_in() -> Expr:
     return app.initialize_local_state()
-
-@app.external
-def test(*, output: abi.String) -> Expr:
-    return output.set(Concat(Bytes("Cuenta1: "),Global.current_application_address(), Bytes("----2: "),Global.creator_address()))
 
 @app.external
 def add(
@@ -87,8 +79,6 @@ def read_global_sum(*, output: abi.Uint64) -> Expr:
 @app.external
 def read_local_sum(*, output: abi.Uint64) -> Expr:
     return output.set(app.state.my_last_sum[Txn.sender()].get())
-
-
 
 if __name__ == "__main__":
     app.build().export("./artifacts")

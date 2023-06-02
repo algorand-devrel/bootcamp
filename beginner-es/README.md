@@ -9,5 +9,12 @@ https://gitpod.io/#https://github.com/algorand-devrel/bootcamp
 ## Configuración de entorno
 Si deseas configurar todo tu entorno, puedes encontrar un video completo en español paso a paso de cómo hacerlo en nuestro canal de youtube.
 
-Enlace para windows: [https://youtu.be/Tl_r30fAtlQ](https://youtu.be/lzW2tVO-KAo)
-Enlace para MacOS: [https://youtu.be/lzW2tVO-KAo](https://youtu.be/lzW2tVO-KAo)
+- Enlace para windows: [https://youtu.be/Tl_r30fAtlQ](https://youtu.be/lzW2tVO-KAo)
+- Enlace para MacOS: [https://youtu.be/lzW2tVO-KAo](https://youtu.be/lzW2tVO-KAo)
+
+## Videos de sesiones
+
+- Sesión 1: Transacciones con el SDK - [https://youtu.be/IMHmMSN-coo](https://youtu.be/IMHmMSN-coo)
+- Sesión 2: Smart Contracts con Beaker y PyTEAL - [https://youtu.be/YRsllJiSR1c](https://youtu.be/YRsllJiSR1c)
+- Sesión 3: Creación de smart contract de subasta - Pronto
+- Sesión 4: Creación de cliente de subasta - Pronto
