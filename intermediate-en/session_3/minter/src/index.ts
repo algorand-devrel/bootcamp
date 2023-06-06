@@ -111,11 +111,13 @@ buttons.mint3.onclick = async () => {
 };
 
 buttons.mint19.onclick = async () => {
-  const metadataCID = await imageToArc3(fileInput.files[0]);
+  const metadataRoot = await imageToArc3(fileInput.files[0]);
 
   const sender = { addr: accountsMenu.selectedOptions[0].value, signer };
 
   const atc = new algosdk.AtomicTransactionComposer();
+
+  console.log('addr', cidStringToAddress(metadataRoot))
 
   const mintTxn = algosdk.makeAssetCreateTxnWithSuggestedParamsFromObject({
     suggestedParams: await algodClient.getTransactionParams().do(),
@@ -123,7 +125,7 @@ buttons.mint19.onclick = async () => {
     assetName: nameInput.value,
     unitName: unitNameInput.value,
     assetURL: 'template-ipfs://{ipfscid:1:dag-pb:reserve:sha2-256}/metadata.json#arc3',
-    reserve: cidStringToAddress(metadataCID),
+    reserve: cidStringToAddress(metadataRoot),
     manager: sender.addr,
     defaultFrozen: false,
     total: 1,
