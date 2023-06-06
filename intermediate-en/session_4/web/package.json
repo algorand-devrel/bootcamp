@@ -22,7 +22,8 @@
     "@perawallet/connect": "^1.2.2",
     "@walletconnect/client": "^1.7.8",
     "algorand-walletconnect-qrcode-modal": "^1.7.4",
-    "algosdk": "^2.2.0"
+    "algosdk": "^2.2.0",
+    "dotenv": "^16.1.4"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.13.0",

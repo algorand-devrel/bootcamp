@@ -4,7 +4,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const WorkboxWebpackPlugin = require('workbox-webpack-plugin');
 const webpack = require('webpack');
-
+require('dotenv').config();
 const isProduction = process.env.NODE_ENV === 'production';
 const network = process.env.NETWORK || 'localnet';
 
@@ -27,8 +27,10 @@ const config = {
     new webpack.ProvidePlugin({
       Buffer: ['buffer', 'Buffer'],
     }),
-    new webpack.DefinePlugin({ NETWORK: JSON.stringify(network) }),
-
+    new webpack.DefinePlugin({ 
+      NETWORK: JSON.stringify(network), 
+      W3S_TOKEN: JSON.stringify(process.env.W3S_TOKEN) 
+    }),
     // Add your plugins here
     // Learn more about plugins from https://webpack.js.org/configuration/plugins/
   ],

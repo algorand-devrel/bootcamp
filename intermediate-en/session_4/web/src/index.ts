@@ -4,13 +4,19 @@ import { ApplicationClient } from '@algorandfoundation/algokit-utils/types/app-c
 import algosdk from 'algosdk';
 import appspec from '../../artifacts/application.json';
 import PeraSession from './wallets/pera';
+import { Web3Storage } from 'web3.storage';
+import multihash from 'multihashes';
+import CID from 'cids';
 
+declare let W3S_TOKEN : string;
 declare let NETWORK : 'localnet' | 'testnet';
 
 const BOX_CREATE_COST = 0.0025e6;
 const BOX_BYTE_COST = 0.0004e6;
 
 const pera = new PeraSession();
+
+const w3s = new Web3Storage({ token: W3S_TOKEN });
 
 const algodClient = algokit.getAlgoClient(NETWORK === 'localnet' ? algokit.getDefaultLocalNetConfig('algod') : algokit.getAlgoNodeConfig('testnet', 'algod'));
 const indexerClient = algokit.getAlgoIndexerClient(NETWORK === 'localnet' ? algokit.getDefaultLocalNetConfig('indexer') : algokit.getAlgoNodeConfig('testnet', 'indexer'));
@@ -21,19 +27,45 @@ let daoApp: ApplicationClient;
 
 const accountsMenu = document.getElementById('accounts') as HTMLSelectElement;
 
-const urlInput = document.getElementById('url') as HTMLInputElement;
-const hashInput = document.getElementById('hash') as HTMLInputElement;
 const nameInput = document.getElementById('name') as HTMLInputElement;
 const unitNameInput = document.getElementById('unit') as HTMLInputElement;
-const reserveInput = document.getElementById('reserve') as HTMLInputElement;
 const proposerInput = document.getElementById('proposer') as HTMLInputElement;
 const idInput = document.getElementById('id') as HTMLInputElement;
+const fileInput = document.getElementById('upload') as HTMLInputElement;
+
 
 const buttonIds = ['connect', 'create', 'submit', 'vote', 'mint'];
 const buttons: { [key: string]: HTMLButtonElement } = {};
 buttonIds.forEach((id) => {
   buttons[id] = document.getElementById(id) as HTMLButtonElement;
 });
+
+async function imageToArc3(file: File) {
+  const imageFile = new File([await file.arrayBuffer()], file.name, { type: file.type });
+  const imageRoot = await w3s.put([imageFile], { name: file.name });
+  console.log('Image root', imageRoot);
+
+  const metadata = JSON.stringify({
+    decimals: 0,
+    name: nameInput.value,
+    unitName: unitNameInput.value,
+    image: `ipfs://${imageRoot}/${file.name}`,
+    image_mimetype: file.type,
+    properties: {},
+  });
+
+  const metadataFile = new File([metadata], 'metadata.json', { type: 'text/plain' });
+  const metadataRoot = await w3s.put([metadataFile], { name: 'metadata.json' });
+  console.log('Metadata root', metadataRoot);
+
+  return metadataRoot;
+}
+
+function cidStringToAddress(cidString: string): string {
+  const cid = new CID(cidString);
+
+  return algosdk.encodeAddress(multihash.decode(cid.multihash).digest);
+}
 
 async function signer(txns: algosdk.Transaction[]) {
   if (NETWORK === 'localnet') {
@@ -81,7 +113,6 @@ buttons.create.onclick = async () => {
 
   document.getElementById('status').innerHTML = `App created with id ${appId} and address ${appAddress} in tx ${transaction.txID()}. See it <a href='https://app.dappflow.org/explorer/application/${appId}'>here</a>`;
 
-  reserveInput.value = appAddress;
   buttons.submit.disabled = false;
   buttons.create.disabled = true;
 };
@@ -91,14 +122,6 @@ buttons.submit.onclick = async () => {
   const sender = {
     addr: accountsMenu.selectedOptions[0].value,
     signer,
-  };
-
-  const proposalObject = {
-    url: urlInput.value,
-    hash: Buffer.from(hashInput.value, 'hex'),
-    name: nameInput.value,
-    unitName: unitNameInput.value,
-    reserve: reserveInput.value,
   };
 
   const proposalId = (await daoApp.getBoxNames()).filter((b) => {
@@ -114,6 +137,13 @@ buttons.submit.onclick = async () => {
     ...proposalKeyPrefix,
     ...proposalKeyType.encode([sender.addr, proposalId]),
   ]);
+
+  const metadataRoot = await imageToArc3(fileInput.files[0]);
+  const proposalObject = {
+    name: nameInput.value,
+    unitName: unitNameInput.value,
+    reserve: cidStringToAddress(metadataRoot)
+  };
 
   const boxMbr = BOX_CREATE_COST + (Object.values(proposalObject)
     .reduce((totalLength, v) => totalLength + v.length, 0) + proposalKey.byteLength
