@@ -59,7 +59,7 @@ def add_proposal(
         # Assert MBR payment is going to the contract
         Assert(mbr_payment.get().receiver() == Global.current_application_address()),
         # Get current MBR before adding proposal
-        #pre_mbr := AccountParam.minBalance(Global.current_application_address()),
+        pre_mbr := AccountParam.minBalance(Global.current_application_address()),
         # Set proposal key
         addr.set(Txn.sender()),
         proposal_key.set(addr, proposal_id),
@@ -68,8 +68,8 @@ def add_proposal(
         # Not using .get() here because desc is already a abi.String
         app.state.proposals[proposal_key].set(proposal),
         # Verify payment covers MBR difference
-        #current_mbr := AccountParam.minBalance(Global.current_application_address()),
-        #Assert(mbr_payment.get().amount() == current_mbr.value() - pre_mbr.value()),
+        current_mbr := AccountParam.minBalance(Global.current_application_address()),
+        Assert(mbr_payment.get().amount() >= current_mbr.value() - pre_mbr.value()),
     )
 
 
@@ -134,6 +134,7 @@ def mint() -> Expr:
                 TxnField.config_asset_reserve: reserve.get(),
                 TxnField.config_asset_url: url.get(),
                 TxnField.config_asset_metadata_hash: metadata_hash.encode(),
+                TxnField.config_asset_total: Int(1),
                 TxnField.fee: Int(0),
             }
         ),

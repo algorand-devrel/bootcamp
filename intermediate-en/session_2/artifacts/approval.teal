@@ -27,7 +27,7 @@ intc_0 // 0
 !=
 &&
 assert
-callsub mint_3
+callsub mintcaster_6
 intc_1 // 1
 return
 main_l6:
@@ -39,14 +39,7 @@ intc_0 // 0
 !=
 &&
 assert
-txna ApplicationArgs 1
-store 3
-txna ApplicationArgs 2
-btoi
-store 4
-load 3
-load 4
-callsub vote_2
+callsub votecaster_5
 intc_1 // 1
 return
 main_l7:
@@ -58,24 +51,7 @@ intc_0 // 0
 !=
 &&
 assert
-txna ApplicationArgs 1
-store 0
-txna ApplicationArgs 2
-btoi
-store 1
-txn GroupIndex
-intc_1 // 1
--
-store 2
-load 2
-gtxns TypeEnum
-intc_1 // pay
-==
-assert
-load 0
-load 1
-load 2
-callsub addproposal_1
+callsub addproposalcaster_4
 intc_1 // 1
 return
 main_l8:
@@ -118,6 +94,10 @@ gtxns Receiver
 global CurrentApplicationAddress
 ==
 assert
+global CurrentApplicationAddress
+acct_params_get AcctMinBalance
+store 1
+store 0
 txn Sender
 frame_bury 1
 frame_dig 1
@@ -134,9 +114,9 @@ bytec_2 // "p-"
 frame_dig 0
 concat
 box_len
-store 6
-store 5
-load 6
+store 3
+store 2
+load 3
 intc_0 // 0
 ==
 assert
@@ -150,6 +130,17 @@ frame_dig 0
 concat
 frame_dig -3
 box_put
+global CurrentApplicationAddress
+acct_params_get AcctMinBalance
+store 5
+store 4
+frame_dig -1
+gtxns Amount
+load 4
+load 0
+-
+>=
+assert
 retsub
 
 // vote
@@ -173,9 +164,9 @@ bytec 5 // "h-"
 txn Sender
 concat
 box_len
-store 8
 store 7
-load 8
+store 6
+load 7
 intc_0 // 0
 ==
 assert
@@ -183,9 +174,9 @@ bytec_1 // "v-"
 frame_dig 4
 concat
 box_len
-store 10
 store 9
-load 10
+store 8
+load 9
 intc_0 // 0
 ==
 bnz vote_2_l3
@@ -194,11 +185,11 @@ bytec_1 // "v-"
 frame_dig 4
 concat
 box_get
-store 12
 store 11
-load 12
-assert
+store 10
 load 11
+assert
+load 10
 btoi
 frame_bury 1
 frame_dig 1
@@ -271,11 +262,11 @@ bytec_2 // "p-"
 frame_dig 6
 concat
 box_get
-store 14
 store 13
-load 14
-assert
+store 12
 load 13
+assert
+load 12
 frame_bury 0
 frame_dig 0
 frame_dig 0
@@ -325,7 +316,56 @@ extract 2 0
 itxn_field ConfigAssetURL
 frame_dig 5
 itxn_field ConfigAssetMetadataHash
+intc_1 // 1
+itxn_field ConfigAssetTotal
 intc_0 // 0
 itxn_field Fee
 itxn_submit
+retsub
+
+// add_proposal_caster
+addproposalcaster_4:
+proto 0 0
+bytec_0 // ""
+intc_0 // 0
+dup
+txna ApplicationArgs 1
+frame_bury 0
+txna ApplicationArgs 2
+btoi
+frame_bury 1
+txn GroupIndex
+intc_1 // 1
+-
+frame_bury 2
+frame_dig 2
+gtxns TypeEnum
+intc_1 // pay
+==
+assert
+frame_dig 0
+frame_dig 1
+frame_dig 2
+callsub addproposal_1
+retsub
+
+// vote_caster
+votecaster_5:
+proto 0 0
+bytec_0 // ""
+intc_0 // 0
+txna ApplicationArgs 1
+frame_bury 0
+txna ApplicationArgs 2
+btoi
+frame_bury 1
+frame_dig 0
+frame_dig 1
+callsub vote_2
+retsub
+
+// mint_caster
+mintcaster_6:
+proto 0 0
+callsub mint_3
 retsub
