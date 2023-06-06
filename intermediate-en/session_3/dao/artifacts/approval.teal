@@ -39,14 +39,7 @@ intc_0 // 0
 !=
 &&
 assert
-txna ApplicationArgs 1
-store 8
-txna ApplicationArgs 2
-btoi
-store 9
-load 8
-load 9
-callsub voteonupdate_6
+callsub voteonupdatecaster_12
 intc_1 // 1
 return
 main_l9:
@@ -58,24 +51,7 @@ intc_0 // 0
 !=
 &&
 assert
-txna ApplicationArgs 1
-store 5
-txna ApplicationArgs 2
-btoi
-store 6
-txn GroupIndex
-intc_1 // 1
--
-store 7
-load 7
-gtxns TypeEnum
-intc_1 // pay
-==
-assert
-load 5
-load 6
-load 7
-callsub addupdate_5
+callsub addupdatecaster_11
 intc_1 // 1
 return
 main_l10:
@@ -87,10 +63,7 @@ intc_0 // 0
 !=
 &&
 assert
-txna ApplicationArgs 1
-intc_0 // 0
-getbyte
-callsub update_4
+callsub updatecaster_10
 intc_1 // 1
 return
 main_l11:
@@ -102,7 +75,7 @@ intc_0 // 0
 !=
 &&
 assert
-callsub mint_3
+callsub mintcaster_9
 intc_1 // 1
 return
 main_l12:
@@ -114,14 +87,7 @@ intc_0 // 0
 !=
 &&
 assert
-txna ApplicationArgs 1
-store 3
-txna ApplicationArgs 2
-btoi
-store 4
-load 3
-load 4
-callsub vote_2
+callsub votecaster_8
 intc_1 // 1
 return
 main_l13:
@@ -133,24 +99,7 @@ intc_0 // 0
 !=
 &&
 assert
-txna ApplicationArgs 1
-store 0
-txna ApplicationArgs 2
-btoi
-store 1
-txn GroupIndex
-intc_1 // 1
--
-store 2
-load 2
-gtxns TypeEnum
-intc_1 // pay
-==
-assert
-load 0
-load 1
-load 2
-callsub addproposal_1
+callsub addproposalcaster_7
 intc_1 // 1
 return
 main_l14:
@@ -209,8 +158,8 @@ global CurrentApplicationAddress
 assert
 global CurrentApplicationAddress
 acct_params_get AcctMinBalance
-store 11
-store 10
+store 1
+store 0
 txn Sender
 frame_bury 1
 frame_dig 1
@@ -227,9 +176,9 @@ bytec 4 // "p-"
 frame_dig 0
 concat
 box_len
-store 13
-store 12
-load 13
+store 3
+store 2
+load 3
 intc_0 // 0
 ==
 assert
@@ -245,12 +194,12 @@ frame_dig -3
 box_put
 global CurrentApplicationAddress
 acct_params_get AcctMinBalance
-store 15
-store 14
+store 5
+store 4
 frame_dig -1
 gtxns Amount
-load 14
-load 10
+load 4
+load 0
 -
 >=
 assert
@@ -282,9 +231,9 @@ bytec 9 // "h-"
 txn Sender
 concat
 box_len
-store 17
-store 16
-load 17
+store 7
+store 6
+load 7
 intc_0 // 0
 ==
 assert
@@ -292,9 +241,9 @@ bytec_2 // "v-"
 frame_dig 4
 concat
 box_len
-store 19
-store 18
-load 19
+store 9
+store 8
+load 9
 intc_0 // 0
 ==
 bnz vote_2_l3
@@ -303,11 +252,11 @@ bytec_2 // "v-"
 frame_dig 4
 concat
 box_get
-store 21
-store 20
-load 21
+store 11
+store 10
+load 11
 assert
-load 20
+load 10
 btoi
 frame_bury 1
 frame_dig 1
@@ -385,11 +334,11 @@ bytec 4 // "p-"
 frame_dig 4
 concat
 box_get
-store 23
-store 22
-load 23
+store 13
+store 12
+load 13
 assert
-load 22
+load 12
 frame_bury 0
 frame_dig 0
 frame_dig 0
@@ -453,18 +402,18 @@ bytec 4 // "p-"
 frame_dig 1
 concat
 box_get
-store 25
-store 24
-load 25
+store 15
+store 14
+load 15
 assert
-load 24
+load 14
 frame_bury 0
 itxn_begin
 pushint 3 // acfg
 itxn_field TypeEnum
 bytec_1 // "minted_asa"
 app_global_get
-itxn_field CreatedAssetID
+itxn_field ConfigAsset
 frame_dig 0
 itxn_field ConfigAssetReserve
 global CurrentApplicationAddress
@@ -495,8 +444,8 @@ global CurrentApplicationAddress
 assert
 global CurrentApplicationAddress
 acct_params_get AcctMinBalance
-store 27
-store 26
+store 17
+store 16
 txn Sender
 frame_bury 1
 frame_dig 1
@@ -513,9 +462,9 @@ bytec 10 // "up-"
 frame_dig 0
 concat
 box_len
-store 29
-store 28
-load 29
+store 19
+store 18
+load 19
 intc_0 // 0
 ==
 assert
@@ -531,12 +480,12 @@ frame_dig -3
 box_put
 global CurrentApplicationAddress
 acct_params_get AcctMinBalance
-store 31
-store 30
+store 21
+store 20
 frame_dig -1
 gtxns Amount
-load 30
-load 26
+load 20
+load 16
 -
 >=
 assert
@@ -568,9 +517,9 @@ bytec 11 // "uh-"
 txn Sender
 concat
 box_len
-store 33
-store 32
-load 33
+store 23
+store 22
+load 23
 intc_0 // 0
 ==
 assert
@@ -578,9 +527,9 @@ bytec_3 // "uv-"
 frame_dig 4
 concat
 box_len
-store 35
-store 34
-load 35
+store 25
+store 24
+load 25
 intc_0 // 0
 ==
 bnz voteonupdate_6_l3
@@ -589,11 +538,11 @@ bytec_3 // "uv-"
 frame_dig 4
 concat
 box_get
-store 37
-store 36
-load 37
+store 27
+store 26
+load 27
 assert
-load 36
+load 26
 btoi
 frame_bury 1
 frame_dig 1
@@ -652,4 +601,104 @@ intc_0 // 0
 frame_dig 2
 setbit
 box_put
+retsub
+
+// add_proposal_caster
+addproposalcaster_7:
+proto 0 0
+bytec_0 // ""
+intc_0 // 0
+dup
+txna ApplicationArgs 1
+frame_bury 0
+txna ApplicationArgs 2
+btoi
+frame_bury 1
+txn GroupIndex
+intc_1 // 1
+-
+frame_bury 2
+frame_dig 2
+gtxns TypeEnum
+intc_1 // pay
+==
+assert
+frame_dig 0
+frame_dig 1
+frame_dig 2
+callsub addproposal_1
+retsub
+
+// vote_caster
+votecaster_8:
+proto 0 0
+bytec_0 // ""
+intc_0 // 0
+txna ApplicationArgs 1
+frame_bury 0
+txna ApplicationArgs 2
+btoi
+frame_bury 1
+frame_dig 0
+frame_dig 1
+callsub vote_2
+retsub
+
+// mint_caster
+mintcaster_9:
+proto 0 0
+callsub mint_3
+retsub
+
+// update_caster
+updatecaster_10:
+proto 0 0
+intc_0 // 0
+txna ApplicationArgs 1
+intc_0 // 0
+getbyte
+frame_bury 0
+frame_dig 0
+callsub update_4
+retsub
+
+// add_update_caster
+addupdatecaster_11:
+proto 0 0
+bytec_0 // ""
+intc_0 // 0
+dup
+txna ApplicationArgs 1
+frame_bury 0
+txna ApplicationArgs 2
+btoi
+frame_bury 1
+txn GroupIndex
+intc_1 // 1
+-
+frame_bury 2
+frame_dig 2
+gtxns TypeEnum
+intc_1 // pay
+==
+assert
+frame_dig 0
+frame_dig 1
+frame_dig 2
+callsub addupdate_5
+retsub
+
+// vote_on_update_caster
+voteonupdatecaster_12:
+proto 0 0
+bytec_0 // ""
+intc_0 // 0
+txna ApplicationArgs 1
+frame_bury 0
+txna ApplicationArgs 2
+btoi
+frame_bury 1
+frame_dig 0
+frame_dig 1
+callsub voteonupdate_6
 retsub

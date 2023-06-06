@@ -176,7 +176,7 @@ def update(asa: abi.Asset) -> Expr:
         InnerTxnBuilder.Execute(
             {
                 TxnField.type_enum: TxnType.AssetConfig,
-                TxnField.created_asset_id: app.state.minted_asa.get(),
+                TxnField.config_asset: app.state.minted_asa.get(),
                 TxnField.config_asset_reserve: reserve.get(),
                 TxnField.config_asset_manager: Global.current_application_address(),
                 TxnField.fee: Int(0),
