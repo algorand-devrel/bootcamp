@@ -5,7 +5,7 @@
             "name": "add_proposal",
             "args": [
                 {
-                    "type": "(string,byte[32],string,string,address)",
+                    "type": "(string,string,address)",
                     "name": "proposal"
                 },
                 {
@@ -40,6 +40,54 @@
         {
             "name": "mint",
             "args": [],
+            "returns": {
+                "type": "void"
+            }
+        },
+        {
+            "name": "update",
+            "args": [
+                {
+                    "type": "asset",
+                    "name": "asa"
+                }
+            ],
+            "returns": {
+                "type": "void"
+            }
+        },
+        {
+            "name": "add_update",
+            "args": [
+                {
+                    "type": "address",
+                    "name": "reserve"
+                },
+                {
+                    "type": "uint64",
+                    "name": "proposal_id"
+                },
+                {
+                    "type": "pay",
+                    "name": "mbr_payment"
+                }
+            ],
+            "returns": {
+                "type": "void"
+            }
+        },
+        {
+            "name": "vote_on_update",
+            "args": [
+                {
+                    "type": "address",
+                    "name": "proposer"
+                },
+                {
+                    "type": "uint64",
+                    "name": "proposal_id"
+                }
+            ],
             "returns": {
                 "type": "void"
             }
