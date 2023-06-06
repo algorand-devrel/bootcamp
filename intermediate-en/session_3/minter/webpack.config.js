@@ -17,7 +17,8 @@ const config = {
   },
   devServer: {
     open: true,
-    host: 'localhost',
+    host: '0.0.0.0',
+    allowedHosts: ".gitpod.io",
   },
   plugins: [
     new HtmlWebpackPlugin({
