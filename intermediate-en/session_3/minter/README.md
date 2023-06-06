@@ -10,7 +10,7 @@ This is a template repository for getting started with building the client-side 
 
 ## Dependencies
 
-Install all the necessary dependencies via npm run `yarb`
+Install all the necessary dependencies via npm run `yarn`
 
 ## Dev Server
 
