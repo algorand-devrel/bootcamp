@@ -1,5 +1,5 @@
 {
-    "name": "BoxStorageDAO",
+    "name": "DAO",
     "methods": [
         {
             "name": "add_proposal",
@@ -33,13 +33,6 @@
                     "name": "proposal_id"
                 }
             ],
-            "returns": {
-                "type": "void"
-            }
-        },
-        {
-            "name": "mint",
-            "args": [],
             "returns": {
                 "type": "void"
             }
@@ -90,6 +83,18 @@
             ],
             "returns": {
                 "type": "void"
+            }
+        },
+        {
+            "name": "mint",
+            "args": [
+                {
+                    "type": "application",
+                    "name": "minter_app"
+                }
+            ],
+            "returns": {
+                "type": "uint64"
             }
         }
     ],

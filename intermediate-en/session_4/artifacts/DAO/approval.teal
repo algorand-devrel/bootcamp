@@ -1,5 +1,5 @@
 #pragma version 8
-intcblock 0 1 32 2
+intcblock 0 1 32
 bytecblock 0x 0x6d696e7465645f617361 0x762d 0x75762d 0x702d 0x77696e6e696e675f70726f706f73616c 0x77696e6e696e675f70726f706f73616c5f766f746573 0x77696e6e696e675f757064617465 0x77696e6e696e675f7570646174655f766f746573 0x682d 0x75702d 0x75682d 0x00
 txn NumAppArgs
 intc_0 // 0
@@ -14,19 +14,19 @@ pushbytes 0x8866f0b7 // "vote(address,uint64)void"
 ==
 bnz main_l12
 txna ApplicationArgs 0
-pushbytes 0x5588dcb4 // "mint()void"
+pushbytes 0xa805abf0 // "update(asset)void"
 ==
 bnz main_l11
 txna ApplicationArgs 0
-pushbytes 0xa805abf0 // "update(asset)void"
+pushbytes 0x0651408d // "add_update(address,uint64,pay)void"
 ==
 bnz main_l10
 txna ApplicationArgs 0
-pushbytes 0x0651408d // "add_update(address,uint64,pay)void"
+pushbytes 0x66f6e7d6 // "vote_on_update(address,uint64)void"
 ==
 bnz main_l9
 txna ApplicationArgs 0
-pushbytes 0x66f6e7d6 // "vote_on_update(address,uint64)void"
+pushbytes 0x94c61284 // "mint(application)uint64"
 ==
 bnz main_l8
 err
@@ -39,7 +39,7 @@ intc_0 // 0
 !=
 &&
 assert
-callsub voteonupdatecaster_12
+callsub mintcaster_12
 intc_1 // 1
 return
 main_l9:
@@ -51,7 +51,7 @@ intc_0 // 0
 !=
 &&
 assert
-callsub addupdatecaster_11
+callsub voteonupdatecaster_11
 intc_1 // 1
 return
 main_l10:
@@ -63,7 +63,7 @@ intc_0 // 0
 !=
 &&
 assert
-callsub updatecaster_10
+callsub addupdatecaster_10
 intc_1 // 1
 return
 main_l11:
@@ -75,7 +75,7 @@ intc_0 // 0
 !=
 &&
 assert
-callsub mintcaster_9
+callsub updatecaster_9
 intc_1 // 1
 return
 main_l12:
@@ -317,76 +317,8 @@ setbit
 box_put
 retsub
 
-// mint
-mint_3:
-proto 0 0
-bytec_0 // ""
-dupn 4
-bytec_1 // "minted_asa"
-app_global_get
-intc_0 // 0
-==
-assert
-bytec 5 // "winning_proposal"
-app_global_get
-frame_bury 4
-bytec 4 // "p-"
-frame_dig 4
-concat
-box_get
-store 13
-store 12
-load 13
-assert
-load 12
-frame_bury 0
-frame_dig 0
-frame_dig 0
-intc_0 // 0
-extract_uint16
-frame_dig 0
-intc_3 // 2
-extract_uint16
-substring3
-frame_bury 1
-frame_dig 0
-frame_dig 0
-intc_3 // 2
-extract_uint16
-dig 1
-len
-substring3
-frame_bury 2
-frame_dig 0
-extract 4 32
-frame_bury 3
-itxn_begin
-pushint 3 // acfg
-itxn_field TypeEnum
-frame_dig 1
-extract 2 0
-itxn_field ConfigAssetName
-frame_dig 2
-extract 2 0
-itxn_field ConfigAssetUnitName
-frame_dig 3
-itxn_field ConfigAssetReserve
-global CurrentApplicationAddress
-itxn_field ConfigAssetManager
-pushbytes 0x74656d706c6174652d697066733a2f2f7b697066736369643a313a6461672d70623a726573657276653a736861322d3235367d2f6d657461646174612e6a736f6e2361726333 // "template-ipfs://{ipfscid:1:dag-pb:reserve:sha2-256}/metadata.json#arc3"
-itxn_field ConfigAssetURL
-intc_1 // 1
-itxn_field ConfigAssetTotal
-intc_0 // 0
-itxn_field Fee
-itxn_submit
-bytec_1 // "minted_asa"
-itxn CreatedAssetID
-app_global_put
-retsub
-
 // update
-update_4:
+update_3:
 proto 1 0
 bytec_0 // ""
 dup
@@ -402,11 +334,11 @@ bytec 4 // "p-"
 frame_dig 1
 concat
 box_get
-store 15
-store 14
-load 15
+store 13
+store 12
+load 13
 assert
-load 14
+load 12
 frame_bury 0
 itxn_begin
 pushint 3 // acfg
@@ -424,7 +356,7 @@ itxn_submit
 retsub
 
 // add_update
-addupdate_5:
+addupdate_4:
 proto 3 0
 bytec_0 // ""
 dup
@@ -444,8 +376,8 @@ global CurrentApplicationAddress
 assert
 global CurrentApplicationAddress
 acct_params_get AcctMinBalance
-store 17
-store 16
+store 15
+store 14
 txn Sender
 frame_bury 1
 frame_dig 1
@@ -462,9 +394,9 @@ bytec 10 // "up-"
 frame_dig 0
 concat
 box_len
-store 19
-store 18
-load 19
+store 17
+store 16
+load 17
 intc_0 // 0
 ==
 assert
@@ -480,19 +412,19 @@ frame_dig -3
 box_put
 global CurrentApplicationAddress
 acct_params_get AcctMinBalance
-store 21
-store 20
+store 19
+store 18
 frame_dig -1
 gtxns Amount
-load 20
-load 16
+load 18
+load 14
 -
 >=
 assert
 retsub
 
 // vote_on_update
-voteonupdate_6:
+voteonupdate_5:
 proto 2 0
 intc_0 // 0
 dupn 3
@@ -517,9 +449,9 @@ bytec 11 // "uh-"
 txn Sender
 concat
 box_len
-store 23
-store 22
-load 23
+store 21
+store 20
+load 21
 intc_0 // 0
 ==
 assert
@@ -527,22 +459,22 @@ bytec_3 // "uv-"
 frame_dig 4
 concat
 box_len
-store 25
-store 24
-load 25
+store 23
+store 22
+load 23
 intc_0 // 0
 ==
-bnz voteonupdate_6_l3
-voteonupdate_6_l1:
+bnz voteonupdate_5_l3
+voteonupdate_5_l1:
 bytec_3 // "uv-"
 frame_dig 4
 concat
 box_get
-store 27
-store 26
-load 27
+store 25
+store 24
+load 25
 assert
-load 26
+load 24
 btoi
 frame_bury 1
 frame_dig 1
@@ -564,15 +496,15 @@ frame_dig 0
 bytec 8 // "winning_update_votes"
 app_global_get
 >
-bz voteonupdate_6_l4
+bz voteonupdate_5_l4
 bytec 8 // "winning_update_votes"
 frame_dig 0
 app_global_put
 bytec 7 // "winning_update"
 frame_dig 4
 app_global_put
-b voteonupdate_6_l4
-voteonupdate_6_l3:
+b voteonupdate_5_l4
+voteonupdate_5_l3:
 bytec_3 // "uv-"
 frame_dig 4
 concat
@@ -584,8 +516,8 @@ concat
 frame_dig 3
 itob
 box_put
-b voteonupdate_6_l1
-voteonupdate_6_l4:
+b voteonupdate_5_l1
+voteonupdate_5_l4:
 intc_1 // 1
 frame_bury 2
 bytec 11 // "uh-"
@@ -601,6 +533,49 @@ intc_0 // 0
 frame_dig 2
 setbit
 box_put
+retsub
+
+// mint
+mint_6:
+proto 1 1
+intc_0 // 0
+bytec_0 // ""
+dupn 2
+bytec_1 // "minted_asa"
+app_global_get
+intc_0 // 0
+==
+assert
+bytec 5 // "winning_proposal"
+app_global_get
+frame_bury 1
+bytec 4 // "p-"
+frame_dig 1
+concat
+box_get
+store 27
+store 26
+load 27
+assert
+load 26
+frame_bury 2
+itxn_begin
+pushint 6 // appl
+itxn_field TypeEnum
+pushint TMPL_MINTER_APP // TMPL_MINTER_APP
+itxn_field ApplicationID
+pushbytes 0x75bbbda1 // "mint_nft((string,string,address))uint64"
+itxn_field ApplicationArgs
+frame_dig 2
+itxn_field ApplicationArgs
+itxn_submit
+bytec_1 // "minted_asa"
+itxn CreatedAssetID
+app_global_put
+itxn LastLog
+extract 4 0
+btoi
+frame_bury 0
 retsub
 
 // add_proposal_caster
@@ -644,14 +619,8 @@ frame_dig 1
 callsub vote_2
 retsub
 
-// mint_caster
-mintcaster_9:
-proto 0 0
-callsub mint_3
-retsub
-
 // update_caster
-updatecaster_10:
+updatecaster_9:
 proto 0 0
 intc_0 // 0
 txna ApplicationArgs 1
@@ -659,11 +628,11 @@ intc_0 // 0
 getbyte
 frame_bury 0
 frame_dig 0
-callsub update_4
+callsub update_3
 retsub
 
 // add_update_caster
-addupdatecaster_11:
+addupdatecaster_10:
 proto 0 0
 bytec_0 // ""
 intc_0 // 0
@@ -685,11 +654,11 @@ assert
 frame_dig 0
 frame_dig 1
 frame_dig 2
-callsub addupdate_5
+callsub addupdate_4
 retsub
 
 // vote_on_update_caster
-voteonupdatecaster_12:
+voteonupdatecaster_11:
 proto 0 0
 bytec_0 // ""
 intc_0 // 0
@@ -700,5 +669,24 @@ btoi
 frame_bury 1
 frame_dig 0
 frame_dig 1
-callsub voteonupdate_6
+callsub voteonupdate_5
+retsub
+
+// mint_caster
+mintcaster_12:
+proto 0 0
+intc_0 // 0
+dup
+txna ApplicationArgs 1
+intc_0 // 0
+getbyte
+frame_bury 1
+frame_dig 1
+callsub mint_6
+frame_bury 0
+pushbytes 0x151f7c75 // 0x151f7c75
+frame_dig 0
+itob
+concat
+log
 retsub

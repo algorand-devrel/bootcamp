@@ -2,7 +2,8 @@
 import * as algokit from '@algorandfoundation/algokit-utils';
 import { ApplicationClient } from '@algorandfoundation/algokit-utils/types/app-client';
 import algosdk from 'algosdk';
-import appspec from '../../artifacts/application.json';
+import daoAppSpec from '../../artifacts/DAO/application.json';
+import minterAppSpec from '../../artifacts/Minter/application.json'
 import PeraSession from './wallets/pera';
 import { Web3Storage } from 'web3.storage';
 import multihash from 'multihashes';
@@ -22,6 +23,8 @@ const algodClient = algokit.getAlgoClient(NETWORK === 'localnet' ? algokit.getDe
 const indexerClient = algokit.getAlgoIndexerClient(NETWORK === 'localnet' ? algokit.getDefaultLocalNetConfig('indexer') : algokit.getAlgoNodeConfig('testnet', 'indexer'));
 const kmdClient = NETWORK === 'localnet' ? new algosdk.Kmd('a'.repeat(64), 'http://localhost', 4002) : undefined;
 
+let minterAppId: number;
+let minterApp: ApplicationClient;
 let daoAppId: number;
 let daoApp: ApplicationClient;
 
@@ -97,21 +100,38 @@ buttons.create.onclick = async () => {
     signer,
   };
 
+  if (!minterAppId) {
+    console.log('Creating minter')
+    minterApp = algokit.getAppClient(
+      {
+        app: JSON.stringify(minterAppSpec),
+        sender,
+        id: 0
+      },
+      algodClient,
+    );
+
+    await minterApp.create();
+    await minterApp.fundAppAccount(algokit.microAlgos(100_000))
+    minterAppId = (await minterApp.getAppReference()).appId;
+  }
+
   daoApp = algokit.getAppClient(
     {
-      app: JSON.stringify(appspec),
+      app: JSON.stringify(daoAppSpec),
       sender,
       creatorAddress: sender.addr,
       indexer: indexerClient,
+      name: `dao-${Date.now()}`
     },
     algodClient,
   );
 
-  const { appId, appAddress, transaction } = await daoApp.create();
+  const { appId, appAddress } = await daoApp.deploy({sender, deployTimeParams: {'MINTER_APP': minterAppId}});
 
   daoAppId = appId;
 
-  document.getElementById('status').innerHTML = `App created with id ${appId} and address ${appAddress} in tx ${transaction.txID()}. See it <a href='https://app.dappflow.org/explorer/application/${appId}'>here</a>`;
+  document.getElementById('status').innerHTML = `App created with id ${appId} and address ${appAddress}. See it <a href='https://app.dappflow.org/explorer/application/${appId}'>here</a>`;
 
   buttons.submit.disabled = false;
   buttons.create.disabled = true;
@@ -248,15 +268,20 @@ buttons.mint.onclick = async () => {
     ...winningProposalKey,
   ]);
 
+  // Fund dao so it can send innertxn
   await daoApp.fundAppAccount(algokit.algos(0.1));
+  // Fund minter so it can create asset
+  await minterApp.fundAppAccount(algokit.algos(0.2));
 
-  await daoApp.call({
+  const result = await daoApp.call({
     method: 'mint',
-    sendParams: { fee: algokit.microAlgos(algosdk.ALGORAND_MIN_TX_FEE * 2) },
+    sendParams: { fee: algokit.microAlgos(algosdk.ALGORAND_MIN_TX_FEE * 3) },
     methodArgs: {
-      args: [],
+      args: [minterAppId],
       boxes: [{ appIndex: 0, name: proposalKey }],
     },
     sender,
   });
+
+  document.getElementById('status').innerHTML = `NFT minted! See the NFT <a href='https://app.dappflow.org/explorer/nft/${result.return.returnValue}/transactions'>here</a>`;
 };
