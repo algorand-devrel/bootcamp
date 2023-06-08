@@ -73,7 +73,7 @@ extract 2 0
 itxn_field ConfigAssetUnitName
 frame_dig 3
 itxn_field ConfigAssetReserve
-global CurrentApplicationAddress
+txn Sender
 itxn_field ConfigAssetManager
 pushbytes 0x74656d706c6174652d697066733a2f2f7b697066736369643a313a6461672d70623a726573657276653a736861322d3235367d2f6d657461646174612e6a736f6e2361726333 // "template-ipfs://{ipfscid:1:dag-pb:reserve:sha2-256}/metadata.json#arc3"
 itxn_field ConfigAssetURL
