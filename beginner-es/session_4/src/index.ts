@@ -1,6 +1,6 @@
 import { PeraWalletConnect } from '@perawallet/connect'
 
-// Conexion a Pera Wallet
+// PASO 1: Conexion a Pera Wallet
 const peraWallet = new PeraWalletConnect();
 let accounts: string[] = []
 
@@ -10,7 +10,6 @@ const createBtn = document.getElementById("create") as HTMLButtonElement
 
 connectBtn.onclick = async() => {
   accounts = await peraWallet.connect()
-  console.log(accounts)
   connectBtn.disabled = true
   createBtn.disabled = false
   accounts.forEach(acc => {
@@ -18,7 +17,7 @@ connectBtn.onclick = async() => {
   })
 }
 
-// Creacion de app
+// PASO 2: Creacion de app
 
 import algosdk, { AtomicTransactionComposer, AtomicTransactionComposerStatus } from 'algosdk'
 import * as algokit from '@algorandfoundation/algokit-utils'
@@ -66,13 +65,12 @@ createBtn.onclick = async() => {
 
   await auctionApp.create()
   console.log((await auctionApp.getAppReference()).appAddress)
-  // await auctionApp.fundAppAccount(algokit.microAlgos(100_000))
   auctionAppId = (await auctionApp.getAppReference()).appId;
   document.getElementById('status').innerHTML = `Subasta creada con ID ${auctionAppId} `
   createBtn.disabled = true
 }
 
-// Iniciar subasta
+// PASO 3: Iniciar subasta
 const startBtn = document.getElementById('start') as HTMLButtonElement
 const contract = new algosdk.ABIContract(appspec.contract)
 
@@ -137,7 +135,7 @@ startBtn.onclick = async() => {
   startBtn.disabled = true
 }
 
-// Hacer oferta
+// PASO 4: Hacer oferta
 const bidBtn = document.getElementById("bid") as HTMLButtonElement
 const bidAmount = document.getElementById("bidAmount") as HTMLInputElement
 
@@ -160,7 +158,6 @@ bidBtn.onclick = async() => {
 
   const appInfo = await algodClient.getApplicationByID(auctionAppId).do();
   const globalState = appInfo.params['global-state'] as {key: string, value: {bytes: string, type: number, uint: number}}[];
-  console.log(globalState)
   await globalState.forEach(state => {
     const key = Buffer.from(state.key, 'base64').toString();
     const binaryBytes = Buffer.from(state.value.bytes, 'base64');
@@ -186,7 +183,7 @@ bidBtn.onclick = async() => {
 
 }
 
-// Reclamar asset
+// PASO 5: Reclamar asset
 const claimBtn = document.getElementById("claim") as HTMLButtonElement
 
 claimBtn.onclick = async() => {
