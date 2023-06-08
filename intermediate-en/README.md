@@ -10,4 +10,4 @@ https://gitpod.io/#https://github.com/algorand-devrel/bootcamp
 - Episode #1 [State Storage](https://youtu.be/Lx_b-nu_1c0)
 - Episode #2 [User-Defined Data Types](https://youtu.be/9nU8Y_nRrwM)
 - Episode #3 [Algorand Standards (ARC) for NFT, ABI and More](https://youtu.be/WY019zsdY6I)
-- Episode #4 Contract Composability
+- Episode #4 [Contract Composability](https://youtu.be/qxY4H7vKAWo)
