@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>App de Subastas</title>
+    </head>
+    <body>
+        <h1>Subastas con Beaker</h1>
+        <div id="status">Esperando que se cree la app</div>
+        <label for="accounts">Cuenta: </label>
+        <select id="accounts"></select>
+        <br><hr><br>
+
+        <button id="connect">Conectar</button>
+        <br><hr><br>
+
+        <button id="create" disabled="true">Crear aplicación</button>
+        <br><hr><br>
+
+        <label for="asa">ID del asset</label>
+        <input type="number" id="asa" min="0" value="10458941">
+        <br>
+        <label for="startAmount">Precio base (Microalgos)</label>
+        <input type="number" id="startAmount" min="0">
+        <br>
+        <button id="start">Iniciar subasta</button>
+        <br><hr><br>
+
+        <label for="bidAmount">Ingresar oferta (Microalgos)</label>
+        <input type="number" id="bidAmount" min="0">
+        <br>
+        <button id="bid">Enviar oferta</button>
+
+        <br><hr><br>
+        <button id="claim">Eres ganador? Reclamar asset</button>
+    </body>
+    
+</html>

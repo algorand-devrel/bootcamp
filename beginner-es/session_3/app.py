@@ -29,7 +29,7 @@ class MyState:
 
 app = Application("AuctionApp", state=MyState)
 
-@app.create
+@app.create(bare=True)
 def create() -> Expr:
     return app.initialize_global_state()
 
@@ -101,20 +101,6 @@ def claim_asset(asset: abi.Asset) -> Expr:
             TxnField.xfer_asset: app.state.asa_id.get(),
             TxnField.asset_receiver: app.state.highest_bidder.get(),
             TxnField.fee: Int(0)
-        })
-    )
-
-# Metodo de eliminacion que devuelve los ALGO al creador de la subasta
-@app.delete(bare=True, authorize=Authorize.only(Global.creator_address()))
-def delete() -> Expr:
-    return Seq(
-        # Transaccion interna de transferencia de ALGO
-        InnerTxnBuilder.Execute({
-            TxnField.type_enum: TxnType.Payment,
-            TxnField.receiver: Global.creator_address(),
-            TxnField.amount: Int(0),
-            TxnField.fee: Int(0),
-            TxnField.close_remainder_to: Global.creator_address()
         })
     )
 
