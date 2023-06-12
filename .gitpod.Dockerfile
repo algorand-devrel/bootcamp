@@ -1,4 +1,5 @@
 # Install pipx
+RUN echo "WTF"
 RUN python -m pip install pipx
 RUN pipx ensurepath
 
