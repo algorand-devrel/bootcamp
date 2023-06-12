@@ -1,5 +1,5 @@
 # Install pipx
-RUN pip install pipx
+RUN python -m pip install pipx
 RUN pipx ensurepath
 
 # Install algokit
