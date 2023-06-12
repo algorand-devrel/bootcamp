@@ -4,7 +4,7 @@ tasks:
   - name: install algokit
     init: > 
       pip install pipx && 
-      export PIPX_BIN_DIR=/workspace
+      export PIPX_BIN_DIR=/workspace &&
       pipx install algokit &&
       gp sync-done algokit-install  &&
       exit
