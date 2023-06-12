@@ -1,4 +1,5 @@
-image: gitpod/workspace-full:2023-05-08-21-16-55
+image:
+  file: .gitpod.Dockerfile
 tasks:
   - name: algokit localnet
     command: algokit localnet start && exit
