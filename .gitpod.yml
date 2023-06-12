@@ -4,7 +4,8 @@ tasks:
   - name: install algokit
     init: > 
       pip install pipx && 
-      pipx install git+https://github.com/joe-p/algokit-cli.git@fb32942 &&
+      export PIPX_BIN_DIR=/workspace
+      pipx install algokit &&
       gp sync-done algokit-install  &&
       exit
 vscode:
