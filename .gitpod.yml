@@ -30,3 +30,7 @@ ports:
     port: 9392
     onOpen: ignore
     visibility: public
+  - name: webpack
+    port: 8080
+    visibility: public
+    onOpen: ignore

@@ -1,0 +1,104 @@
+#pragma version 8
+intcblock 0 1 2
+bytecblock 0x
+txn NumAppArgs
+intc_0 // 0
+==
+bnz main_l4
+txna ApplicationArgs 0
+pushbytes 0x75bbbda1 // "mint_nft((string,string,address))uint64"
+==
+bnz main_l3
+err
+main_l3:
+txn OnCompletion
+intc_0 // NoOp
+==
+txn ApplicationID
+intc_0 // 0
+!=
+&&
+assert
+callsub mintnftcaster_1
+intc_1 // 1
+return
+main_l4:
+txn OnCompletion
+intc_0 // NoOp
+==
+bnz main_l6
+err
+main_l6:
+txn ApplicationID
+intc_0 // 0
+==
+assert
+intc_1 // 1
+return
+
+// mint_nft
+mintnft_0:
+proto 1 1
+intc_0 // 0
+bytec_0 // ""
+dupn 2
+frame_dig -1
+frame_dig -1
+intc_0 // 0
+extract_uint16
+frame_dig -1
+intc_2 // 2
+extract_uint16
+substring3
+frame_bury 1
+frame_dig -1
+frame_dig -1
+intc_2 // 2
+extract_uint16
+dig 1
+len
+substring3
+frame_bury 2
+frame_dig -1
+extract 4 32
+frame_bury 3
+itxn_begin
+pushint 3 // acfg
+itxn_field TypeEnum
+frame_dig 1
+extract 2 0
+itxn_field ConfigAssetName
+frame_dig 2
+extract 2 0
+itxn_field ConfigAssetUnitName
+frame_dig 3
+itxn_field ConfigAssetReserve
+txn Sender
+itxn_field ConfigAssetManager
+pushbytes 0x74656d706c6174652d697066733a2f2f7b697066736369643a313a6461672d70623a726573657276653a736861322d3235367d2f6d657461646174612e6a736f6e2361726333 // "template-ipfs://{ipfscid:1:dag-pb:reserve:sha2-256}/metadata.json#arc3"
+itxn_field ConfigAssetURL
+intc_1 // 1
+itxn_field ConfigAssetTotal
+intc_0 // 0
+itxn_field Fee
+itxn_submit
+itxn CreatedAssetID
+frame_bury 0
+retsub
+
+// mint_nft_caster
+mintnftcaster_1:
+proto 0 0
+intc_0 // 0
+bytec_0 // ""
+txna ApplicationArgs 1
+frame_bury 1
+frame_dig 1
+callsub mintnft_0
+frame_bury 0
+pushbytes 0x151f7c75 // 0x151f7c75
+frame_dig 0
+itob
+concat
+log
+retsub

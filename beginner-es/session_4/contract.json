@@ -1,0 +1,66 @@
+{
+  "name": "AuctionApp",
+  "methods": [
+      {
+          "name": "opt_in",
+          "args": [
+              {
+                  "type": "asset",
+                  "name": "asset"
+              }
+          ],
+          "returns": {
+              "type": "void"
+          }
+      },
+      {
+          "name": "start_auction",
+          "args": [
+              {
+                  "type": "uint64",
+                  "name": "length"
+              },
+              {
+                  "type": "uint64",
+                  "name": "starting_price"
+              },
+              {
+                  "type": "axfer",
+                  "name": "axfer"
+              }
+          ],
+          "returns": {
+              "type": "void"
+          }
+      },
+      {
+          "name": "bid",
+          "args": [
+              {
+                  "type": "pay",
+                  "name": "payment"
+              },
+              {
+                  "type": "account",
+                  "name": "previous_winner"
+              }
+          ],
+          "returns": {
+              "type": "void"
+          }
+      },
+      {
+          "name": "claim_asset",
+          "args": [
+              {
+                  "type": "asset",
+                  "name": "asset"
+              }
+          ],
+          "returns": {
+              "type": "void"
+          }
+      }
+  ],
+  "networks": {}
+}
