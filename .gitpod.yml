@@ -1,12 +1,14 @@
 tasks:
-  - name: algokit localnet
-    command: gp sync-await algokit-install && algokit localnet start && exit
   - name: install algokit
     init: > 
+      gp env PIPX_HOME=/workspace/ &&
+      gp env PIPX_BIN_DIR=/usr/local/bin &&
       pip install pipx && 
-      pipx install git+https://github.com/joe-p/algokit-cli.git@fb32942 &&
-      gp sync-done algokit-install  &&
+      sudo PIPX_HOME=/workspace/ PIPX_BIN_DIR=/usr/local/bin pipx install algokit &&
+      /workspace/algokit localnet start &&
       exit
+  - name: algokit localnet
+    command: /workspace/algokit localnet start; exit
 vscode:
   extensions:
     - ms-python.python
