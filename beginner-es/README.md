@@ -17,4 +17,4 @@ Si deseas configurar todo tu entorno, puedes encontrar un video completo en espa
 - Sesión 1: Transacciones con el SDK - [https://youtu.be/IMHmMSN-coo](https://youtu.be/IMHmMSN-coo)
 - Sesión 2: Smart Contracts con Beaker y PyTEAL - [https://youtu.be/YRsllJiSR1c](https://youtu.be/YRsllJiSR1c)
 - Sesión 3: Creación de smart contract de subasta - [https://youtu.be/sNQUFVjOx1E](https://youtu.be/sNQUFVjOx1E)
-- Sesión 4: Creación de cliente web - [https://youtu.be/JdZ9_EwzPok] (https://youtu.be/JdZ9_EwzPok)
+- Sesión 4: Creación de cliente web - [https://youtu.be/JdZ9_EwzPok](https://youtu.be/JdZ9_EwzPok)
