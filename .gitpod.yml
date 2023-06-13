@@ -1,8 +1,14 @@
-image:
-  file: .gitpod.Dockerfile
 tasks:
+  - name: install algokit
+    init: > 
+      gp env PIPX_HOME=/workspace/ &&
+      gp env PIPX_BIN_DIR=/usr/local/bin &&
+      pip install pipx && 
+      sudo PIPX_HOME=/workspace/ PIPX_BIN_DIR=/usr/local/bin pipx install algokit &&
+      /workspace/algokit localnet start &&
+      exit
   - name: algokit localnet
-    command: algokit localnet start && exit
+    command: /workspace/algokit localnet start; exit
 vscode:
   extensions:
     - ms-python.python
