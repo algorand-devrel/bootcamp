@@ -3,14 +3,10 @@ image:
 tasks:
   - name: install algokit
     init: > 
-      gp env PIPX_HOME=/workspace/ &&
-      gp env PIPX_BIN_DIR=$PIPX_HOME/bin &&
       pip install pipx && 
-      PIPX_HOME=/workspace/ PIPX_BIN_DIR=$PIPX_HOME/bin pipx install algokit &&
+      sudo PIPX_HOME=/workspace/ PIPX_BIN_DIR=/usr/local/bin pipx install algokit &&
       /workspace/algokit localnet start &&
       exit
-  - name: algokit localnet
-    command: /workspace/algokit localnet start; exit
 vscode:
   extensions:
     - ms-python.python
@@ -38,3 +34,4 @@ ports:
     port: 8080
     visibility: public
     onOpen: ignore
+
