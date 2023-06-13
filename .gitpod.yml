@@ -2,14 +2,7 @@ image:
   file: .gitpod.Dockerfile
 tasks:
   - name: algokit localnet
-    command: gp sync-await algokit-install && algokit localnet start && exit
-  - name: install algokit
-    init: > 
-      pip install pipx && 
-      export PIPX_BIN_DIR=/workspace
-      pipx install algokit &&
-      gp sync-done algokit-install  &&
-      exit
+    command: algokit localnet start && exit
 vscode:
   extensions:
     - ms-python.python
