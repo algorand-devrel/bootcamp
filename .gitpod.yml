@@ -4,7 +4,7 @@ tasks:
       gp env PIPX_HOME=/workspace/ &&
       gp env PIPX_BIN_DIR=/usr/local/bin &&
       pip install pipx && 
-      sudo PIPX_HOME=/workspace/ PIPX_BIN_DIR=/usr/local/bin pipx install algokit &&
+      PIPX_HOME=/workspace/ PIPX_BIN_DIR=/usr/local/bin pipx install algokit &&
       /workspace/algokit localnet start &&
       exit
   - name: algokit localnet
