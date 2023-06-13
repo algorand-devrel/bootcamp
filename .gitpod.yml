@@ -11,8 +11,6 @@ tasks:
       pipx upgrade algokit && 
       gp sync-done algokit-upgrade  &&
       exit
-  - name: algokit localnet
-    command: /workspace/algokit localnet start; exit
 vscode:
   extensions:
     - ms-python.python
@@ -40,3 +38,4 @@ ports:
     port: 8080
     visibility: public
     onOpen: ignore
+    
