@@ -6,7 +6,6 @@ tasks:
       gp sync-await algokit-upgrade && 
       algokit localnet start && 
       exit
-tasks:
   - name: upgrade algokit
     command: >
       pipx upgrade algokit && 
