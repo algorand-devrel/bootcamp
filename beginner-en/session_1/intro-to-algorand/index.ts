@@ -71,7 +71,62 @@ async function main() {
     suggestedParams: await algod.getTransactionParams().do(),
   });
 
+  console.log(asaTransfer);
+
   // Write code here, to send asaTransfer to the network
+
+  try {
+    await algokit.sendTransaction(
+      {
+        transaction: asaTransfer,
+        from: alice,
+      },
+      algod,
+    );
+  } catch (error) {
+    console.warn(error);
+  }
+
+  // Opt In === 0 transfer from bob to bob
+  const optIn = algosdk.makeAssetTransferTxnWithSuggestedParamsFromObject({
+    from: bob.addr,
+    to: bob.addr,
+    assetIndex,
+    amount: 0,
+    suggestedParams: await algod.getTransactionParams().do(),
+  });
+
+  console.log('optIn', optIn);
+
+  await algokit.ensureFunded(
+    {
+      accountToFund: bob.addr,
+      minSpendingBalance: algokit.algos(10),
+    },
+    algod,
+    kmd,
+  );
+
+  const groupTxnResult = await algokit.sendGroupOfTransactions(
+    {
+      transactions: [
+        {
+          transaction: optIn,
+          signer: bob,
+        },
+        {
+          transaction: asaTransfer,
+          signer: alice,
+        },
+      ],
+    },
+    algod,
+  );
+
+  console.log(groupTxnResult);
+
+  console.log('Alice', await algod.accountAssetInformation(alice.addr, assetIndex).do());
+  console.log('Bob', await algod.accountAssetInformation(bob.addr, assetIndex).do());
 }
 
 main();
