@@ -60,6 +60,18 @@ async function main() {
   const assetIndex = Number(createResult.confirmation!.assetIndex);
 
   console.log(assetIndex);
+
+  const bob = algosdk.generateAccount();
+
+  const asaTransfer = algosdk.makeAssetTransferTxnWithSuggestedParamsFromObject({
+    from: alice.addr,
+    to: bob.addr,
+    assetIndex,
+    amount: 1,
+    suggestedParams: await algod.getTransactionParams().do(),
+  });
+
+  // Write code here, to send asaTransfer to the network
 }
 
 main();
