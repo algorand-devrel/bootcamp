@@ -1,11 +1,15 @@
+image:
+  file: .gitpod.Dockerfile
 tasks:
-  - name: algokit localnet
-    command: gp sync-await algokit-install && algokit localnet start && exit
-  - name: install algokit
-    init: > 
-      pip install pipx && 
-      pipx install git+https://github.com/joe-p/algokit-cli.git@fb32942 &&
-      gp sync-done algokit-install  &&
+  - name: start localnet
+    command: >
+      gp sync-await algokit-upgrade && 
+      algokit localnet start && 
+      exit
+  - name: upgrade algokit
+    command: >
+      pipx upgrade algokit && 
+      gp sync-done algokit-upgrade  &&
       exit
 vscode:
   extensions:
