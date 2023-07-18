@@ -31,8 +31,6 @@ export async function deploy() {
   )
 
   const app = await appClient.deploy({
-    allowDelete: !isMainNet,
-    allowUpdate: !isMainNet,
     onSchemaBreak: isMainNet ? 'append' : 'replace',
     onUpdate: isMainNet ? 'append' : 'update',
   })

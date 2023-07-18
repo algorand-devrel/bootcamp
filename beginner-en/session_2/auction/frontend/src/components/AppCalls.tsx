@@ -48,8 +48,6 @@ const AppCalls = ({ openModal, setModalState }: AppCallsInterface) => {
 
     await appClient
       .deploy({
-        allowDelete: isLocal,
-        allowUpdate: isLocal,
         onSchemaBreak: isLocal ? 'replace' : 'fail',
         onUpdate: isLocal ? 'update' : 'fail',
       })
