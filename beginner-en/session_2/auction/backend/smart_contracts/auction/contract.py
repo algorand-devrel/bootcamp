@@ -4,9 +4,11 @@ import pyteal as pt
 
 class AuctionState:
     pass
-    ################
-    # Global State #
-    ################
+    ##################################
+    # Global State
+    # 64 key-value pairs per contract
+    # 128 bytes each
+    ##################################
 
     # Previous bidder: Address of the previous bidder
 
@@ -18,9 +20,11 @@ class AuctionState:
 
     # ASA: ID of the ASA being auctioned
 
-    ###############
-    # Local State #
-    ###############
+    ##################################
+    # Local State
+    # 16 key-value pairs per account
+    # 128 bytes each
+    ##################################
 
     # Claimable amount: Amount of ALGO this account can reclaim
 
