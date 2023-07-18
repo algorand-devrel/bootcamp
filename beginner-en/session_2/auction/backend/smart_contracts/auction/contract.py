@@ -27,7 +27,7 @@ class AuctionState:
     # REMINDER: ASA === Algorand Standard Asset === Asset === Token
 
     # ASA: ID of the ASA being auctioned
-    asa_id = beaker.GlobalStateValue(stack_type=pt.TealType.uint64, default=pt.Int(0))
+    asa = beaker.GlobalStateValue(stack_type=pt.TealType.uint64, default=pt.Int(0))
 
     # ASA amount: Total amount of ASA being auctioned
     asa_amount = beaker.GlobalStateValue(
@@ -109,7 +109,7 @@ def start_auction(
         # Set the asa amount being auctioned
         app.state.asa_amount.set(axfer.get().asset_amount()),
         # Save the amount transfered in global state
-        app.state.asa_id.set(axfer.get().xfer_asset()),
+        app.state.asa.set(axfer.get().xfer_asset()),
     )
 
 
