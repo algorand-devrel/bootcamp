@@ -13,7 +13,7 @@ export function getAlgodConfigFromViteEnvironment(): AlgoViteClientConfig {
   }
 }
 
-export function getIndexerConfigFromVercelEnvironment(): AlgoViteClientConfig {
+export function getIndexerConfigFromViteEnvironment(): AlgoViteClientConfig {
   if (!import.meta.env.VITE_INDEXER_SERVER) {
     throw new Error('Attempt to get default algod configuration without specifying VITE_INDEXER_SERVER in the environment variables')
   }

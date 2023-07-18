@@ -33,7 +33,7 @@ const AppCalls = ({ openModal, setModalState }: AppCallsInterface) => {
   const { enqueueSnackbar } = useSnackbar()
   const { signer, activeAddress } = useWallet()
 
-  const sendHelloWordAppCall = async () => {
+  const sendAppCall = async () => {
     setLoading(true)
 
     const appDetails = {
@@ -44,18 +44,22 @@ const AppCalls = ({ openModal, setModalState }: AppCallsInterface) => {
     } as AppDetails
 
     const appClient = new AuctionClient(appDetails, algodClient)
-    const isLocal = await algokit.isLocalNet(algodClient)
 
-    await appClient
-      .deploy({
-        onSchemaBreak: isLocal ? 'replace' : 'fail',
-        onUpdate: isLocal ? 'update' : 'fail',
-      })
-      .catch((e: Error) => {
-        enqueueSnackbar(`Error deploying the contract: ${e.message}`, { variant: 'error' })
-        setLoading(false)
-        return
-      })
+    // Please note, in typical production scenarios,
+    // you wouldn't want to use deploy directly from your frontend.
+    // Instead, you would deploy your contract on your backend and reference it by id.
+    // Given the simplicity of the starter contract, we are deploying it on the frontend
+    // for demonstration purposes.
+    const deployParams = {
+      onSchemaBreak: 'append',
+      onUpdate: 'append',
+    }
+
+    await appClient.deploy(deployParams).catch((e: Error) => {
+      enqueueSnackbar(`Error deploying the contract: ${e.message}`, { variant: 'error' })
+      setLoading(false)
+      return
+    })
 
     const response = await appClient.hello({ name: contractInput }).catch((e: Error) => {
       enqueueSnackbar(`Error calling the contract: ${e.message}`, { variant: 'error' })
@@ -85,7 +89,7 @@ const AppCalls = ({ openModal, setModalState }: AppCallsInterface) => {
           <button className="btn" onClick={() => setModalState(!openModal)}>
             Close
           </button>
-          <button className={`btn`} onClick={sendHelloWordAppCall}>
+          <button className={`btn`} onClick={sendAppCall}>
             {loading ? <span className="loading loading-spinner" /> : 'Send application call'}
           </button>
         </div>
