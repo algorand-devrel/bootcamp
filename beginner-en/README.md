@@ -8,6 +8,6 @@ https://gitpod.io/#https://github.com/algorand-devrel/bootcamp
 
 ## Video Recordings
 - Episode #1 [Developer Onboarding using JS SDK & AlgoKit](https://youtu.be/hIMdJzVs4gg)
-- Episode #2 [Build & Deploy]
+- Episode #2 [Build & Deploy: Auction dApp](https://youtu.be/foTbYZhXvqA)
 - Episode #3 [Test & Debug]
 - Episode #4 [Interact using dAppFlow]
