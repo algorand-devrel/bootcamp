@@ -30,7 +30,9 @@ class AuctionState:
     asa_id = beaker.GlobalStateValue(stack_type=pt.TealType.uint64, default=pt.Int(0))
 
     # ASA amount: Total amount of ASA being auctioned
-    asa = beaker.GlobalStateValue(stack_type=pt.TealType.uint64, default=pt.Int(0))
+    asa_amount = beaker.GlobalStateValue(
+        stack_type=pt.TealType.uint64, default=pt.Int(0)
+    )
 
     ##################################
     # Local State
@@ -85,17 +87,29 @@ def opt_into_asset(asset: pt.abi.Asset) -> pt.Expr:
 # axfer === short hand for Asset Transfer
 @app.external(authorize=beaker.Authorize.only(pt.Global.creator_address()))
 def start_auction(
-    starting_price: pt.abi.uint64,
+    starting_price: pt.abi.Uint64,
     length: pt.abi.Uint64,
     axfer: pt.abi.AssetTransferTransaction,
 ) -> pt.Expr:
     return pt.Seq(
         # Ensure the auction hasn't already started
+        pt.Assert(app.state.auction_end.get() == pt.Int(0)),
         # Set starting price
+        app.state.previous_bid.set(starting_price.get()),
         # Set the auction end time
-        # Set the asa amount being auctioned
+        # Time always corresponds to the timestamp of the last block
+        # There might be some clock skew across nodes
+        # Time is NEVER precise to the second
+        # Timestamps is using seconds as a unit
+        app.state.auction_end.set(length.get() + pt.Global.latest_timestamp()),
         # Verify the asset transfer is to the contract address
+        pt.Assert(
+            axfer.get().asset_receiver() == pt.Global.current_application_address()
+        ),
+        # Set the asa amount being auctioned
+        app.state.asa_amount.set(axfer.get().asset_amount()),
         # Save the amount transfered in global state
+        app.state.asa_id.set(axfer.get().xfer_asset()),
     )
 
 
