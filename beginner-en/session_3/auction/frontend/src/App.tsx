@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+import * as algokit from '@algorandfoundation/algokit-utils'
 import { DeflyWalletConnect } from '@blockshake/defly-connect'
 import { DaffiWalletConnect } from '@daffiwallet/connect'
 import { PeraWalletConnect } from '@perawallet/connect'
@@ -6,8 +8,8 @@ import algosdk from 'algosdk'
 import { SnackbarProvider } from 'notistack'
 import { useState } from 'react'
 import ConnectWallet from './components/ConnectWallet'
+import { AuctionClient } from './contracts/auction'
 import { getAlgodConfigFromViteEnvironment } from './utils/network/getAlgoClientConfigs'
-
 enum AuctionState {
   Pending,
   Created,
@@ -31,24 +33,34 @@ if (import.meta.env.VITE_ALGOD_NETWORK === '') {
 
 export default function App() {
   const [openWalletModal, setOpenWalletModal] = useState<boolean>(false)
-  const { activeAddress } = useWallet()
+  const { signer, activeAddress } = useWallet()
   const [auctionState, setAuctionState] = useState<AuctionState>(AuctionState.Pending)
   const [appID, setAppID] = useState<number>(0)
+
+  const algodConfig = getAlgodConfigFromViteEnvironment()
+
+  const auctionClient: AuctionClient = new AuctionClient(
+    {
+      resolveBy: 'id',
+      id: 0,
+      sender: { signer, addr: activeAddress! },
+    },
+    algokit.getAlgoClient(algodConfig),
+  )
 
   const toggleWalletModal = () => {
     setOpenWalletModal(!openWalletModal)
   }
 
-  const createApp = () => {
-    setAppID(1337)
+  const createApp = async () => {
+    const res = await auctionClient!.create.bare()
+    setAppID(res.transactions[0].appIndex)
     setAuctionState(AuctionState.Created)
   }
 
   const startAuction = () => {
     setAuctionState(AuctionState.Started)
   }
-
-  const algodConfig = getAlgodConfigFromViteEnvironment()
 
   const walletProviders = useInitializeProviders({
     providers: providersArray,
