@@ -49,8 +49,37 @@ app = beaker.Application("Auction", state=AuctionState)
 
 
 # create method that initializes global state
+@app.create(bare=True)
+def create() -> pt.Expr:
+    return app.initialize_global_state()
+
 
 # opt_into_asset method that opts the contract account into an ASA
+@app.external(authorize=beaker.Authorize.only(pt.Global.creator_address()))
+def opt_into_asset(asset: pt.abi.Asset) -> pt.Expr:
+    # On-chain logic that uses multiple expressions, always goes in the returned Seq
+    return pt.Seq(
+        # Check the asa in state hasn't already been set
+        pt.Assert(app.state.asa == pt.Int(0)),
+        # Set app.state.asa to the asa being auctioned
+        app.state.asa.set(asset.asset_id()),
+        # Send the transaction to opt in
+        # Opt == transfer of 0 amount from/to the same account
+        # Send a 0 asset transfer, of asset, from contract to contract
+        pt.InnerTxnBuilder.Execute(
+            {
+                pt.TxnField.type_enum: pt.TxnType.AssetTransfer,
+                pt.TxnField.asset_receiver: pt.Global.current_application_address(),
+                pt.TxnField.xfer_asset: asset.asset_id(),
+                pt.TxnField.asset_amount: pt.Int(0),
+                # Nomrally fees are 0.0001 ALGO
+                # An inner transaction is 0.0001 ALGO
+                # Setting inner transaction fee to 0, means outer fee must be 0.0002 ALGO
+                pt.TxnField.fee: pt.Int(0),
+            }
+        ),
+    )
+
 
 # start_auction method that starts the auction for a specific length and starting price
 
