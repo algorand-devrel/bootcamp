@@ -25,38 +25,115 @@ import { AppSpec } from '@algorandfoundation/algokit-utils/types/app-spec'
 import { SendTransactionResult, TransactionToSign, SendTransactionFrom } from '@algorandfoundation/algokit-utils/types/transaction'
 import { Algodv2, OnApplicationComplete, Transaction, TransactionWithSigner, AtomicTransactionComposer } from 'algosdk'
 export const APP_SPEC: AppSpec = {
-  "hints": {},
+  "hints": {
+    "opt_into_asset(asset)void": {
+      "call_config": {
+        "no_op": "CALL"
+      }
+    },
+    "start_auction(uint64,uint64,axfer)void": {
+      "call_config": {
+        "no_op": "CALL"
+      }
+    }
+  },
   "source": {
-    "approval": "I3ByYWdtYSB2ZXJzaW9uIDgKaW50Y2Jsb2NrIDAKdHhuIE51bUFwcEFyZ3MKaW50Y18wIC8vIDAKPT0KYm56IG1haW5fbDIKZXJyCm1haW5fbDI6CnR4biBPbkNvbXBsZXRpb24KaW50Y18wIC8vIE5vT3AKPT0KYm56IG1haW5fbDQKZXJyCm1haW5fbDQ6CnR4biBBcHBsaWNhdGlvbklECmludGNfMCAvLyAwCj09CmFzc2VydApwdXNoaW50IDEgLy8gMQpyZXR1cm4=",
+    "approval": "I3ByYWdtYSB2ZXJzaW9uIDgKaW50Y2Jsb2NrIDAgMSA0CmJ5dGVjYmxvY2sgMHg2MTczNjEgMHg2MTc1NjM3NDY5NmY2ZTVmNjU2ZTY0IDB4NjE3MzYxNWY2MTZkNmY3NTZlNzQgMHg3MDcyNjU3NjY5NmY3NTczNWY2MjY5NjQKdHhuIE51bUFwcEFyZ3MKaW50Y18wIC8vIDAKPT0KYm56IG1haW5fbDYKdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMApwdXNoYnl0ZXMgMHgyODI2YjIwMiAvLyAib3B0X2ludG9fYXNzZXQoYXNzZXQpdm9pZCIKPT0KYm56IG1haW5fbDUKdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMApwdXNoYnl0ZXMgMHhmMGFhNzAyMyAvLyAic3RhcnRfYXVjdGlvbih1aW50NjQsdWludDY0LGF4ZmVyKXZvaWQiCj09CmJueiBtYWluX2w0CmVycgptYWluX2w0Ogp0eG4gT25Db21wbGV0aW9uCmludGNfMCAvLyBOb09wCj09CnR4biBBcHBsaWNhdGlvbklECmludGNfMCAvLyAwCiE9CiYmCmFzc2VydApjYWxsc3ViIHN0YXJ0YXVjdGlvbmNhc3Rlcl81CmludGNfMSAvLyAxCnJldHVybgptYWluX2w1Ogp0eG4gT25Db21wbGV0aW9uCmludGNfMCAvLyBOb09wCj09CnR4biBBcHBsaWNhdGlvbklECmludGNfMCAvLyAwCiE9CiYmCmFzc2VydApjYWxsc3ViIG9wdGludG9hc3NldGNhc3Rlcl80CmludGNfMSAvLyAxCnJldHVybgptYWluX2w2Ogp0eG4gT25Db21wbGV0aW9uCmludGNfMCAvLyBOb09wCj09CmJueiBtYWluX2wxMAp0eG4gT25Db21wbGV0aW9uCmludGNfMSAvLyBPcHRJbgo9PQpibnogbWFpbl9sOQplcnIKbWFpbl9sOToKdHhuIEFwcGxpY2F0aW9uSUQKaW50Y18wIC8vIDAKIT0KYXNzZXJ0CmNhbGxzdWIgb3B0aW5fMwppbnRjXzEgLy8gMQpyZXR1cm4KbWFpbl9sMTA6CnR4biBBcHBsaWNhdGlvbklECmludGNfMCAvLyAwCj09CmFzc2VydApjYWxsc3ViIGNyZWF0ZV8wCmludGNfMSAvLyAxCnJldHVybgoKLy8gY3JlYXRlCmNyZWF0ZV8wOgpwcm90byAwIDAKYnl0ZWNfMCAvLyAiYXNhIgppbnRjXzAgLy8gMAphcHBfZ2xvYmFsX3B1dApieXRlY18yIC8vICJhc2FfYW1vdW50IgppbnRjXzAgLy8gMAphcHBfZ2xvYmFsX3B1dApieXRlY18xIC8vICJhdWN0aW9uX2VuZCIKaW50Y18wIC8vIDAKYXBwX2dsb2JhbF9wdXQKYnl0ZWNfMyAvLyAicHJldmlvdXNfYmlkIgppbnRjXzAgLy8gMAphcHBfZ2xvYmFsX3B1dApwdXNoYnl0ZXMgMHg3MDcyNjU3NjY5NmY3NTczNWY2MjY5NjQ2NDY1NzIgLy8gInByZXZpb3VzX2JpZGRlciIKcHVzaGJ5dGVzIDB4IC8vICIiCmFwcF9nbG9iYWxfcHV0CnJldHN1YgoKLy8gb3B0X2ludG9fYXNzZXQKb3B0aW50b2Fzc2V0XzE6CnByb3RvIDEgMAp0eG4gU2VuZGVyCmdsb2JhbCBDcmVhdG9yQWRkcmVzcwo9PQovLyB1bmF1dGhvcml6ZWQKYXNzZXJ0CmJ5dGVjXzAgLy8gImFzYSIKYXBwX2dsb2JhbF9nZXQKaW50Y18wIC8vIDAKPT0KYXNzZXJ0CmJ5dGVjXzAgLy8gImFzYSIKZnJhbWVfZGlnIC0xCnR4bmFzIEFzc2V0cwphcHBfZ2xvYmFsX3B1dAppdHhuX2JlZ2luCmludGNfMiAvLyBheGZlcgppdHhuX2ZpZWxkIFR5cGVFbnVtCmdsb2JhbCBDdXJyZW50QXBwbGljYXRpb25BZGRyZXNzCml0eG5fZmllbGQgQXNzZXRSZWNlaXZlcgpmcmFtZV9kaWcgLTEKdHhuYXMgQXNzZXRzCml0eG5fZmllbGQgWGZlckFzc2V0CmludGNfMCAvLyAwCml0eG5fZmllbGQgQXNzZXRBbW91bnQKaW50Y18wIC8vIDAKaXR4bl9maWVsZCBGZWUKaXR4bl9zdWJtaXQKcmV0c3ViCgovLyBzdGFydF9hdWN0aW9uCnN0YXJ0YXVjdGlvbl8yOgpwcm90byAzIDAKdHhuIFNlbmRlcgpnbG9iYWwgQ3JlYXRvckFkZHJlc3MKPT0KLy8gdW5hdXRob3JpemVkCmFzc2VydApieXRlY18xIC8vICJhdWN0aW9uX2VuZCIKYXBwX2dsb2JhbF9nZXQKaW50Y18wIC8vIDAKPT0KYXNzZXJ0CmJ5dGVjXzMgLy8gInByZXZpb3VzX2JpZCIKZnJhbWVfZGlnIC0zCmFwcF9nbG9iYWxfcHV0CmJ5dGVjXzEgLy8gImF1Y3Rpb25fZW5kIgpmcmFtZV9kaWcgLTIKZ2xvYmFsIExhdGVzdFRpbWVzdGFtcAorCmFwcF9nbG9iYWxfcHV0CmZyYW1lX2RpZyAtMQpndHhucyBBc3NldFJlY2VpdmVyCmdsb2JhbCBDdXJyZW50QXBwbGljYXRpb25BZGRyZXNzCj09CmFzc2VydApieXRlY18yIC8vICJhc2FfYW1vdW50IgpmcmFtZV9kaWcgLTEKZ3R4bnMgQXNzZXRBbW91bnQKYXBwX2dsb2JhbF9wdXQKYnl0ZWNfMCAvLyAiYXNhIgpmcmFtZV9kaWcgLTEKZ3R4bnMgWGZlckFzc2V0CmFwcF9nbG9iYWxfcHV0CnJldHN1YgoKLy8gb3B0X2luCm9wdGluXzM6CnByb3RvIDAgMAp0eG4gU2VuZGVyCnB1c2hieXRlcyAweDYzNmM2MTY5NmQ2MTYyNmM2NTVmNjE2ZDZmNzU2ZTc0IC8vICJjbGFpbWFibGVfYW1vdW50IgppbnRjXzAgLy8gMAphcHBfbG9jYWxfcHV0CnJldHN1YgoKLy8gb3B0X2ludG9fYXNzZXRfY2FzdGVyCm9wdGludG9hc3NldGNhc3Rlcl80Ogpwcm90byAwIDAKaW50Y18wIC8vIDAKdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMQppbnRjXzAgLy8gMApnZXRieXRlCmZyYW1lX2J1cnkgMApmcmFtZV9kaWcgMApjYWxsc3ViIG9wdGludG9hc3NldF8xCnJldHN1YgoKLy8gc3RhcnRfYXVjdGlvbl9jYXN0ZXIKc3RhcnRhdWN0aW9uY2FzdGVyXzU6CnByb3RvIDAgMAppbnRjXzAgLy8gMApkdXBuIDIKdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMQpidG9pCmZyYW1lX2J1cnkgMAp0eG5hIEFwcGxpY2F0aW9uQXJncyAyCmJ0b2kKZnJhbWVfYnVyeSAxCnR4biBHcm91cEluZGV4CmludGNfMSAvLyAxCi0KZnJhbWVfYnVyeSAyCmZyYW1lX2RpZyAyCmd0eG5zIFR5cGVFbnVtCmludGNfMiAvLyBheGZlcgo9PQphc3NlcnQKZnJhbWVfZGlnIDAKZnJhbWVfZGlnIDEKZnJhbWVfZGlnIDIKY2FsbHN1YiBzdGFydGF1Y3Rpb25fMgpyZXRzdWI=",
     "clear": "I3ByYWdtYSB2ZXJzaW9uIDgKcHVzaGludCAwIC8vIDAKcmV0dXJu"
   },
   "state": {
     "global": {
-      "num_byte_slices": 0,
-      "num_uints": 0
+      "num_byte_slices": 1,
+      "num_uints": 4
     },
     "local": {
       "num_byte_slices": 0,
-      "num_uints": 0
+      "num_uints": 1
     }
   },
   "schema": {
     "global": {
-      "declared": {},
+      "declared": {
+        "asa": {
+          "type": "uint64",
+          "key": "asa",
+          "descr": ""
+        },
+        "asa_amount": {
+          "type": "uint64",
+          "key": "asa_amount",
+          "descr": ""
+        },
+        "auction_end": {
+          "type": "uint64",
+          "key": "auction_end",
+          "descr": ""
+        },
+        "previous_bid": {
+          "type": "uint64",
+          "key": "previous_bid",
+          "descr": ""
+        },
+        "previous_bidder": {
+          "type": "bytes",
+          "key": "previous_bidder",
+          "descr": ""
+        }
+      },
       "reserved": {}
     },
     "local": {
-      "declared": {},
+      "declared": {
+        "claimable_amount": {
+          "type": "uint64",
+          "key": "claimable_amount",
+          "descr": ""
+        }
+      },
       "reserved": {}
     }
   },
   "contract": {
     "name": "Auction",
-    "methods": [],
+    "methods": [
+      {
+        "name": "opt_into_asset",
+        "args": [
+          {
+            "type": "asset",
+            "name": "asset"
+          }
+        ],
+        "returns": {
+          "type": "void"
+        }
+      },
+      {
+        "name": "start_auction",
+        "args": [
+          {
+            "type": "uint64",
+            "name": "starting_price"
+          },
+          {
+            "type": "uint64",
+            "name": "length"
+          },
+          {
+            "type": "axfer",
+            "name": "axfer"
+          }
+        ],
+        "returns": {
+          "type": "void"
+        }
+      }
+    ],
     "networks": {}
   },
   "bare_call_config": {
-    "no_op": "CREATE"
+    "no_op": "CREATE",
+    "opt_in": "CALL"
   }
 }
 
@@ -115,6 +192,37 @@ export type Auction = {
    * Maps method signatures / names to their argument and return types.
    */
   methods:
+    & Record<'opt_into_asset(asset)void' | 'opt_into_asset', {
+      argsObj: {
+        asset: number | bigint
+      }
+      argsTuple: [asset: number | bigint]
+      returns: void
+    }>
+    & Record<'start_auction(uint64,uint64,axfer)void' | 'start_auction', {
+      argsObj: {
+        starting_price: bigint | number
+        length: bigint | number
+        axfer: TransactionToSign | Transaction | Promise<SendTransactionResult>
+      }
+      argsTuple: [starting_price: bigint | number, length: bigint | number, axfer: TransactionToSign | Transaction | Promise<SendTransactionResult>]
+      returns: void
+    }>
+  /**
+   * Defines the shape of the global and local state of the application.
+   */
+  state: {
+    global: {
+      'asa'?: IntegerState
+      'asa_amount'?: IntegerState
+      'auction_end'?: IntegerState
+      'previous_bid'?: IntegerState
+      'previous_bidder'?: BinaryState
+    }
+    local: {
+      'claimable_amount'?: IntegerState
+    }
+  }
 }
 /**
  * Defines the possible abi call signatures
@@ -186,6 +294,55 @@ export abstract class AuctionCallFactory {
     }
   }
 
+  /**
+   * Gets available optIn call factories
+   */
+  static get optIn() {
+    return {
+      /**
+       * Constructs an opt in call for the Auction smart contract using a bare call
+       *
+       * @param params Any parameters for the call
+       * @returns A TypedCallParams object for the call
+       */
+      bare(params: BareCallArgs & AppClientCallCoreParams & CoreAppCallArgs = {}) {
+        return {
+          method: undefined,
+          methodArgs: undefined,
+          ...params,
+        }
+      },
+    }
+  }
+
+  /**
+   * Constructs a no op call for the opt_into_asset(asset)void ABI method
+   *
+   * @param args Any args for the contract call
+   * @param params Any additional parameters for the call
+   * @returns A TypedCallParams object for the call
+   */
+  static optIntoAsset(args: MethodArgs<'opt_into_asset(asset)void'>, params: AppClientCallCoreParams & CoreAppCallArgs) {
+    return {
+      method: 'opt_into_asset(asset)void' as const,
+      methodArgs: Array.isArray(args) ? args : [args.asset],
+      ...params,
+    }
+  }
+  /**
+   * Constructs a no op call for the start_auction(uint64,uint64,axfer)void ABI method
+   *
+   * @param args Any args for the contract call
+   * @param params Any additional parameters for the call
+   * @returns A TypedCallParams object for the call
+   */
+  static startAuction(args: MethodArgs<'start_auction(uint64,uint64,axfer)void'>, params: AppClientCallCoreParams & CoreAppCallArgs) {
+    return {
+      method: 'start_auction(uint64,uint64,axfer)void' as const,
+      methodArgs: Array.isArray(args) ? args : [args.starting_price, args.length, args.axfer],
+      ...params,
+    }
+  }
 }
 
 /**
@@ -275,6 +432,24 @@ export class AuctionClient {
   }
 
   /**
+   * Gets available optIn methods
+   */
+  public get optIn() {
+    const $this = this
+    return {
+      /**
+       * Opts the user into an existing instance of the Auction smart contract using a bare call.
+       *
+       * @param args The arguments for the bare call
+       * @returns The optIn result
+       */
+      bare(args: BareCallArgs & AppClientCallCoreParams & CoreAppCallArgs = {}): Promise<AppCallTransactionResultOfType<undefined>> {
+        return $this.appClient.optIn(args) as unknown as Promise<AppCallTransactionResultOfType<undefined>>
+      },
+    }
+  }
+
+  /**
    * Makes a clear_state call to an existing instance of the Auction smart contract.
    *
    * @param args The arguments for the bare call
@@ -284,12 +459,136 @@ export class AuctionClient {
     return this.appClient.clearState(args)
   }
 
+  /**
+   * Calls the opt_into_asset(asset)void ABI method.
+   *
+   * @param args The arguments for the contract call
+   * @param params Any additional parameters for the call
+   * @returns The result of the call
+   */
+  public optIntoAsset(args: MethodArgs<'opt_into_asset(asset)void'>, params: AppClientCallCoreParams & CoreAppCallArgs = {}) {
+    return this.call(AuctionCallFactory.optIntoAsset(args, params))
+  }
+
+  /**
+   * Calls the start_auction(uint64,uint64,axfer)void ABI method.
+   *
+   * @param args The arguments for the contract call
+   * @param params Any additional parameters for the call
+   * @returns The result of the call
+   */
+  public startAuction(args: MethodArgs<'start_auction(uint64,uint64,axfer)void'>, params: AppClientCallCoreParams & CoreAppCallArgs = {}) {
+    return this.call(AuctionCallFactory.startAuction(args, params))
+  }
+
+  /**
+   * Extracts a binary state value out of an AppState dictionary
+   *
+   * @param state The state dictionary containing the state value
+   * @param key The key of the state value
+   * @returns A BinaryState instance containing the state value, or undefined if the key was not found
+   */
+  private static getBinaryState(state: AppState, key: string): BinaryState | undefined {
+    const value = state[key]
+    if (!value) return undefined
+    if (!('valueRaw' in value))
+      throw new Error(`Failed to parse state value for ${key}; received an int when expected a byte array`)
+    return {
+      asString(): string {
+        return value.value
+      },
+      asByteArray(): Uint8Array {
+        return value.valueRaw
+      }
+    }
+  }
+
+  /**
+   * Extracts a integer state value out of an AppState dictionary
+   *
+   * @param state The state dictionary containing the state value
+   * @param key The key of the state value
+   * @returns An IntegerState instance containing the state value, or undefined if the key was not found
+   */
+  private static getIntegerState(state: AppState, key: string): IntegerState | undefined {
+    const value = state[key]
+    if (!value) return undefined
+    if ('valueRaw' in value)
+      throw new Error(`Failed to parse state value for ${key}; received a byte array when expected a number`)
+    return {
+      asBigInt() {
+        return typeof value.value === 'bigint' ? value.value : BigInt(value.value)
+      },
+      asNumber(): number {
+        return typeof value.value === 'bigint' ? Number(value.value) : value.value
+      },
+    }
+  }
+
+  /**
+   * Returns the smart contract's global state wrapped in a strongly typed accessor with options to format the stored value
+   */
+  public async getGlobalState(): Promise<Auction['state']['global']> {
+    const state = await this.appClient.getGlobalState()
+    return {
+      get asa() {
+        return AuctionClient.getIntegerState(state, 'asa')
+      },
+      get asa_amount() {
+        return AuctionClient.getIntegerState(state, 'asa_amount')
+      },
+      get auction_end() {
+        return AuctionClient.getIntegerState(state, 'auction_end')
+      },
+      get previous_bid() {
+        return AuctionClient.getIntegerState(state, 'previous_bid')
+      },
+      get previous_bidder() {
+        return AuctionClient.getBinaryState(state, 'previous_bidder')
+      },
+    }
+  }
+
+  /**
+   * Returns the smart contract's local state wrapped in a strongly typed accessor with options to format the stored value
+   *
+   * @param account The address of the account for which to read local state from
+   */
+  public async getLocalState(account: string | SendTransactionFrom): Promise<Auction['state']['local']> {
+    const state = await this.appClient.getLocalState(account)
+    return {
+      get claimable_amount() {
+        return AuctionClient.getIntegerState(state, 'claimable_amount')
+      },
+    }
+  }
+
   public compose(): AuctionComposer {
     const client = this
     const atc = new AtomicTransactionComposer()
     let promiseChain:Promise<unknown> = Promise.resolve()
     const resultMappers: Array<undefined | ((x: any) => any)> = []
     return {
+      optIntoAsset(args: MethodArgs<'opt_into_asset(asset)void'>, params?: AppClientCallCoreParams & CoreAppCallArgs) {
+        promiseChain = promiseChain.then(() => client.optIntoAsset(args, {...params, sendParams: {...params?.sendParams, skipSending: true, atc}}))
+        resultMappers.push(undefined)
+        return this
+      },
+      startAuction(args: MethodArgs<'start_auction(uint64,uint64,axfer)void'>, params?: AppClientCallCoreParams & CoreAppCallArgs) {
+        promiseChain = promiseChain.then(() => client.startAuction(args, {...params, sendParams: {...params?.sendParams, skipSending: true, atc}}))
+        resultMappers.push(undefined)
+        return this
+      },
+      get optIn() {
+        const $this = this
+        return {
+          bare(args?: BareCallArgs & AppClientCallCoreParams & CoreAppCallArgs) {
+            promiseChain = promiseChain.then(() => client.optIn.bare({...args, sendParams: {...args?.sendParams, skipSending: true, atc}}))
+            resultMappers.push(undefined)
+            return $this
+          },
+        }
+      },
       clearState(args?: BareCallArgs & AppClientCallCoreParams & CoreAppCallArgs) {
         promiseChain = promiseChain.then(() => client.clearState({...args, sendParams: {...args?.sendParams, skipSending: true, atc}}))
         resultMappers.push(undefined)
@@ -315,6 +614,37 @@ export class AuctionClient {
   }
 }
 export type AuctionComposer<TReturns extends [...any[]] = []> = {
+  /**
+   * Calls the opt_into_asset(asset)void ABI method.
+   *
+   * @param args The arguments for the contract call
+   * @param params Any additional parameters for the call
+   * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
+   */
+  optIntoAsset(args: MethodArgs<'opt_into_asset(asset)void'>, params?: AppClientCallCoreParams & CoreAppCallArgs): AuctionComposer<[...TReturns, MethodReturn<'opt_into_asset(asset)void'>]>
+
+  /**
+   * Calls the start_auction(uint64,uint64,axfer)void ABI method.
+   *
+   * @param args The arguments for the contract call
+   * @param params Any additional parameters for the call
+   * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
+   */
+  startAuction(args: MethodArgs<'start_auction(uint64,uint64,axfer)void'>, params?: AppClientCallCoreParams & CoreAppCallArgs): AuctionComposer<[...TReturns, MethodReturn<'start_auction(uint64,uint64,axfer)void'>]>
+
+  /**
+   * Gets available optIn methods
+   */
+  readonly optIn: {
+    /**
+     * Opts the user into an existing instance of the Auction smart contract using a bare call.
+     *
+     * @param args The arguments for the bare call
+     * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
+     */
+    bare(args?: BareCallArgs & AppClientCallCoreParams & CoreAppCallArgs): AuctionComposer<[...TReturns, undefined]>
+  }
+
   /**
    * Makes a clear_state call to an existing instance of the Auction smart contract.
    *
