@@ -82,6 +82,22 @@ def opt_into_asset(asset: pt.abi.Asset) -> pt.Expr:
 
 
 # start_auction method that starts the auction for a specific length and starting price
+# axfer === short hand for Asset Transfer
+@app.external(authorize=beaker.Authorize.only(pt.Global.creator_address()))
+def start_auction(
+    starting_price: pt.abi.uint64,
+    length: pt.abi.Uint64,
+    axfer: pt.abi.AssetTransferTransaction,
+) -> pt.Expr:
+    return pt.Seq(
+        # Ensure the auction hasn't already started
+        # Set starting price
+        # Set the auction end time
+        # Set the asa amount being auctioned
+        # Verify the asset transfer is to the contract address
+        # Save the amount transfered in global state
+    )
+
 
 # opt_into_app method that allows accounts to opt in to local state
 
