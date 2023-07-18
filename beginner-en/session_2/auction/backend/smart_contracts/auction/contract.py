@@ -3,7 +3,6 @@ import pyteal as pt
 
 
 class AuctionState:
-    pass
     ##################################
     # Global State
     # 64 key-value pairs per contract
@@ -21,12 +20,17 @@ class AuctionState:
     )
 
     # Auction end: Timestamp of the end of the auction
+    auction_end = beaker.GlobalStateValue(
+        stack_type=pt.TealType.uint64, default=pt.Int(0)
+    )
 
     # REMINDER: ASA === Algorand Standard Asset === Asset === Token
 
     # ASA: ID of the ASA being auctioned
+    asa_id = beaker.GlobalStateValue(stack_type=pt.TealType.uint64, default=pt.Int(0))
 
     # ASA amount: Total amount of ASA being auctioned
+    asa = beaker.GlobalStateValue(stack_type=pt.TealType.uint64, default=pt.Int(0))
 
     ##################################
     # Local State
@@ -36,6 +40,9 @@ class AuctionState:
     ##################################
 
     # Claimable amount: Amount of ALGO this account can reclaim from their bids
+    claimable_amount = beaker.LocalStateValue(
+        stack_type=pt.TealType.uint64, default=pt.Int(0)
+    )
 
 
 app = beaker.Application("Auction", state=AuctionState)
