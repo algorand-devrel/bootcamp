@@ -5,10 +5,15 @@ import { PROVIDER_ID, ProvidersArray, WalletProvider, useInitializeProviders, us
 import algosdk from 'algosdk'
 import { SnackbarProvider } from 'notistack'
 import { useState } from 'react'
-import AppCalls from './components/AppCalls'
 import ConnectWallet from './components/ConnectWallet'
-import Transact from './components/Transact'
 import { getAlgodConfigFromViteEnvironment } from './utils/network/getAlgoClientConfigs'
+
+enum AuctionState {
+  Pending,
+  Created,
+  Started,
+  Ended,
+}
 
 let providersArray: ProvidersArray
 if (import.meta.env.VITE_ALGOD_NETWORK === '') {
@@ -26,20 +31,21 @@ if (import.meta.env.VITE_ALGOD_NETWORK === '') {
 
 export default function App() {
   const [openWalletModal, setOpenWalletModal] = useState<boolean>(false)
-  const [openDemoModal, setOpenDemoModal] = useState<boolean>(false)
-  const [appCallsDemoModal, setAppCallsDemoModal] = useState<boolean>(false)
   const { activeAddress } = useWallet()
+  const [auctionState, setAuctionState] = useState<AuctionState>(AuctionState.Pending)
+  const [appID, setAppID] = useState<number>(0)
 
   const toggleWalletModal = () => {
     setOpenWalletModal(!openWalletModal)
   }
 
-  const toggleDemoModal = () => {
-    setOpenDemoModal(!openDemoModal)
+  const createApp = () => {
+    setAppID(1337)
+    setAuctionState(AuctionState.Created)
   }
 
-  const toggleAppCallsModal = () => {
-    setAppCallsDemoModal(!appCallsDemoModal)
+  const startAuction = () => {
+    setAuctionState(AuctionState.Started)
   }
 
   const algodConfig = getAlgodConfigFromViteEnvironment()
@@ -64,41 +70,75 @@ export default function App() {
               <h1 className="text-4xl">
                 Welcome to <div className="font-bold">AlgoKit 🙂</div>
               </h1>
-              <p className="py-6">
-                This starter has been generated using official AlgoKit React template. Refer to the resource below for next steps.
-              </p>
+              <p className="py-6">This is the auction app interface for the beginner bootcamp!</p>
 
               <div className="grid">
-                <a
-                  data-test-id="getting-started"
-                  className="btn btn-primary m-2"
-                  target="_blank"
-                  href="https://github.com/algorandfoundation/algokit-cli"
-                >
-                  Getting started
-                </a>
+                <p>
+                  App ID:{' '}
+                  {auctionState === AuctionState.Pending ? (
+                    'None'
+                  ) : (
+                    <a href={`https://dappflow.org/explorer/application/12174882${appID}`}>{appID}</a>
+                  )}{' '}
+                </p>
 
                 <div className="divider" />
                 <button data-test-id="connect-wallet" className="btn m-2" onClick={toggleWalletModal}>
                   Wallet Connection
                 </button>
 
-                {activeAddress && (
-                  <button data-test-id="transactions-demo" className="btn m-2" onClick={toggleDemoModal}>
-                    Transactions Demo
+                {activeAddress && auctionState === AuctionState.Pending && (
+                  <button className="btn m-2" onClick={createApp}>
+                    Create App
                   </button>
                 )}
 
-                {activeAddress && (
-                  <button data-test-id="appcalls-demo" className="btn m-2" onClick={toggleAppCallsModal}>
-                    Contract Interactions Demo
+                {activeAddress && auctionState === AuctionState.Created && (
+                  <label htmlFor="asa" className="label m-2">
+                    Asset ID
+                  </label>
+                )}
+                {activeAddress && auctionState === AuctionState.Created && (
+                  <input type="number" id="asa" value="0" className="input input-bordered" />
+                )}
+
+                {activeAddress && auctionState === AuctionState.Created && (
+                  <label htmlFor="asa-amount" className="label m-2">
+                    Asset Amount
+                  </label>
+                )}
+                {activeAddress && auctionState === AuctionState.Created && (
+                  <input type="number" id="asa-amount" value="0" className="input input-bordered" />
+                )}
+
+                {activeAddress && auctionState === AuctionState.Created && (
+                  <label htmlFor="start" className="label m-2">
+                    Start Amount
+                  </label>
+                )}
+                {activeAddress && auctionState === AuctionState.Created && (
+                  <input type="number" id="start" value="0" className="input input-bordered" />
+                )}
+
+                {activeAddress && auctionState === AuctionState.Created && (
+                  <button className="btn m-2" onClick={startAuction}>
+                    Start Auction
                   </button>
                 )}
+
+                {activeAddress && auctionState === AuctionState.Started && (
+                  <label htmlFor="bid" className="label m-2">
+                    Bid Amount
+                  </label>
+                )}
+                {activeAddress && auctionState === AuctionState.Started && (
+                  <input type="number" id="bid" value="0" className="input input-bordered" />
+                )}
+
+                {activeAddress && auctionState === AuctionState.Started && <button className="btn m-2">Bid</button>}
+
+                <ConnectWallet openModal={openWalletModal} closeModal={toggleWalletModal} />
               </div>
-
-              <ConnectWallet openModal={openWalletModal} closeModal={toggleWalletModal} />
-              <Transact openModal={openDemoModal} setModalState={setOpenDemoModal} />
-              <AppCalls openModal={appCallsDemoModal} setModalState={setAppCallsDemoModal} />
             </div>
           </div>
         </div>

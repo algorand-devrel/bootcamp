@@ -26,58 +26,114 @@ import { SendTransactionResult, TransactionToSign, SendTransactionFrom } from '@
 import { Algodv2, OnApplicationComplete, Transaction, TransactionWithSigner, AtomicTransactionComposer } from 'algosdk'
 export const APP_SPEC: AppSpec = {
   "hints": {
-    "hello(string)string": {
+    "opt_into_asset(asset)void": {
+      "call_config": {
+        "no_op": "CALL"
+      }
+    },
+    "start_auction(uint64,uint64,axfer)void": {
       "call_config": {
         "no_op": "CALL"
       }
     }
   },
   "source": {
-    "approval": "I3ByYWdtYSB2ZXJzaW9uIDgKaW50Y2Jsb2NrIDAgMQpieXRlY2Jsb2NrIDB4CnR4biBOdW1BcHBBcmdzCmludGNfMCAvLyAwCj09CmJueiBtYWluX2w0CnR4bmEgQXBwbGljYXRpb25BcmdzIDAKcHVzaGJ5dGVzIDB4MDJiZWNlMTEgLy8gImhlbGxvKHN0cmluZylzdHJpbmciCj09CmJueiBtYWluX2wzCmVycgptYWluX2wzOgp0eG4gT25Db21wbGV0aW9uCmludGNfMCAvLyBOb09wCj09CnR4biBBcHBsaWNhdGlvbklECmludGNfMCAvLyAwCiE9CiYmCmFzc2VydApjYWxsc3ViIGhlbGxvY2FzdGVyXzMKaW50Y18xIC8vIDEKcmV0dXJuCm1haW5fbDQ6CnR4biBPbkNvbXBsZXRpb24KaW50Y18wIC8vIE5vT3AKPT0KYm56IG1haW5fbDEwCnR4biBPbkNvbXBsZXRpb24KcHVzaGludCA0IC8vIFVwZGF0ZUFwcGxpY2F0aW9uCj09CmJueiBtYWluX2w5CnR4biBPbkNvbXBsZXRpb24KcHVzaGludCA1IC8vIERlbGV0ZUFwcGxpY2F0aW9uCj09CmJueiBtYWluX2w4CmVycgptYWluX2w4Ogp0eG4gQXBwbGljYXRpb25JRAppbnRjXzAgLy8gMAohPQphc3NlcnQKY2FsbHN1YiBkZWxldGVfMQppbnRjXzEgLy8gMQpyZXR1cm4KbWFpbl9sOToKdHhuIEFwcGxpY2F0aW9uSUQKaW50Y18wIC8vIDAKIT0KYXNzZXJ0CmNhbGxzdWIgdXBkYXRlXzAKaW50Y18xIC8vIDEKcmV0dXJuCm1haW5fbDEwOgp0eG4gQXBwbGljYXRpb25JRAppbnRjXzAgLy8gMAo9PQphc3NlcnQKaW50Y18xIC8vIDEKcmV0dXJuCgovLyB1cGRhdGUKdXBkYXRlXzA6CnByb3RvIDAgMAp0eG4gU2VuZGVyCmdsb2JhbCBDcmVhdG9yQWRkcmVzcwo9PQovLyB1bmF1dGhvcml6ZWQKYXNzZXJ0CnB1c2hpbnQgVE1QTF9VUERBVEFCTEUgLy8gVE1QTF9VUERBVEFCTEUKLy8gQ2hlY2sgYXBwIGlzIHVwZGF0YWJsZQphc3NlcnQKcmV0c3ViCgovLyBkZWxldGUKZGVsZXRlXzE6CnByb3RvIDAgMAp0eG4gU2VuZGVyCmdsb2JhbCBDcmVhdG9yQWRkcmVzcwo9PQovLyB1bmF1dGhvcml6ZWQKYXNzZXJ0CnB1c2hpbnQgVE1QTF9ERUxFVEFCTEUgLy8gVE1QTF9ERUxFVEFCTEUKLy8gQ2hlY2sgYXBwIGlzIGRlbGV0YWJsZQphc3NlcnQKcmV0c3ViCgovLyBoZWxsbwpoZWxsb18yOgpwcm90byAxIDEKYnl0ZWNfMCAvLyAiIgpwdXNoYnl0ZXMgMHg0ODY1NmM2YzZmMmMyMCAvLyAiSGVsbG8sICIKZnJhbWVfZGlnIC0xCmV4dHJhY3QgMiAwCmNvbmNhdApmcmFtZV9idXJ5IDAKZnJhbWVfZGlnIDAKbGVuCml0b2IKZXh0cmFjdCA2IDAKZnJhbWVfZGlnIDAKY29uY2F0CmZyYW1lX2J1cnkgMApyZXRzdWIKCi8vIGhlbGxvX2Nhc3RlcgpoZWxsb2Nhc3Rlcl8zOgpwcm90byAwIDAKYnl0ZWNfMCAvLyAiIgpkdXAKdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMQpmcmFtZV9idXJ5IDEKZnJhbWVfZGlnIDEKY2FsbHN1YiBoZWxsb18yCmZyYW1lX2J1cnkgMApwdXNoYnl0ZXMgMHgxNTFmN2M3NSAvLyAweDE1MWY3Yzc1CmZyYW1lX2RpZyAwCmNvbmNhdApsb2cKcmV0c3Vi",
+    "approval": "I3ByYWdtYSB2ZXJzaW9uIDgKaW50Y2Jsb2NrIDAgMSA0CmJ5dGVjYmxvY2sgMHg2MTczNjEgMHg2MTc1NjM3NDY5NmY2ZTVmNjU2ZTY0IDB4NjE3MzYxNWY2MTZkNmY3NTZlNzQgMHg3MDcyNjU3NjY5NmY3NTczNWY2MjY5NjQKdHhuIE51bUFwcEFyZ3MKaW50Y18wIC8vIDAKPT0KYm56IG1haW5fbDYKdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMApwdXNoYnl0ZXMgMHgyODI2YjIwMiAvLyAib3B0X2ludG9fYXNzZXQoYXNzZXQpdm9pZCIKPT0KYm56IG1haW5fbDUKdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMApwdXNoYnl0ZXMgMHhmMGFhNzAyMyAvLyAic3RhcnRfYXVjdGlvbih1aW50NjQsdWludDY0LGF4ZmVyKXZvaWQiCj09CmJueiBtYWluX2w0CmVycgptYWluX2w0Ogp0eG4gT25Db21wbGV0aW9uCmludGNfMCAvLyBOb09wCj09CnR4biBBcHBsaWNhdGlvbklECmludGNfMCAvLyAwCiE9CiYmCmFzc2VydApjYWxsc3ViIHN0YXJ0YXVjdGlvbmNhc3Rlcl81CmludGNfMSAvLyAxCnJldHVybgptYWluX2w1Ogp0eG4gT25Db21wbGV0aW9uCmludGNfMCAvLyBOb09wCj09CnR4biBBcHBsaWNhdGlvbklECmludGNfMCAvLyAwCiE9CiYmCmFzc2VydApjYWxsc3ViIG9wdGludG9hc3NldGNhc3Rlcl80CmludGNfMSAvLyAxCnJldHVybgptYWluX2w2Ogp0eG4gT25Db21wbGV0aW9uCmludGNfMCAvLyBOb09wCj09CmJueiBtYWluX2wxMAp0eG4gT25Db21wbGV0aW9uCmludGNfMSAvLyBPcHRJbgo9PQpibnogbWFpbl9sOQplcnIKbWFpbl9sOToKdHhuIEFwcGxpY2F0aW9uSUQKaW50Y18wIC8vIDAKIT0KYXNzZXJ0CmNhbGxzdWIgb3B0aW5fMwppbnRjXzEgLy8gMQpyZXR1cm4KbWFpbl9sMTA6CnR4biBBcHBsaWNhdGlvbklECmludGNfMCAvLyAwCj09CmFzc2VydApjYWxsc3ViIGNyZWF0ZV8wCmludGNfMSAvLyAxCnJldHVybgoKLy8gY3JlYXRlCmNyZWF0ZV8wOgpwcm90byAwIDAKYnl0ZWNfMCAvLyAiYXNhIgppbnRjXzAgLy8gMAphcHBfZ2xvYmFsX3B1dApieXRlY18yIC8vICJhc2FfYW1vdW50IgppbnRjXzAgLy8gMAphcHBfZ2xvYmFsX3B1dApieXRlY18xIC8vICJhdWN0aW9uX2VuZCIKaW50Y18wIC8vIDAKYXBwX2dsb2JhbF9wdXQKYnl0ZWNfMyAvLyAicHJldmlvdXNfYmlkIgppbnRjXzAgLy8gMAphcHBfZ2xvYmFsX3B1dApwdXNoYnl0ZXMgMHg3MDcyNjU3NjY5NmY3NTczNWY2MjY5NjQ2NDY1NzIgLy8gInByZXZpb3VzX2JpZGRlciIKcHVzaGJ5dGVzIDB4IC8vICIiCmFwcF9nbG9iYWxfcHV0CnJldHN1YgoKLy8gb3B0X2ludG9fYXNzZXQKb3B0aW50b2Fzc2V0XzE6CnByb3RvIDEgMAp0eG4gU2VuZGVyCmdsb2JhbCBDcmVhdG9yQWRkcmVzcwo9PQovLyB1bmF1dGhvcml6ZWQKYXNzZXJ0CmJ5dGVjXzAgLy8gImFzYSIKYXBwX2dsb2JhbF9nZXQKaW50Y18wIC8vIDAKPT0KYXNzZXJ0CmJ5dGVjXzAgLy8gImFzYSIKZnJhbWVfZGlnIC0xCnR4bmFzIEFzc2V0cwphcHBfZ2xvYmFsX3B1dAppdHhuX2JlZ2luCmludGNfMiAvLyBheGZlcgppdHhuX2ZpZWxkIFR5cGVFbnVtCmdsb2JhbCBDdXJyZW50QXBwbGljYXRpb25BZGRyZXNzCml0eG5fZmllbGQgQXNzZXRSZWNlaXZlcgpmcmFtZV9kaWcgLTEKdHhuYXMgQXNzZXRzCml0eG5fZmllbGQgWGZlckFzc2V0CmludGNfMCAvLyAwCml0eG5fZmllbGQgQXNzZXRBbW91bnQKaW50Y18wIC8vIDAKaXR4bl9maWVsZCBGZWUKaXR4bl9zdWJtaXQKcmV0c3ViCgovLyBzdGFydF9hdWN0aW9uCnN0YXJ0YXVjdGlvbl8yOgpwcm90byAzIDAKdHhuIFNlbmRlcgpnbG9iYWwgQ3JlYXRvckFkZHJlc3MKPT0KLy8gdW5hdXRob3JpemVkCmFzc2VydApieXRlY18xIC8vICJhdWN0aW9uX2VuZCIKYXBwX2dsb2JhbF9nZXQKaW50Y18wIC8vIDAKPT0KYXNzZXJ0CmJ5dGVjXzMgLy8gInByZXZpb3VzX2JpZCIKZnJhbWVfZGlnIC0zCmFwcF9nbG9iYWxfcHV0CmJ5dGVjXzEgLy8gImF1Y3Rpb25fZW5kIgpmcmFtZV9kaWcgLTIKZ2xvYmFsIExhdGVzdFRpbWVzdGFtcAorCmFwcF9nbG9iYWxfcHV0CmZyYW1lX2RpZyAtMQpndHhucyBBc3NldFJlY2VpdmVyCmdsb2JhbCBDdXJyZW50QXBwbGljYXRpb25BZGRyZXNzCj09CmFzc2VydApieXRlY18yIC8vICJhc2FfYW1vdW50IgpmcmFtZV9kaWcgLTEKZ3R4bnMgQXNzZXRBbW91bnQKYXBwX2dsb2JhbF9wdXQKYnl0ZWNfMCAvLyAiYXNhIgpmcmFtZV9kaWcgLTEKZ3R4bnMgWGZlckFzc2V0CmFwcF9nbG9iYWxfcHV0CnJldHN1YgoKLy8gb3B0X2luCm9wdGluXzM6CnByb3RvIDAgMAp0eG4gU2VuZGVyCnB1c2hieXRlcyAweDYzNmM2MTY5NmQ2MTYyNmM2NTVmNjE2ZDZmNzU2ZTc0IC8vICJjbGFpbWFibGVfYW1vdW50IgppbnRjXzAgLy8gMAphcHBfbG9jYWxfcHV0CnJldHN1YgoKLy8gb3B0X2ludG9fYXNzZXRfY2FzdGVyCm9wdGludG9hc3NldGNhc3Rlcl80Ogpwcm90byAwIDAKaW50Y18wIC8vIDAKdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMQppbnRjXzAgLy8gMApnZXRieXRlCmZyYW1lX2J1cnkgMApmcmFtZV9kaWcgMApjYWxsc3ViIG9wdGludG9hc3NldF8xCnJldHN1YgoKLy8gc3RhcnRfYXVjdGlvbl9jYXN0ZXIKc3RhcnRhdWN0aW9uY2FzdGVyXzU6CnByb3RvIDAgMAppbnRjXzAgLy8gMApkdXBuIDIKdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMQpidG9pCmZyYW1lX2J1cnkgMAp0eG5hIEFwcGxpY2F0aW9uQXJncyAyCmJ0b2kKZnJhbWVfYnVyeSAxCnR4biBHcm91cEluZGV4CmludGNfMSAvLyAxCi0KZnJhbWVfYnVyeSAyCmZyYW1lX2RpZyAyCmd0eG5zIFR5cGVFbnVtCmludGNfMiAvLyBheGZlcgo9PQphc3NlcnQKZnJhbWVfZGlnIDAKZnJhbWVfZGlnIDEKZnJhbWVfZGlnIDIKY2FsbHN1YiBzdGFydGF1Y3Rpb25fMgpyZXRzdWI=",
     "clear": "I3ByYWdtYSB2ZXJzaW9uIDgKcHVzaGludCAwIC8vIDAKcmV0dXJu"
   },
   "state": {
     "global": {
-      "num_byte_slices": 0,
-      "num_uints": 0
+      "num_byte_slices": 1,
+      "num_uints": 4
     },
     "local": {
       "num_byte_slices": 0,
-      "num_uints": 0
+      "num_uints": 1
     }
   },
   "schema": {
     "global": {
-      "declared": {},
+      "declared": {
+        "asa": {
+          "type": "uint64",
+          "key": "asa",
+          "descr": ""
+        },
+        "asa_amount": {
+          "type": "uint64",
+          "key": "asa_amount",
+          "descr": ""
+        },
+        "auction_end": {
+          "type": "uint64",
+          "key": "auction_end",
+          "descr": ""
+        },
+        "previous_bid": {
+          "type": "uint64",
+          "key": "previous_bid",
+          "descr": ""
+        },
+        "previous_bidder": {
+          "type": "bytes",
+          "key": "previous_bidder",
+          "descr": ""
+        }
+      },
       "reserved": {}
     },
     "local": {
-      "declared": {},
+      "declared": {
+        "claimable_amount": {
+          "type": "uint64",
+          "key": "claimable_amount",
+          "descr": ""
+        }
+      },
       "reserved": {}
     }
   },
   "contract": {
-    "name": "auction",
+    "name": "Auction",
     "methods": [
       {
-        "name": "hello",
+        "name": "opt_into_asset",
         "args": [
           {
-            "type": "string",
-            "name": "name"
+            "type": "asset",
+            "name": "asset"
           }
         ],
         "returns": {
-          "type": "string"
+          "type": "void"
+        }
+      },
+      {
+        "name": "start_auction",
+        "args": [
+          {
+            "type": "uint64",
+            "name": "starting_price"
+          },
+          {
+            "type": "uint64",
+            "name": "length"
+          },
+          {
+            "type": "axfer",
+            "name": "axfer"
+          }
+        ],
+        "returns": {
+          "type": "void"
         }
       }
     ],
     "networks": {}
   },
   "bare_call_config": {
-    "delete_application": "CALL",
     "no_op": "CREATE",
-    "update_application": "CALL"
+    "opt_in": "CALL"
   }
 }
 
@@ -136,13 +192,37 @@ export type Auction = {
    * Maps method signatures / names to their argument and return types.
    */
   methods:
-    & Record<'hello(string)string' | 'hello', {
+    & Record<'opt_into_asset(asset)void' | 'opt_into_asset', {
       argsObj: {
-        name: string
+        asset: number | bigint
       }
-      argsTuple: [name: string]
-      returns: string
+      argsTuple: [asset: number | bigint]
+      returns: void
     }>
+    & Record<'start_auction(uint64,uint64,axfer)void' | 'start_auction', {
+      argsObj: {
+        starting_price: bigint | number
+        length: bigint | number
+        axfer: TransactionToSign | Transaction | Promise<SendTransactionResult>
+      }
+      argsTuple: [starting_price: bigint | number, length: bigint | number, axfer: TransactionToSign | Transaction | Promise<SendTransactionResult>]
+      returns: void
+    }>
+  /**
+   * Defines the shape of the global and local state of the application.
+   */
+  state: {
+    global: {
+      'asa'?: IntegerState
+      'asa_amount'?: IntegerState
+      'auction_end'?: IntegerState
+      'previous_bid'?: IntegerState
+      'previous_bidder'?: BinaryState
+    }
+    local: {
+      'claimable_amount'?: IntegerState
+    }
+  }
 }
 /**
  * Defines the possible abi call signatures
@@ -178,24 +258,6 @@ export type AuctionCreateCalls = (typeof AuctionCallFactory)['create']
 export type AuctionCreateCallParams =
   | (TypedCallParams<undefined> & (OnCompleteNoOp))
 /**
- * A factory for available 'update' calls
- */
-export type AuctionUpdateCalls = (typeof AuctionCallFactory)['update']
-/**
- * Defines supported update methods for this smart contract
- */
-export type AuctionUpdateCallParams =
-  | TypedCallParams<undefined>
-/**
- * A factory for available 'delete' calls
- */
-export type AuctionDeleteCalls = (typeof AuctionCallFactory)['delete']
-/**
- * Defines supported delete methods for this smart contract
- */
-export type AuctionDeleteCallParams =
-  | TypedCallParams<undefined>
-/**
  * Defines arguments required for the deploy method.
  */
 export type AuctionDeployArgs = {
@@ -204,14 +266,6 @@ export type AuctionDeployArgs = {
    * A delegate which takes a create call factory and returns the create call params for this smart contract
    */
   createCall?: (callFactory: AuctionCreateCalls) => AuctionCreateCallParams
-  /**
-   * A delegate which takes a update call factory and returns the update call params for this smart contract
-   */
-  updateCall?: (callFactory: AuctionUpdateCalls) => AuctionUpdateCallParams
-  /**
-   * A delegate which takes a delete call factory and returns the delete call params for this smart contract
-   */
-  deleteCall?: (callFactory: AuctionDeleteCalls) => AuctionDeleteCallParams
 }
 
 
@@ -225,7 +279,7 @@ export abstract class AuctionCallFactory {
   static get create() {
     return {
       /**
-       * Constructs a create call for the auction smart contract using a bare call
+       * Constructs a create call for the Auction smart contract using a bare call
        *
        * @param params Any parameters for the call
        * @returns A TypedCallParams object for the call
@@ -241,33 +295,12 @@ export abstract class AuctionCallFactory {
   }
 
   /**
-   * Gets available update call factories
+   * Gets available optIn call factories
    */
-  static get update() {
+  static get optIn() {
     return {
       /**
-       * Constructs an update call for the auction smart contract using a bare call
-       *
-       * @param params Any parameters for the call
-       * @returns A TypedCallParams object for the call
-       */
-      bare(params: BareCallArgs & AppClientCallCoreParams & CoreAppCallArgs & AppClientCompilationParams = {}) {
-        return {
-          method: undefined,
-          methodArgs: undefined,
-          ...params,
-        }
-      },
-    }
-  }
-
-  /**
-   * Gets available delete call factories
-   */
-  static get delete() {
-    return {
-      /**
-       * Constructs a delete call for the auction smart contract using a bare call
+       * Constructs an opt in call for the Auction smart contract using a bare call
        *
        * @param params Any parameters for the call
        * @returns A TypedCallParams object for the call
@@ -283,23 +316,37 @@ export abstract class AuctionCallFactory {
   }
 
   /**
-   * Constructs a no op call for the hello(string)string ABI method
+   * Constructs a no op call for the opt_into_asset(asset)void ABI method
    *
    * @param args Any args for the contract call
    * @param params Any additional parameters for the call
    * @returns A TypedCallParams object for the call
    */
-  static hello(args: MethodArgs<'hello(string)string'>, params: AppClientCallCoreParams & CoreAppCallArgs) {
+  static optIntoAsset(args: MethodArgs<'opt_into_asset(asset)void'>, params: AppClientCallCoreParams & CoreAppCallArgs) {
     return {
-      method: 'hello(string)string' as const,
-      methodArgs: Array.isArray(args) ? args : [args.name],
+      method: 'opt_into_asset(asset)void' as const,
+      methodArgs: Array.isArray(args) ? args : [args.asset],
+      ...params,
+    }
+  }
+  /**
+   * Constructs a no op call for the start_auction(uint64,uint64,axfer)void ABI method
+   *
+   * @param args Any args for the contract call
+   * @param params Any additional parameters for the call
+   * @returns A TypedCallParams object for the call
+   */
+  static startAuction(args: MethodArgs<'start_auction(uint64,uint64,axfer)void'>, params: AppClientCallCoreParams & CoreAppCallArgs) {
+    return {
+      method: 'start_auction(uint64,uint64,axfer)void' as const,
+      methodArgs: Array.isArray(args) ? args : [args.starting_price, args.length, args.axfer],
       ...params,
     }
   }
 }
 
 /**
- * A client to make calls to the auction smart contract
+ * A client to make calls to the Auction smart contract
  */
 export class AuctionClient {
   /**
@@ -352,19 +399,15 @@ export class AuctionClient {
   }
 
   /**
-   * Idempotently deploys the auction smart contract.
+   * Idempotently deploys the Auction smart contract.
    *
    * @param params The arguments for the contract calls and any additional parameters for the call
    * @returns The deployment result
    */
   public deploy(params: AuctionDeployArgs & AppClientDeployCoreParams = {}): ReturnType<ApplicationClient['deploy']> {
     const createArgs = params.createCall?.(AuctionCallFactory.create)
-    const updateArgs = params.updateCall?.(AuctionCallFactory.update)
-    const deleteArgs = params.deleteCall?.(AuctionCallFactory.delete)
     return this.appClient.deploy({
       ...params,
-      updateArgs,
-      deleteArgs,
       createArgs,
       createOnCompleteAction: createArgs?.onCompleteAction,
     })
@@ -377,7 +420,7 @@ export class AuctionClient {
     const $this = this
     return {
       /**
-       * Creates a new instance of the auction smart contract using a bare call.
+       * Creates a new instance of the Auction smart contract using a bare call.
        *
        * @param args The arguments for the bare call
        * @returns The create result
@@ -389,43 +432,25 @@ export class AuctionClient {
   }
 
   /**
-   * Gets available update methods
+   * Gets available optIn methods
    */
-  public get update() {
+  public get optIn() {
     const $this = this
     return {
       /**
-       * Updates an existing instance of the auction smart contract using a bare call.
+       * Opts the user into an existing instance of the Auction smart contract using a bare call.
        *
        * @param args The arguments for the bare call
-       * @returns The update result
-       */
-      bare(args: BareCallArgs & AppClientCallCoreParams & AppClientCompilationParams & CoreAppCallArgs = {}): Promise<AppCallTransactionResultOfType<undefined>> {
-        return $this.appClient.update(args) as unknown as Promise<AppCallTransactionResultOfType<undefined>>
-      },
-    }
-  }
-
-  /**
-   * Gets available delete methods
-   */
-  public get delete() {
-    const $this = this
-    return {
-      /**
-       * Deletes an existing instance of the auction smart contract using a bare call.
-       *
-       * @param args The arguments for the bare call
-       * @returns The delete result
+       * @returns The optIn result
        */
       bare(args: BareCallArgs & AppClientCallCoreParams & CoreAppCallArgs = {}): Promise<AppCallTransactionResultOfType<undefined>> {
-        return $this.appClient.delete(args) as unknown as Promise<AppCallTransactionResultOfType<undefined>>
+        return $this.appClient.optIn(args) as unknown as Promise<AppCallTransactionResultOfType<undefined>>
       },
     }
   }
 
   /**
-   * Makes a clear_state call to an existing instance of the auction smart contract.
+   * Makes a clear_state call to an existing instance of the Auction smart contract.
    *
    * @param args The arguments for the bare call
    * @returns The clear_state result
@@ -435,14 +460,107 @@ export class AuctionClient {
   }
 
   /**
-   * Calls the hello(string)string ABI method.
+   * Calls the opt_into_asset(asset)void ABI method.
    *
    * @param args The arguments for the contract call
    * @param params Any additional parameters for the call
    * @returns The result of the call
    */
-  public hello(args: MethodArgs<'hello(string)string'>, params: AppClientCallCoreParams & CoreAppCallArgs = {}) {
-    return this.call(AuctionCallFactory.hello(args, params))
+  public optIntoAsset(args: MethodArgs<'opt_into_asset(asset)void'>, params: AppClientCallCoreParams & CoreAppCallArgs = {}) {
+    return this.call(AuctionCallFactory.optIntoAsset(args, params))
+  }
+
+  /**
+   * Calls the start_auction(uint64,uint64,axfer)void ABI method.
+   *
+   * @param args The arguments for the contract call
+   * @param params Any additional parameters for the call
+   * @returns The result of the call
+   */
+  public startAuction(args: MethodArgs<'start_auction(uint64,uint64,axfer)void'>, params: AppClientCallCoreParams & CoreAppCallArgs = {}) {
+    return this.call(AuctionCallFactory.startAuction(args, params))
+  }
+
+  /**
+   * Extracts a binary state value out of an AppState dictionary
+   *
+   * @param state The state dictionary containing the state value
+   * @param key The key of the state value
+   * @returns A BinaryState instance containing the state value, or undefined if the key was not found
+   */
+  private static getBinaryState(state: AppState, key: string): BinaryState | undefined {
+    const value = state[key]
+    if (!value) return undefined
+    if (!('valueRaw' in value))
+      throw new Error(`Failed to parse state value for ${key}; received an int when expected a byte array`)
+    return {
+      asString(): string {
+        return value.value
+      },
+      asByteArray(): Uint8Array {
+        return value.valueRaw
+      }
+    }
+  }
+
+  /**
+   * Extracts a integer state value out of an AppState dictionary
+   *
+   * @param state The state dictionary containing the state value
+   * @param key The key of the state value
+   * @returns An IntegerState instance containing the state value, or undefined if the key was not found
+   */
+  private static getIntegerState(state: AppState, key: string): IntegerState | undefined {
+    const value = state[key]
+    if (!value) return undefined
+    if ('valueRaw' in value)
+      throw new Error(`Failed to parse state value for ${key}; received a byte array when expected a number`)
+    return {
+      asBigInt() {
+        return typeof value.value === 'bigint' ? value.value : BigInt(value.value)
+      },
+      asNumber(): number {
+        return typeof value.value === 'bigint' ? Number(value.value) : value.value
+      },
+    }
+  }
+
+  /**
+   * Returns the smart contract's global state wrapped in a strongly typed accessor with options to format the stored value
+   */
+  public async getGlobalState(): Promise<Auction['state']['global']> {
+    const state = await this.appClient.getGlobalState()
+    return {
+      get asa() {
+        return AuctionClient.getIntegerState(state, 'asa')
+      },
+      get asa_amount() {
+        return AuctionClient.getIntegerState(state, 'asa_amount')
+      },
+      get auction_end() {
+        return AuctionClient.getIntegerState(state, 'auction_end')
+      },
+      get previous_bid() {
+        return AuctionClient.getIntegerState(state, 'previous_bid')
+      },
+      get previous_bidder() {
+        return AuctionClient.getBinaryState(state, 'previous_bidder')
+      },
+    }
+  }
+
+  /**
+   * Returns the smart contract's local state wrapped in a strongly typed accessor with options to format the stored value
+   *
+   * @param account The address of the account for which to read local state from
+   */
+  public async getLocalState(account: string | SendTransactionFrom): Promise<Auction['state']['local']> {
+    const state = await this.appClient.getLocalState(account)
+    return {
+      get claimable_amount() {
+        return AuctionClient.getIntegerState(state, 'claimable_amount')
+      },
+    }
   }
 
   public compose(): AuctionComposer {
@@ -451,26 +569,21 @@ export class AuctionClient {
     let promiseChain:Promise<unknown> = Promise.resolve()
     const resultMappers: Array<undefined | ((x: any) => any)> = []
     return {
-      hello(args: MethodArgs<'hello(string)string'>, params?: AppClientCallCoreParams & CoreAppCallArgs) {
-        promiseChain = promiseChain.then(() => client.hello(args, {...params, sendParams: {...params?.sendParams, skipSending: true, atc}}))
+      optIntoAsset(args: MethodArgs<'opt_into_asset(asset)void'>, params?: AppClientCallCoreParams & CoreAppCallArgs) {
+        promiseChain = promiseChain.then(() => client.optIntoAsset(args, {...params, sendParams: {...params?.sendParams, skipSending: true, atc}}))
         resultMappers.push(undefined)
         return this
       },
-      get update() {
-        const $this = this
-        return {
-          bare(args?: BareCallArgs & AppClientCallCoreParams & AppClientCompilationParams & CoreAppCallArgs) {
-            promiseChain = promiseChain.then(() => client.update.bare({...args, sendParams: {...args?.sendParams, skipSending: true, atc}}))
-            resultMappers.push(undefined)
-            return $this
-          },
-        }
+      startAuction(args: MethodArgs<'start_auction(uint64,uint64,axfer)void'>, params?: AppClientCallCoreParams & CoreAppCallArgs) {
+        promiseChain = promiseChain.then(() => client.startAuction(args, {...params, sendParams: {...params?.sendParams, skipSending: true, atc}}))
+        resultMappers.push(undefined)
+        return this
       },
-      get delete() {
+      get optIn() {
         const $this = this
         return {
           bare(args?: BareCallArgs & AppClientCallCoreParams & CoreAppCallArgs) {
-            promiseChain = promiseChain.then(() => client.delete.bare({...args, sendParams: {...args?.sendParams, skipSending: true, atc}}))
+            promiseChain = promiseChain.then(() => client.optIn.bare({...args, sendParams: {...args?.sendParams, skipSending: true, atc}}))
             resultMappers.push(undefined)
             return $this
           },
@@ -502,33 +615,29 @@ export class AuctionClient {
 }
 export type AuctionComposer<TReturns extends [...any[]] = []> = {
   /**
-   * Calls the hello(string)string ABI method.
+   * Calls the opt_into_asset(asset)void ABI method.
    *
    * @param args The arguments for the contract call
    * @param params Any additional parameters for the call
    * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
    */
-  hello(args: MethodArgs<'hello(string)string'>, params?: AppClientCallCoreParams & CoreAppCallArgs): AuctionComposer<[...TReturns, MethodReturn<'hello(string)string'>]>
+  optIntoAsset(args: MethodArgs<'opt_into_asset(asset)void'>, params?: AppClientCallCoreParams & CoreAppCallArgs): AuctionComposer<[...TReturns, MethodReturn<'opt_into_asset(asset)void'>]>
 
   /**
-   * Gets available update methods
+   * Calls the start_auction(uint64,uint64,axfer)void ABI method.
+   *
+   * @param args The arguments for the contract call
+   * @param params Any additional parameters for the call
+   * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
    */
-  readonly update: {
-    /**
-     * Updates an existing instance of the auction smart contract using a bare call.
-     *
-     * @param args The arguments for the bare call
-     * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
-     */
-    bare(args?: BareCallArgs & AppClientCallCoreParams & AppClientCompilationParams & CoreAppCallArgs): AuctionComposer<[...TReturns, undefined]>
-  }
+  startAuction(args: MethodArgs<'start_auction(uint64,uint64,axfer)void'>, params?: AppClientCallCoreParams & CoreAppCallArgs): AuctionComposer<[...TReturns, MethodReturn<'start_auction(uint64,uint64,axfer)void'>]>
 
   /**
-   * Gets available delete methods
+   * Gets available optIn methods
    */
-  readonly delete: {
+  readonly optIn: {
     /**
-     * Deletes an existing instance of the auction smart contract using a bare call.
+     * Opts the user into an existing instance of the Auction smart contract using a bare call.
      *
      * @param args The arguments for the bare call
      * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
@@ -537,7 +646,7 @@ export type AuctionComposer<TReturns extends [...any[]] = []> = {
   }
 
   /**
-   * Makes a clear_state call to an existing instance of the auction smart contract.
+   * Makes a clear_state call to an existing instance of the Auction smart contract.
    *
    * @param args The arguments for the bare call
    * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
