@@ -98,10 +98,13 @@ const AppCalls = (props: {
         appID: props.appID,
       })
 
+      const startPrice = (document.getElementById('start') as HTMLInputElement).valueAsNumber
+      const length = (document.getElementById('length') as HTMLInputElement).valueAsNumber
+
       atc.addMethodCall({
         method: appClient.appClient.getABIMethod('start_auction')!,
         suggestedParams: await algodClient.getTransactionParams().do(),
-        methodArgs: [1, 1, { txn: axfer, signer }],
+        methodArgs: [startPrice, length, { txn: axfer, signer }],
         sender: sender.addr,
         signer: signer,
         appID: props.appID,
@@ -134,7 +137,43 @@ const AppCalls = (props: {
         suggestedParams,
       })
 
-      await appClient.bid({ payment })
+      const atc = new algosdk.AtomicTransactionComposer()
+
+      let optedIn = true
+
+      try {
+        await appClient.getLocalState(activeAddress)
+      } catch (e) {
+        optedIn = false
+      }
+
+      if (!optedIn) {
+        const appOptIn = algosdk.makeApplicationOptInTxnFromObject({
+          from: activeAddress,
+          appIndex: props.appID,
+          suggestedParams,
+        })
+
+        atc.addTransaction({ txn: appOptIn, signer })
+      }
+
+      atc.addMethodCall({
+        method: appClient.appClient.getABIMethod('bid')!,
+        suggestedParams: { ...(await algodClient.getTransactionParams().do()), fee: 2_000, flatFee: true },
+        methodArgs: [{ txn: payment, signer }],
+        sender: sender.addr,
+        signer: signer,
+        appID: props.appID,
+      })
+
+      try {
+        await atc.execute(algodClient, 3)
+      } catch (e) {
+        console.warn(e)
+        enqueueSnackbar(`Error deploying the contract: ${(e as Error).message}`, { variant: 'error' })
+        setLoading(false)
+        return
+      }
 
       setLoading(false)
     },
@@ -176,6 +215,10 @@ const AppCalls = (props: {
             Start Amount
           </label>
           <input type="number" id="start" defaultValue="0" className="input input-bordered" />
+          <label htmlFor="length" className="label m-2">
+            Length
+          </label>
+          <input type="number" id="length" defaultValue="0" className="input input-bordered" />
           <br />
           {callButton}
         </div>
