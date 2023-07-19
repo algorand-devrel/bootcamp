@@ -1,5 +1,7 @@
+/* eslint-disable no-console */
 import * as algokit from '@algorandfoundation/algokit-utils'
 import { useWallet } from '@txnlab/use-wallet'
+import algosdk from 'algosdk'
 import { useSnackbar } from 'notistack'
 import { useState } from 'react'
 import { AuctionState } from '../App'
@@ -26,12 +28,14 @@ const AppCalls = (props: {
   const { enqueueSnackbar } = useSnackbar()
   const { signer, activeAddress } = useWallet()
 
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const sender = { signer, addr: activeAddress! }
+
   const appClient = new AuctionClient(
     {
       resolveBy: 'id',
       id: props.appID,
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      sender: { signer, addr: activeAddress! },
+      sender,
     },
     algodClient,
   )
@@ -50,12 +54,64 @@ const AppCalls = (props: {
 
       setLoading(false)
 
-      props.setAuctionState(AuctionState.Created)
       const { appId } = await appClient.appClient.getAppReference()
       props.setAppID(Number(appId))
     },
     start: async () => {
+      if (activeAddress === undefined) throw Error('activeAddress is undefined')
+
+      const axfer = algosdk.makeAssetTransferTxnWithSuggestedParamsFromObject({
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        from: activeAddress!,
+        to: algosdk.getApplicationAddress(props.appID),
+        amount: (document.getElementById('asa-amount') as HTMLInputElement).valueAsNumber,
+        assetIndex: (document.getElementById('asa') as HTMLInputElement).valueAsNumber,
+        suggestedParams: await algodClient.getTransactionParams().do(),
+      })
+
+      console.log(sender, algosdk.encodeAddress(axfer.to.publicKey), algosdk.encodeAddress(axfer.from.publicKey))
+
+      await appClient
+        .startAuction(
+          {
+            starting_price: 100_000,
+            length: 300,
+            axfer: { transaction: axfer, signer: sender },
+          },
+          {
+            sender,
+          },
+        )
+        .catch((e: Error) => {
+          console.warn(e)
+          enqueueSnackbar(`Error deploying the contract: ${e.message}`, { variant: 'error' })
+          setLoading(false)
+          return
+        })
+
+      /*
+      const atc = new AtomicTransactionComposer()
+
+      atc.addMethodCall({
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        method: appClient.appClient.getABIMethod('start_auction')!,
+        suggestedParams: await algodClient.getTransactionParams().do(),
+        methodArgs: [1, 1, { txn: axfer, signer }],
+        sender: sender.addr,
+        signer: signer,
+        appID: props.appID,
+      })
+
+      await atc.execute(algodClient, 3).catch((e: Error) => {
+        console.warn(e)
+        enqueueSnackbar(`Error deploying the contract: ${e.message}`, { variant: 'error' })
+        setLoading(false)
+        return
+      })
+
+
       props.setAuctionState(AuctionState.Started)
+      */
     },
     bid: async () => {},
   }
