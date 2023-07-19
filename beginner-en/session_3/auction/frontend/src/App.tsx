@@ -43,10 +43,6 @@ export default function App() {
     setOpenWalletModal(!openWalletModal)
   }
 
-  const startAuction = () => {
-    setAuctionState(AuctionState.Started)
-  }
-
   const walletProviders = useInitializeProviders({
     providers: providersArray,
     nodeConfig: {
@@ -88,50 +84,9 @@ export default function App() {
                   <AppCalls method="create" setAuctionState={setAuctionState} setAppID={setAppID} />
                 )}
 
-                {activeAddress && auctionState === AuctionState.Created && (
-                  <label htmlFor="asa" className="label m-2">
-                    Asset ID
-                  </label>
-                )}
-                {activeAddress && auctionState === AuctionState.Created && (
-                  <input type="number" id="asa" defaultValue="0" className="input input-bordered" />
-                )}
+                {activeAddress && auctionState === AuctionState.Created && <AppCalls method="start" setAuctionState={setAuctionState} />}
 
-                {activeAddress && auctionState === AuctionState.Created && (
-                  <label htmlFor="asa-amount" className="label m-2">
-                    Asset Amount
-                  </label>
-                )}
-                {activeAddress && auctionState === AuctionState.Created && (
-                  <input type="number" id="asa-amount" defaultValue="0" className="input input-bordered" />
-                )}
-
-                {activeAddress && auctionState === AuctionState.Created && (
-                  <label htmlFor="start" className="label m-2">
-                    Start Amount
-                  </label>
-                )}
-                {activeAddress && auctionState === AuctionState.Created && (
-                  <input type="number" id="start" defaultValue="0" className="input input-bordered" />
-                )}
-
-                {activeAddress && auctionState === AuctionState.Created && (
-                  <button className="btn m-2" onClick={startAuction}>
-                    Start Auction
-                  </button>
-                )}
-
-                {activeAddress && auctionState === AuctionState.Started && (
-                  <label htmlFor="bid" className="label m-2">
-                    Bid Amount
-                  </label>
-                )}
-                {activeAddress && auctionState === AuctionState.Started && (
-                  <input type="number" id="bid" defaultValue="0" className="input input-bordered" />
-                )}
-
-                {activeAddress && auctionState === AuctionState.Started && <button className="btn m-2">Bid</button>}
-
+                {activeAddress && auctionState === AuctionState.Started && <AppCalls method="bid" setAuctionState={setAuctionState} />}
                 <ConnectWallet openModal={openWalletModal} closeModal={toggleWalletModal} />
               </div>
             </div>
