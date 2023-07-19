@@ -12,7 +12,6 @@ import { getAlgodConfigFromViteEnvironment } from './utils/network/getAlgoClient
 
 export enum AuctionState {
   Pending,
-  Created,
   Started,
   Ended,
 }
@@ -66,29 +65,32 @@ export default function App() {
               <p className="py-6">This is the auction app interface for the beginner bootcamp!</p>
 
               <div className="grid">
-                <p>
-                  App ID:
-                  {auctionState === AuctionState.Pending ? (
-                    'None'
-                  ) : (
-                    <a href={`https://app.dappflow.org/explorer/application/${appID}`}>{appID}</a>
-                  )}
-                </p>
+                <label htmlFor="app" className="label m-2">
+                  App ID
+                </label>
+                <input
+                  type="number"
+                  id="app"
+                  value={appID}
+                  className="input input-bordered"
+                  readOnly={true}
+                  onChange={(e) => (e.target.valueAsNumber ? setAppID(e.target.valueAsNumber) : setAppID(0))}
+                />
 
                 <div className="divider" />
                 <button data-test-id="connect-wallet" className="btn m-2" onClick={toggleWalletModal}>
                   Wallet Connection
                 </button>
 
-                {activeAddress && auctionState === AuctionState.Pending && (
+                {activeAddress && appID === 0 && (
                   <AppCalls appID={appID} method="create" setAuctionState={setAuctionState} setAppID={setAppID} />
                 )}
 
-                {activeAddress && auctionState === AuctionState.Created && (
+                {activeAddress && appID > 0 && auctionState !== AuctionState.Started && (
                   <AppCalls appID={appID} method="start" setAuctionState={setAuctionState} />
                 )}
 
-                {activeAddress && auctionState === AuctionState.Started && (
+                {activeAddress && appID > 0 && auctionState === AuctionState.Started && (
                   <AppCalls appID={appID} method="bid" setAuctionState={setAuctionState} />
                 )}
 
