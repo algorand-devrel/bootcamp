@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import * as algokit from '@algorandfoundation/algokit-utils'
 import { DeflyWalletConnect } from '@blockshake/defly-connect'
 import { DaffiWalletConnect } from '@daffiwallet/connect'
 import { PeraWalletConnect } from '@perawallet/connect'
@@ -7,10 +6,11 @@ import { PROVIDER_ID, ProvidersArray, WalletProvider, useInitializeProviders, us
 import algosdk from 'algosdk'
 import { SnackbarProvider } from 'notistack'
 import { useState } from 'react'
+import AppCalls from './components/AppCalls'
 import ConnectWallet from './components/ConnectWallet'
-import { AuctionClient } from './contracts/auction'
 import { getAlgodConfigFromViteEnvironment } from './utils/network/getAlgoClientConfigs'
-enum AuctionState {
+
+export enum AuctionState {
   Pending,
   Created,
   Started,
@@ -33,29 +33,14 @@ if (import.meta.env.VITE_ALGOD_NETWORK === '') {
 
 export default function App() {
   const [openWalletModal, setOpenWalletModal] = useState<boolean>(false)
-  const { signer, activeAddress } = useWallet()
+  const { activeAddress } = useWallet()
   const [auctionState, setAuctionState] = useState<AuctionState>(AuctionState.Pending)
   const [appID, setAppID] = useState<number>(0)
 
   const algodConfig = getAlgodConfigFromViteEnvironment()
 
-  const auctionClient: AuctionClient = new AuctionClient(
-    {
-      resolveBy: 'id',
-      id: 0,
-      sender: { signer, addr: activeAddress! },
-    },
-    algokit.getAlgoClient(algodConfig),
-  )
-
   const toggleWalletModal = () => {
     setOpenWalletModal(!openWalletModal)
-  }
-
-  const createApp = async () => {
-    const res = await auctionClient!.create.bare()
-    setAppID(res.transactions[0].appIndex)
-    setAuctionState(AuctionState.Created)
   }
 
   const startAuction = () => {
@@ -86,12 +71,12 @@ export default function App() {
 
               <div className="grid">
                 <p>
-                  App ID:{' '}
+                  App ID:
                   {auctionState === AuctionState.Pending ? (
                     'None'
                   ) : (
-                    <a href={`https://dappflow.org/explorer/application/12174882${appID}`}>{appID}</a>
-                  )}{' '}
+                    <a href={`https://app.dappflow.org/explorer/application/${appID}`}>{appID}</a>
+                  )}
                 </p>
 
                 <div className="divider" />
@@ -100,9 +85,7 @@ export default function App() {
                 </button>
 
                 {activeAddress && auctionState === AuctionState.Pending && (
-                  <button className="btn m-2" onClick={createApp}>
-                    Create App
-                  </button>
+                  <AppCalls method="create" setAuctionState={setAuctionState} setAppID={setAppID} />
                 )}
 
                 {activeAddress && auctionState === AuctionState.Created && (
@@ -111,7 +94,7 @@ export default function App() {
                   </label>
                 )}
                 {activeAddress && auctionState === AuctionState.Created && (
-                  <input type="number" id="asa" value="0" className="input input-bordered" />
+                  <input type="number" id="asa" defaultValue="0" className="input input-bordered" />
                 )}
 
                 {activeAddress && auctionState === AuctionState.Created && (
@@ -120,7 +103,7 @@ export default function App() {
                   </label>
                 )}
                 {activeAddress && auctionState === AuctionState.Created && (
-                  <input type="number" id="asa-amount" value="0" className="input input-bordered" />
+                  <input type="number" id="asa-amount" defaultValue="0" className="input input-bordered" />
                 )}
 
                 {activeAddress && auctionState === AuctionState.Created && (
@@ -129,7 +112,7 @@ export default function App() {
                   </label>
                 )}
                 {activeAddress && auctionState === AuctionState.Created && (
-                  <input type="number" id="start" value="0" className="input input-bordered" />
+                  <input type="number" id="start" defaultValue="0" className="input input-bordered" />
                 )}
 
                 {activeAddress && auctionState === AuctionState.Created && (
@@ -144,7 +127,7 @@ export default function App() {
                   </label>
                 )}
                 {activeAddress && auctionState === AuctionState.Started && (
-                  <input type="number" id="bid" value="0" className="input input-bordered" />
+                  <input type="number" id="bid" defaultValue="0" className="input input-bordered" />
                 )}
 
                 {activeAddress && auctionState === AuctionState.Started && <button className="btn m-2">Bid</button>}
