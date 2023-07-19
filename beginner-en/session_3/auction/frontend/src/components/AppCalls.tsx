@@ -2,7 +2,6 @@
 /* eslint-disable no-console */
 import * as algokit from '@algorandfoundation/algokit-utils'
 import { useWallet } from '@txnlab/use-wallet'
-import algosdk from 'algosdk'
 import { useSnackbar } from 'notistack'
 import { useState } from 'react'
 import { AuctionState } from '../App'
@@ -59,123 +58,10 @@ const AppCalls = (props: {
       props.setAppID(Number(appId))
     },
     start: async () => {
-      if (activeAddress === undefined) throw Error('activeAddress is undefined')
-      setLoading(true)
-
-      const assetIndex = (document.getElementById('asa') as HTMLInputElement).valueAsNumber
-      const appAddress = algosdk.getApplicationAddress(props.appID)
-
-      const suggestedParams = await algodClient.getTransactionParams().do()
-
-      const axfer = algosdk.makeAssetTransferTxnWithSuggestedParamsFromObject({
-        from: activeAddress,
-        to: appAddress,
-        amount: (document.getElementById('asa-amount') as HTMLInputElement).valueAsNumber,
-        assetIndex,
-        suggestedParams,
-      })
-
-      const mbrPayment = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
-        from: activeAddress,
-        to: appAddress,
-        amount: 200_000,
-        suggestedParams,
-      })
-
-      const atc = new algosdk.AtomicTransactionComposer()
-
-      atc.addTransaction({
-        txn: mbrPayment,
-        signer,
-      })
-
-      atc.addMethodCall({
-        method: appClient.appClient.getABIMethod('opt_into_asset')!,
-        suggestedParams: { ...(await algodClient.getTransactionParams().do()), fee: 2_000, flatFee: true },
-        methodArgs: [assetIndex],
-        sender: sender.addr,
-        signer: signer,
-        appID: props.appID,
-      })
-
-      const startPrice = (document.getElementById('start') as HTMLInputElement).valueAsNumber
-      const length = (document.getElementById('length') as HTMLInputElement).valueAsNumber
-
-      atc.addMethodCall({
-        method: appClient.appClient.getABIMethod('start_auction')!,
-        suggestedParams: await algodClient.getTransactionParams().do(),
-        methodArgs: [startPrice, length, { txn: axfer, signer }],
-        sender: sender.addr,
-        signer: signer,
-        appID: props.appID,
-      })
-
-      try {
-        await atc.execute(algodClient, 3)
-      } catch (e) {
-        console.warn(e)
-        enqueueSnackbar(`Error deploying the contract: ${(e as Error).message}`, { variant: 'error' })
-        setLoading(false)
-        return
-      }
-
-      setLoading(false)
-      props.setAuctionState(AuctionState.Started)
+      // opt_into_asset and start_auction logic here
     },
     bid: async () => {
-      if (activeAddress === undefined) throw Error('activeAddress is undefined')
-      setLoading(true)
-
-      const appAddress = algosdk.getApplicationAddress(props.appID)
-
-      const suggestedParams = await algodClient.getTransactionParams().do()
-
-      const payment = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
-        from: activeAddress,
-        to: appAddress,
-        amount: (document.getElementById('bid') as HTMLInputElement).valueAsNumber,
-        suggestedParams,
-      })
-
-      const atc = new algosdk.AtomicTransactionComposer()
-
-      let optedIn = true
-
-      try {
-        await appClient.getLocalState(activeAddress)
-      } catch (e) {
-        optedIn = false
-      }
-
-      if (!optedIn) {
-        const appOptIn = algosdk.makeApplicationOptInTxnFromObject({
-          from: activeAddress,
-          appIndex: props.appID,
-          suggestedParams,
-        })
-
-        atc.addTransaction({ txn: appOptIn, signer })
-      }
-
-      atc.addMethodCall({
-        method: appClient.appClient.getABIMethod('bid')!,
-        suggestedParams: { ...(await algodClient.getTransactionParams().do()), fee: 2_000, flatFee: true },
-        methodArgs: [{ txn: payment, signer }],
-        sender: sender.addr,
-        signer: signer,
-        appID: props.appID,
-      })
-
-      try {
-        await atc.execute(algodClient, 3)
-      } catch (e) {
-        console.warn(e)
-        enqueueSnackbar(`Error deploying the contract: ${(e as Error).message}`, { variant: 'error' })
-        setLoading(false)
-        return
-      }
-
-      setLoading(false)
+      // bid logic here
     },
   }
 
