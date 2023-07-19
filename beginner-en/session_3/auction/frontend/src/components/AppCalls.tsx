@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable no-console */
 import * as algokit from '@algorandfoundation/algokit-utils'
 import { useWallet } from '@txnlab/use-wallet'
@@ -59,41 +60,45 @@ const AppCalls = (props: {
     },
     start: async () => {
       if (activeAddress === undefined) throw Error('activeAddress is undefined')
+      setLoading(true)
+
+      const assetIndex = (document.getElementById('asa') as HTMLInputElement).valueAsNumber
+      const appAddress = algosdk.getApplicationAddress(props.appID)
+
+      const suggestedParams = await algodClient.getTransactionParams().do()
 
       const axfer = algosdk.makeAssetTransferTxnWithSuggestedParamsFromObject({
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        from: activeAddress!,
-        to: algosdk.getApplicationAddress(props.appID),
+        from: activeAddress,
+        to: appAddress,
         amount: (document.getElementById('asa-amount') as HTMLInputElement).valueAsNumber,
-        assetIndex: (document.getElementById('asa') as HTMLInputElement).valueAsNumber,
-        suggestedParams: await algodClient.getTransactionParams().do(),
+        assetIndex,
+        suggestedParams,
       })
 
-      console.log(sender, algosdk.encodeAddress(axfer.to.publicKey), algosdk.encodeAddress(axfer.from.publicKey))
+      const mbrPayment = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
+        from: activeAddress,
+        to: appAddress,
+        amount: 200_000,
+        suggestedParams,
+      })
 
-      await appClient
-        .startAuction(
-          {
-            starting_price: 100_000,
-            length: 300,
-            axfer: { transaction: axfer, signer: sender },
-          },
-          {
-            sender,
-          },
-        )
-        .catch((e: Error) => {
-          console.warn(e)
-          enqueueSnackbar(`Error deploying the contract: ${e.message}`, { variant: 'error' })
-          setLoading(false)
-          return
-        })
+      const atc = new algosdk.AtomicTransactionComposer()
 
-      /*
-      const atc = new AtomicTransactionComposer()
+      atc.addTransaction({
+        txn: mbrPayment,
+        signer,
+      })
 
       atc.addMethodCall({
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        method: appClient.appClient.getABIMethod('opt_into_asset')!,
+        suggestedParams: { ...(await algodClient.getTransactionParams().do()), fee: 2_000, flatFee: true },
+        methodArgs: [assetIndex],
+        sender: sender.addr,
+        signer: signer,
+        appID: props.appID,
+      })
+
+      atc.addMethodCall({
         method: appClient.appClient.getABIMethod('start_auction')!,
         suggestedParams: await algodClient.getTransactionParams().do(),
         methodArgs: [1, 1, { txn: axfer, signer }],
@@ -102,18 +107,37 @@ const AppCalls = (props: {
         appID: props.appID,
       })
 
-      await atc.execute(algodClient, 3).catch((e: Error) => {
+      try {
+        await atc.execute(algodClient, 3)
+      } catch (e) {
         console.warn(e)
-        enqueueSnackbar(`Error deploying the contract: ${e.message}`, { variant: 'error' })
+        enqueueSnackbar(`Error deploying the contract: ${(e as Error).message}`, { variant: 'error' })
         setLoading(false)
         return
+      }
+
+      setLoading(false)
+      props.setAuctionState(AuctionState.Started)
+    },
+    bid: async () => {
+      if (activeAddress === undefined) throw Error('activeAddress is undefined')
+      setLoading(true)
+
+      const appAddress = algosdk.getApplicationAddress(props.appID)
+
+      const suggestedParams = await algodClient.getTransactionParams().do()
+
+      const payment = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
+        from: activeAddress,
+        to: appAddress,
+        amount: (document.getElementById('bid') as HTMLInputElement).valueAsNumber,
+        suggestedParams,
       })
 
+      await appClient.bid({ payment })
 
-      props.setAuctionState(AuctionState.Started)
-      */
+      setLoading(false)
     },
-    bid: async () => {},
   }
 
   let text: string
