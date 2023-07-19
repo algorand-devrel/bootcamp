@@ -81,12 +81,17 @@ export default function App() {
                 </button>
 
                 {activeAddress && auctionState === AuctionState.Pending && (
-                  <AppCalls method="create" setAuctionState={setAuctionState} setAppID={setAppID} />
+                  <AppCalls appID={appID} method="create" setAuctionState={setAuctionState} setAppID={setAppID} />
                 )}
 
-                {activeAddress && auctionState === AuctionState.Created && <AppCalls method="start" setAuctionState={setAuctionState} />}
+                {activeAddress && auctionState === AuctionState.Created && (
+                  <AppCalls appID={appID} method="start" setAuctionState={setAuctionState} />
+                )}
 
-                {activeAddress && auctionState === AuctionState.Started && <AppCalls method="bid" setAuctionState={setAuctionState} />}
+                {activeAddress && auctionState === AuctionState.Started && (
+                  <AppCalls appID={appID} method="bid" setAuctionState={setAuctionState} />
+                )}
+
                 <ConnectWallet openModal={openWalletModal} closeModal={toggleWalletModal} />
               </div>
             </div>

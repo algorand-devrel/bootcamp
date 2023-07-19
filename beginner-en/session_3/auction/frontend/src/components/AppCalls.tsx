@@ -1,6 +1,4 @@
 import * as algokit from '@algorandfoundation/algokit-utils'
-import { TransactionSignerAccount } from '@algorandfoundation/algokit-utils/types/account'
-import { AppDetails } from '@algorandfoundation/algokit-utils/types/app-client'
 import { useWallet } from '@txnlab/use-wallet'
 import { useSnackbar } from 'notistack'
 import { useState } from 'react'
@@ -13,6 +11,7 @@ type Methods = 'create' | 'start' | 'bid'
 const AppCalls = (props: {
   method: Methods
   setAuctionState: React.Dispatch<React.SetStateAction<AuctionState>>
+  appID: number
   setAppID?: React.Dispatch<React.SetStateAction<number>>
 }) => {
   const [loading, setLoading] = useState<boolean>(false)
@@ -27,19 +26,21 @@ const AppCalls = (props: {
   const { enqueueSnackbar } = useSnackbar()
   const { signer, activeAddress } = useWallet()
 
+  const appClient = new AuctionClient(
+    {
+      resolveBy: 'id',
+      id: props.appID,
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      sender: { signer, addr: activeAddress! },
+    },
+    algodClient,
+  )
+
   const callMethods = {
     create: async () => {
       if (props.setAppID === undefined) throw Error('setAppID is undefined')
 
       setLoading(true)
-
-      const appDetails = {
-        resolveBy: 'id',
-        id: 0,
-        sender: { signer, addr: activeAddress } as TransactionSignerAccount,
-      } as AppDetails
-
-      const appClient = new AuctionClient(appDetails, algodClient)
 
       await appClient.create.bare().catch((e: Error) => {
         enqueueSnackbar(`Error deploying the contract: ${e.message}`, { variant: 'error' })
