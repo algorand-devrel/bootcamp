@@ -84,7 +84,7 @@ const AppCalls = (props: {
     case 'start':
       return (
         <div>
-          <label htmlFor="asa" className="label m-2 place-items-center grid">
+          <label htmlFor="asa" className="label m-2">
             Asset ID
           </label>
           <input type="number" id="asa" defaultValue="0" className="input input-bordered" />
