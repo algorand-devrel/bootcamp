@@ -120,6 +120,7 @@ def opt_in() -> pt.Expr:
 
 
 # bid method that allows accounts to bid on the auction
+@app.external
 def bid(payment: pt.abi.PaymentTransaction) -> pt.Expr:
     return pt.Seq(
         # Verify the auction hasn't ended
@@ -153,12 +154,42 @@ def bid(payment: pt.abi.PaymentTransaction) -> pt.Expr:
     )
 
 
+@pt.Subroutine(pt.TealType.none)
+def pay(receiver: pt.Expr, amount: pt.Expr) -> pt.Expr:
+    return pt.InnerTxnBuilder.Execute(
+        {
+            pt.TxnField.type_enum: pt.TxnType.Payment,
+            pt.TxnField.fee: pt.Int(0),
+            pt.TxnField.amount: amount,
+            pt.TxnField.receiver: receiver,
+        }
+    )
+
+
 # reclaim_bids method that allows someone to reclaim bids they have previously placed
+@app.external
 def reclaim_bids() -> pt.Expr:
     # Sends a payment via a inner transaction (InnerTxnBuilder.execute())
     return pt.Seq(
-        # If the claimer is the previous bidder, reuturn claimable bids - previous_bid
+        # If the claimer is the previous bidder
+        #
+        # PYTHON IF CONDITION:
+        # if cond:
+        #     whatever we want to happen
+        # - We cannot use python if conditions
+        # - We must use pt.If
+        #
+        pt.If(pt.Txn.sender() == app.state.previous_bidder.get())
+        # Then reuturn (send payment) claimable bids - previous_bid
+        .Then(
+            pay(
+                pt.Txn.sender(),
+                app.state.claimable_amount[pt.Txn.sender()].get()
+                - app.state.previous_bid.get(),
+            )
+        )
         # Else return full claimable amount
+        .Else(pay(pt.Txn.sender(), app.state.claimable_amount[pt.Txn.sender()].get()))
     )
 
 
