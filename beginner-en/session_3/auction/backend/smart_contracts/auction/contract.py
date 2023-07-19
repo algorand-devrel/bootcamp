@@ -27,7 +27,7 @@ class AuctionState:
     # REMINDER: ASA === Algorand Standard Asset === Asset === Token
 
     # ASA: ID of the ASA being auctioned
-    asa = beaker.GlobalStateValue(stack_type=pt.TealType.uint64, default=pt.Int(0))
+    asa_id = beaker.GlobalStateValue(stack_type=pt.TealType.uint64, default=pt.Int(0))
 
     # ASA amount: Total amount of ASA being auctioned
     asa_amount = beaker.GlobalStateValue(
@@ -109,7 +109,7 @@ def start_auction(
         # Set the asa amount being auctioned
         app.state.asa_amount.set(axfer.get().asset_amount()),
         # Save the amount transfered in global state
-        app.state.asa.set(axfer.get().xfer_asset()),
+        app.state.asa_id.set(axfer.get().xfer_asset()),
     )
 
 
@@ -120,78 +120,41 @@ def opt_in() -> pt.Expr:
 
 
 # bid method that allows accounts to bid on the auction
-@app.external
 def bid(payment: pt.abi.PaymentTransaction) -> pt.Expr:
     return pt.Seq(
         # Verify the auction hasn't ended
-        pt.Assert(pt.Global.latest_timestamp() < app.state.auction_end.get()),
         # Verify the auction has started
-        pt.Assert(app.state.auction_end.get() != pt.Int(0)),
         # Assert the bid amount is greater than the previous bid
-        pt.Assert(payment.get().amount() > app.state.previous_bid.get()),
         # Assert the receiver is the contract address
-        pt.Assert(payment.get().receiver() == pt.Global.current_application_address()),
         # Update global state: update previous bidder to current caller
-        app.state.previous_bidder.set(pt.Txn.sender()),
         # Update global state: update previous_bid to current bid
-        app.state.previous_bid.set(payment.get().amount()),
         # Update local state: Add bid to claimable bids
         app.state.claimable_amount[pt.Txn.sender()].set(
             app.state.claimable_amount[pt.Txn.sender()] + payment.get().amount()
         ),
     )
 
-@pt.Subroutine(pt.TealType.none)
-def pay(receiver: pt.Expr, amount: pt.Expr) -> pt.Expr:
-    return pt.InnerTxnBuilder.Execute({
-        pt.TxnField.type_enum: pt.TxnType.Payment,
-        pt.TxnField.receiver: receiver,
-        pt.TxnField.amount: amount,
-        pt.TxnField.fee: pt.Int(0),
-    })
 
 # reclaim_bids method that allows someone to reclaim bids they have previously placed
-@app.external
 def reclaim_bids() -> pt.Expr:
     # Sends a payment via a inner transaction (InnerTxnBuilder.execute())
     return pt.Seq(
         # If the claimer is the previous bidder, reuturn claimable bids - previous_bid
-        pt.If(pt.Txn.sender() == app.state.previous_bidder.get())
-        .Then(pay(pt.Txn.sender(), app.state.claimable_amount[pt.Txn.sender()] - app.state.previous_bid.get()))
         # Else return full claimable amount
-        .Else(pay(pt.Txn.sender(), app.state.claimable_amount[pt.Txn.sender()]))
     )
 
 
 # claim_asset method that allows the winner to claim the asset
-@app.external
 def claim_asset() -> pt.Expr:
     return pt.Seq(
         # Ensure acution ended
-        pt.Assert(pt.Global.latest_timestamp() > app.state.auction_end.get()),
         # Send asset to auction winner (inner txn)
-        pt.InnerTxnBuilder.Execute({
-            pt.TxnField.type_enum: pt.TxnType.AssetTransfer,
-            pt.TxnField.asset_receiver: app.state.previous_bidder.get(),
-            pt.TxnField.xfer_asset: app.state.asa.get(),
-            pt.TxnField.asset_amount: app.state.asa_amount.get(),
-            pt.TxnField.asset_close_to: app.state.asa_amount.get(),
-            pt.TxnField.fee: pt.Int(0),
-        })
     )
 
 
 # delete method that allows the owner to delete the contract and retrieve all extra ALGO
-@app.delete(bare=True)
 def delete() -> pt.Expr:
     return pt.Seq(
         # ensure auction is over
-        pt.Assert(pt.Global.latest_timestamp() > app.state.auction_end.get()),
         # Allow creator to withdraw all remaining ALGO
-        pt.InnerTxnBuilder.Execute({
-            pt.TxnField.type_enum: pt.TxnType.Payment,
-            pt.TxnField.receiver: pt.Global.creator_address(),
-            pt.TxnField.amount: pt.Int(0),
-            pt.TxnField.close_remainder_to: pt.Global.creator_address(),
-        })
     )
