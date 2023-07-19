@@ -120,12 +120,13 @@ def opt_in() -> pt.Expr:
 
 
 # bid method that allows accounts to bid on the auction
+@app.external
 def bid(payment: pt.abi.PaymentTransaction) -> pt.Expr:
     return pt.Seq(
         # Verify the auction hasn't ended
         pt.Assert(pt.Global.latest_timestamp() < app.state.auction_end.get()),
         # Verify the auction has started
-        pt.Assert(pt.auction_end.get() != pt.Int(0)),
+        pt.Assert(app.state.auction_end.get() != pt.Int(0)),
         # Assert the bid amount is greater than the previous bid
         pt.Assert(payment.get().amount() > app.state.previous_bid.get()),
         # Assert the receiver is the contract address
@@ -150,6 +151,7 @@ def pay(receiver: pt.Expr, amount: pt.Expr) -> pt.Expr:
     })
 
 # reclaim_bids method that allows someone to reclaim bids they have previously placed
+@app.external
 def reclaim_bids() -> pt.Expr:
     # Sends a payment via a inner transaction (InnerTxnBuilder.execute())
     return pt.Seq(
@@ -162,6 +164,7 @@ def reclaim_bids() -> pt.Expr:
 
 
 # claim_asset method that allows the winner to claim the asset
+@app.external
 def claim_asset() -> pt.Expr:
     return pt.Seq(
         # Ensure acution ended
@@ -179,6 +182,7 @@ def claim_asset() -> pt.Expr:
 
 
 # delete method that allows the owner to delete the contract and retrieve all extra ALGO
+@app.delete(bare=True)
 def delete() -> pt.Expr:
     return pt.Seq(
         # ensure auction is over
