@@ -9,7 +9,7 @@ import { AuctionState } from '../App'
 import { AuctionClient } from '../contracts/auction'
 import { getAlgodConfigFromViteEnvironment } from '../utils/network/getAlgoClientConfigs'
 
-type Methods = 'create' | 'start' | 'bid'
+type Methods = 'create' | 'start' | 'bid' | 'reclaim_bids'
 
 const AppCalls = (props: {
   method: Methods
@@ -125,7 +125,71 @@ const AppCalls = (props: {
       props.setAuctionState(AuctionState.Started)
     },
     bid: async () => {
-      // bid logic here
+      setLoading(true)
+
+      const appAddress = algosdk.getApplicationAddress(props.appID)
+      const suggestedParams = await algodClient.getTransactionParams().do()
+
+      const bidPayment = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
+        from: activeAddress!,
+        to: appAddress,
+        amount: (document.getElementById('bid') as HTMLInputElement).valueAsNumber,
+        suggestedParams,
+      })
+
+      const atc = new algosdk.AtomicTransactionComposer()
+
+      let optedIn = true
+
+      // If the account is not opted in, opt it in
+      // Otherwise, just bid
+      try {
+        await appClient.getLocalState(activeAddress!)
+      } catch (e) {
+        optedIn = false
+      }
+
+      if (!optedIn) {
+        const optInTxn = algosdk.makeApplicationOptInTxnFromObject({
+          from: activeAddress!,
+          appIndex: props.appID,
+          suggestedParams,
+        })
+
+        atc.addTransaction({ txn: optInTxn, signer })
+      }
+
+      atc.addMethodCall({
+        method: appClient.appClient.getABIMethod('bid')!,
+        methodArgs: [{ txn: bidPayment, signer }],
+        sender: sender.addr,
+        signer,
+        appID: props.appID,
+        suggestedParams,
+      })
+
+      try {
+        await atc.execute(algodClient, 3)
+      } catch (e) {
+        console.warn(e)
+        enqueueSnackbar(`Error deploying the contract: ${(e as Error).message}`, { variant: 'error' })
+        setLoading(false)
+        return
+      }
+
+      setLoading(false)
+    },
+    reclaim_bids: async () => {
+      // logic for reclaiming bids
+      setLoading(true)
+
+      await appClient.reclaimBids([], { sendParams: { fee: algokit.microAlgos(2000) } }).catch((e: Error) => {
+        enqueueSnackbar(`Error deploying the contract: ${e.message}`, { variant: 'error' })
+        setLoading(false)
+        return
+      })
+
+      setLoading(false)
     },
   }
 
@@ -139,6 +203,9 @@ const AppCalls = (props: {
       break
     case 'bid':
       text = 'Bid'
+      break
+    case 'reclaim_bids':
+      text = 'Reclaim Bids'
   }
 
   const callButton = (
@@ -184,6 +251,8 @@ const AppCalls = (props: {
           {callButton}
         </div>
       )
+    case 'reclaim_bids':
+      return callButton
   }
 }
 

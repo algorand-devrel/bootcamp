@@ -377,14 +377,21 @@ def reclaim_bids() -> pt.Expr:
         pt.If(pt.Txn.sender() == app.state.previous_bidder.get())
         # Then reuturn (send payment) claimable bids - previous_bid
         .Then(
-            pay(
+            pt.Seq(pay(
                 pt.Txn.sender(),
                 app.state.claimable_amount[pt.Txn.sender()].get()
                 - app.state.previous_bid.get(),
+            ), 
+            app.state.claimable_amount[pt.Txn.sender()].set(app.state.previous_bid.get())
             )
         )
         # Else return full claimable amount
-        .Else(pay(pt.Txn.sender(), app.state.claimable_amount[pt.Txn.sender()].get()))
+        .Else(
+            pt.Seq(
+                pay(pt.Txn.sender(), app.state.claimable_amount[pt.Txn.sender()].get()),
+                app.state.claimable_amount[pt.Txn.sender()].set(pt.Int(0))
+            )
+        )
     )
 
 
