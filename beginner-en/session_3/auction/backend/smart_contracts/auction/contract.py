@@ -194,16 +194,34 @@ def reclaim_bids() -> pt.Expr:
 
 
 # claim_asset method that allows the winner to claim the asset
+@app.external
 def claim_asset() -> pt.Expr:
     return pt.Seq(
         # Ensure acution ended
+        pt.Assert(pt.Global.latest_timestamp() > app.state.auction_end.get()),
         # Send asset to auction winner (inner txn)
+        pt.InnerTxnBuilder.Execute({
+            pt.TxnField.type_enum: pt.TxnType.AssetTransfer,
+            pt.TxnField.asset_receiver: app.state.previous_bidder.get(),
+            pt.TxnField.xfer_asset: app.state.asa.get(),
+            pt.TxnField.asset_amount: app.state.asa_amount.get(),
+            pt.TxnField.asset_close_to: app.state.asa_amount.get(),
+            pt.TxnField.fee: pt.Int(0),
+        })
     )
 
 
 # delete method that allows the owner to delete the contract and retrieve all extra ALGO
+@app.delete(bare=True)
 def delete() -> pt.Expr:
     return pt.Seq(
         # ensure auction is over
+        pt.Assert(pt.Global.latest_timestamp() > app.state.auction_end.get()),
         # Allow creator to withdraw all remaining ALGO
+        pt.InnerTxnBuilder.Execute({
+            pt.TxnField.type_enum: pt.TxnType.Payment,
+            pt.TxnField.receiver: pt.Global.creator_address(),
+            pt.TxnField.amount: pt.Int(0),
+            pt.TxnField.close_remainder_to: pt.Global.creator_address(),
+        })
     )
