@@ -10,4 +10,4 @@ https://gitpod.io/#https://github.com/algorand-devrel/bootcamp
 - Episode #1 [Developer Onboarding using JS SDK & AlgoKit](https://youtu.be/hIMdJzVs4gg)
 - Episode #2 [Build & Deploy: Auction dApp](https://youtu.be/foTbYZhXvqA)
 - Episode #3 [Interactions: Frontend Development w/ React](https://youtu.be/NEnVNqqt-80)
-- Episode #4 [Test & Debug]
+- Episode #4 [Test & Debug](https://www.youtube.com/watch?v=Gq1Xc6m_eY4)
