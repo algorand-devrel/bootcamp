@@ -1,7 +1,0 @@
-{
-  "dependencies": {
-    "cids": "^1.1.9",
-    "multihashes": "^4.0.3",
-    "web3.storage": "^4.5.4"
-  }
-}
