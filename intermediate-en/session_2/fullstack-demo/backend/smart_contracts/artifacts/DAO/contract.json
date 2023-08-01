@@ -1,0 +1,37 @@
+{
+    "name": "DAO",
+    "methods": [
+        {
+            "name": "create",
+            "args": [],
+            "returns": {
+                "type": "void"
+            }
+        },
+        {
+            "name": "add_proposal",
+            "args": [
+                {
+                    "type": "string",
+                    "name": "proposal"
+                }
+            ],
+            "returns": {
+                "type": "void"
+            }
+        },
+        {
+            "name": "vote",
+            "args": [
+                {
+                    "type": "account",
+                    "name": "proposer"
+                }
+            ],
+            "returns": {
+                "type": "void"
+            }
+        }
+    ],
+    "networks": {}
+}
