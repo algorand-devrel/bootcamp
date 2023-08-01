@@ -7,7 +7,7 @@ cloud_provider: none
 contract_name: dao
 ide_vscode: true
 preset_name: starter
-project_name: fullstack-demo
+project_name: dao
 python_linter: none
 use_dispenser: false
 use_github_actions: true
