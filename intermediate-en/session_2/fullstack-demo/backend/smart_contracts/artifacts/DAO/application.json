@@ -7,32 +7,37 @@
         },
         "add_proposal(string)void": {
             "call_config": {
-                "opt_in": "CALL"
+                "no_op": "CALL"
             }
         },
-        "vote(account)void": {
+        "vote(address)void": {
             "call_config": {
                 "no_op": "CALL"
             }
         }
     },
     "source": {
-        "approval": "I3ByYWdtYSB2ZXJzaW9uIDgKaW50Y2Jsb2NrIDAgMQpieXRlY2Jsb2NrIDB4NzY2Zjc0NjU3MyAweDc3Njk2ZTZlNjk2ZTY3NWY3MDcyNmY3MDZmNzM2MTZjIDB4CnR4bmEgQXBwbGljYXRpb25BcmdzIDAKcHVzaGJ5dGVzIDB4NGM1YzYxYmEgLy8gImNyZWF0ZSgpdm9pZCIKPT0KYm56IG1haW5fbDYKdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMApwdXNoYnl0ZXMgMHg4ODVkZTI3ZiAvLyAiYWRkX3Byb3Bvc2FsKHN0cmluZyl2b2lkIgo9PQpibnogbWFpbl9sNQp0eG5hIEFwcGxpY2F0aW9uQXJncyAwCnB1c2hieXRlcyAweGZjYTQ5Zjc4IC8vICJ2b3RlKGFjY291bnQpdm9pZCIKPT0KYm56IG1haW5fbDQKZXJyCm1haW5fbDQ6CnR4biBPbkNvbXBsZXRpb24KaW50Y18wIC8vIE5vT3AKPT0KdHhuIEFwcGxpY2F0aW9uSUQKaW50Y18wIC8vIDAKIT0KJiYKYXNzZXJ0CmNhbGxzdWIgdm90ZWNhc3Rlcl81CmludGNfMSAvLyAxCnJldHVybgptYWluX2w1Ogp0eG4gT25Db21wbGV0aW9uCmludGNfMSAvLyBPcHRJbgo9PQp0eG4gQXBwbGljYXRpb25JRAppbnRjXzAgLy8gMAohPQomJgphc3NlcnQKY2FsbHN1YiBhZGRwcm9wb3NhbGNhc3Rlcl80CmludGNfMSAvLyAxCnJldHVybgptYWluX2w2Ogp0eG4gT25Db21wbGV0aW9uCmludGNfMCAvLyBOb09wCj09CnR4biBBcHBsaWNhdGlvbklECmludGNfMCAvLyAwCj09CiYmCmFzc2VydApjYWxsc3ViIGNyZWF0ZWNhc3Rlcl8zCmludGNfMSAvLyAxCnJldHVybgoKLy8gY3JlYXRlCmNyZWF0ZV8wOgpwcm90byAwIDAKYnl0ZWNfMSAvLyAid2lubmluZ19wcm9wb3NhbCIKYnl0ZWNfMiAvLyAiIgphcHBfZ2xvYmFsX3B1dApyZXRzdWIKCi8vIGFkZF9wcm9wb3NhbAphZGRwcm9wb3NhbF8xOgpwcm90byAxIDAKdHhuIFNlbmRlcgpwdXNoYnl0ZXMgMHg3MDcyNmY3MDZmNzM2MTZjIC8vICJwcm9wb3NhbCIKZnJhbWVfZGlnIC0xCmV4dHJhY3QgMiAwCmFwcF9sb2NhbF9wdXQKdHhuIFNlbmRlcgpieXRlY18wIC8vICJ2b3RlcyIKaW50Y18wIC8vIDAKYXBwX2xvY2FsX3B1dApyZXRzdWIKCi8vIHZvdGUKdm90ZV8yOgpwcm90byAxIDAKZnJhbWVfZGlnIC0xCnR4bmFzIEFjY291bnRzCmJ5dGVjXzAgLy8gInZvdGVzIgphcHBfbG9jYWxfZ2V0CmludGNfMSAvLyAxCisKYnl0ZWNfMSAvLyAid2lubmluZ19wcm9wb3NhbCIKYXBwX2dsb2JhbF9nZXQKYnl0ZWNfMCAvLyAidm90ZXMiCmFwcF9sb2NhbF9nZXQKPgpieiB2b3RlXzJfbDIKYnl0ZWNfMSAvLyAid2lubmluZ19wcm9wb3NhbCIKZnJhbWVfZGlnIC0xCnR4bmFzIEFjY291bnRzCmFwcF9nbG9iYWxfcHV0CnZvdGVfMl9sMjoKZnJhbWVfZGlnIC0xCnR4bmFzIEFjY291bnRzCmJ5dGVjXzAgLy8gInZvdGVzIgpmcmFtZV9kaWcgLTEKdHhuYXMgQWNjb3VudHMKYnl0ZWNfMCAvLyAidm90ZXMiCmFwcF9sb2NhbF9nZXQKaW50Y18xIC8vIDEKKwphcHBfbG9jYWxfcHV0CnJldHN1YgoKLy8gY3JlYXRlX2Nhc3RlcgpjcmVhdGVjYXN0ZXJfMzoKcHJvdG8gMCAwCmNhbGxzdWIgY3JlYXRlXzAKcmV0c3ViCgovLyBhZGRfcHJvcG9zYWxfY2FzdGVyCmFkZHByb3Bvc2FsY2FzdGVyXzQ6CnByb3RvIDAgMApieXRlY18yIC8vICIiCnR4bmEgQXBwbGljYXRpb25BcmdzIDEKZnJhbWVfYnVyeSAwCmZyYW1lX2RpZyAwCmNhbGxzdWIgYWRkcHJvcG9zYWxfMQpyZXRzdWIKCi8vIHZvdGVfY2FzdGVyCnZvdGVjYXN0ZXJfNToKcHJvdG8gMCAwCmludGNfMCAvLyAwCnR4bmEgQXBwbGljYXRpb25BcmdzIDEKaW50Y18wIC8vIDAKZ2V0Ynl0ZQpmcmFtZV9idXJ5IDAKZnJhbWVfZGlnIDAKY2FsbHN1YiB2b3RlXzIKcmV0c3Vi",
+        "approval": "I3ByYWdtYSB2ZXJzaW9uIDgKaW50Y2Jsb2NrIDAgMQpieXRlY2Jsb2NrIDB4Nzc2OTZlNmU2OTZlNjc1ZjcwNzI2ZjcwNmY3MzYxNmMgMHgKdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMApwdXNoYnl0ZXMgMHg0YzVjNjFiYSAvLyAiY3JlYXRlKCl2b2lkIgo9PQpibnogbWFpbl9sNgp0eG5hIEFwcGxpY2F0aW9uQXJncyAwCnB1c2hieXRlcyAweDg4NWRlMjdmIC8vICJhZGRfcHJvcG9zYWwoc3RyaW5nKXZvaWQiCj09CmJueiBtYWluX2w1CnR4bmEgQXBwbGljYXRpb25BcmdzIDAKcHVzaGJ5dGVzIDB4NjI4Y2UzMmQgLy8gInZvdGUoYWRkcmVzcyl2b2lkIgo9PQpibnogbWFpbl9sNAplcnIKbWFpbl9sNDoKdHhuIE9uQ29tcGxldGlvbgppbnRjXzAgLy8gTm9PcAo9PQp0eG4gQXBwbGljYXRpb25JRAppbnRjXzAgLy8gMAohPQomJgphc3NlcnQKY2FsbHN1YiB2b3RlY2FzdGVyXzUKaW50Y18xIC8vIDEKcmV0dXJuCm1haW5fbDU6CnR4biBPbkNvbXBsZXRpb24KaW50Y18wIC8vIE5vT3AKPT0KdHhuIEFwcGxpY2F0aW9uSUQKaW50Y18wIC8vIDAKIT0KJiYKYXNzZXJ0CmNhbGxzdWIgYWRkcHJvcG9zYWxjYXN0ZXJfNAppbnRjXzEgLy8gMQpyZXR1cm4KbWFpbl9sNjoKdHhuIE9uQ29tcGxldGlvbgppbnRjXzAgLy8gTm9PcAo9PQp0eG4gQXBwbGljYXRpb25JRAppbnRjXzAgLy8gMAo9PQomJgphc3NlcnQKY2FsbHN1YiBjcmVhdGVjYXN0ZXJfMwppbnRjXzEgLy8gMQpyZXR1cm4KCi8vIGNyZWF0ZQpjcmVhdGVfMDoKcHJvdG8gMCAwCnB1c2hieXRlcyAweDYzNzU3MjcyNjU2ZTc0NWY3MDcyNmY3MDZmNzM2MTZjNWY2OTY0IC8vICJjdXJyZW50X3Byb3Bvc2FsX2lkIgppbnRjXzAgLy8gMAphcHBfZ2xvYmFsX3B1dApieXRlY18wIC8vICJ3aW5uaW5nX3Byb3Bvc2FsIgpieXRlY18xIC8vICIiCmFwcF9nbG9iYWxfcHV0CnJldHN1YgoKLy8gYWRkX3Byb3Bvc2FsCmFkZHByb3Bvc2FsXzE6CnByb3RvIDEgMAppbnRjXzAgLy8gMAppbnRjXzAgLy8gMApmcmFtZV9idXJ5IDAKdHhuIFNlbmRlcgpib3hfZGVsCnBvcAp0eG4gU2VuZGVyCmZyYW1lX2RpZyAtMQpib3hfcHV0CnR4biBTZW5kZXIKYm94X2RlbApwb3AKdHhuIFNlbmRlcgpmcmFtZV9kaWcgMAppdG9iCmJveF9wdXQKcmV0c3ViCgovLyB2b3RlCnZvdGVfMjoKcHJvdG8gMSAwCmludGNfMCAvLyAwCmZyYW1lX2RpZyAtMQpib3hfZ2V0CnN0b3JlIDEKc3RvcmUgMApsb2FkIDEKYXNzZXJ0CmxvYWQgMApidG9pCmludGNfMSAvLyAxCisKYnl0ZWNfMCAvLyAid2lubmluZ19wcm9wb3NhbCIKYXBwX2dsb2JhbF9nZXQKYm94X2dldApzdG9yZSAzCnN0b3JlIDIKbG9hZCAzCmFzc2VydApsb2FkIDIKYnRvaQo+CmJ6IHZvdGVfMl9sMgpieXRlY18wIC8vICJ3aW5uaW5nX3Byb3Bvc2FsIgpmcmFtZV9kaWcgLTEKYXBwX2dsb2JhbF9wdXQKdm90ZV8yX2wyOgpmcmFtZV9kaWcgLTEKYm94X2dldApzdG9yZSAxCnN0b3JlIDAKbG9hZCAxCmFzc2VydApsb2FkIDAKYnRvaQppbnRjXzEgLy8gMQorCmZyYW1lX2J1cnkgMApmcmFtZV9kaWcgLTEKYm94X2RlbApwb3AKZnJhbWVfZGlnIC0xCmZyYW1lX2RpZyAwCml0b2IKYm94X3B1dApyZXRzdWIKCi8vIGNyZWF0ZV9jYXN0ZXIKY3JlYXRlY2FzdGVyXzM6CnByb3RvIDAgMApjYWxsc3ViIGNyZWF0ZV8wCnJldHN1YgoKLy8gYWRkX3Byb3Bvc2FsX2Nhc3RlcgphZGRwcm9wb3NhbGNhc3Rlcl80Ogpwcm90byAwIDAKYnl0ZWNfMSAvLyAiIgp0eG5hIEFwcGxpY2F0aW9uQXJncyAxCmZyYW1lX2J1cnkgMApmcmFtZV9kaWcgMApjYWxsc3ViIGFkZHByb3Bvc2FsXzEKcmV0c3ViCgovLyB2b3RlX2Nhc3Rlcgp2b3RlY2FzdGVyXzU6CnByb3RvIDAgMApieXRlY18xIC8vICIiCnR4bmEgQXBwbGljYXRpb25BcmdzIDEKZnJhbWVfYnVyeSAwCmZyYW1lX2RpZyAwCmNhbGxzdWIgdm90ZV8yCnJldHN1Yg==",
         "clear": "I3ByYWdtYSB2ZXJzaW9uIDgKcHVzaGludCAwIC8vIDAKcmV0dXJu"
     },
     "state": {
         "global": {
             "num_byte_slices": 1,
-            "num_uints": 0
+            "num_uints": 1
         },
         "local": {
-            "num_byte_slices": 1,
-            "num_uints": 1
+            "num_byte_slices": 0,
+            "num_uints": 0
         }
     },
     "schema": {
         "global": {
             "declared": {
+                "current_proposal_id": {
+                    "type": "uint64",
+                    "key": "current_proposal_id",
+                    "descr": ""
+                },
                 "winning_proposal": {
                     "type": "bytes",
                     "key": "winning_proposal",
@@ -42,23 +47,12 @@
             "reserved": {}
         },
         "local": {
-            "declared": {
-                "proposal": {
-                    "type": "bytes",
-                    "key": "proposal",
-                    "descr": ""
-                },
-                "votes": {
-                    "type": "uint64",
-                    "key": "votes",
-                    "descr": ""
-                }
-            },
+            "declared": {},
             "reserved": {}
         }
     },
     "contract": {
-        "name": "DAO",
+        "name": "dao",
         "methods": [
             {
                 "name": "create",
@@ -83,7 +77,7 @@
                 "name": "vote",
                 "args": [
                     {
-                        "type": "account",
+                        "type": "address",
                         "name": "proposer"
                     }
                 ],
