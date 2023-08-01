@@ -59,20 +59,26 @@ def add_proposal(proposal: pt.abi.String) -> pt.Expr:
 
 
 @app.external
-def vote(proposer: pt.abi.Account) -> pt.Expr:
-    current_votes = app.state.votes[proposer.address()].get()
-    # Increment votes for given proposal
-    new_votes = current_votes + pt.Int(1)
+def vote(proposal_id: pt.abi.Uint64) -> pt.Expr:
+    abi_current_votes = app.state.votes[proposal_id]
+
+    new_votes = pt.Btoi(abi_current_votes.get()) + pt.Int(1)
+    abi_new_votes = pt.abi.Uint64()
 
     winning_proposal = app.state.winning_proposal.get()
-    winning_proposal_votes = app.state.votes[winning_proposal].get()
+    abi_winning_proposal = pt.abi.Uint64()
+
+    abi_winning_proposal_votes = app.state.votes[abi_winning_proposal]
+    winning_proposal_votes = pt.Btoi(abi_winning_proposal_votes.get())
 
     return pt.Seq(
+        abi_winning_proposal.set(winning_proposal),
+        abi_new_votes.set(new_votes),
         # If new amount of votes for the given proposal is more than the winning proposal
         pt.If(new_votes > winning_proposal_votes).Then(
             # Then set the winning proposal to the given proposal
-            app.state.winning_proposal.set(proposer.address())
+            app.state.winning_proposal.set(proposal_id.get())
         ),
         # Update proposal vote count
-        app.state.votes[proposer.address()].set(new_votes),
+        app.state.votes[proposal_id].set(abi_new_votes),
     )
