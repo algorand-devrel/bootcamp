@@ -1,21 +1,31 @@
 import beaker
 import pyteal as pt
 
+from beaker.lib.storage import BoxMapping
 
 
 class DAOState:
-    # Local Storage
-    # Map the proposals to a specific address
+    # Box Storage
+    # Unique ID for each proposal
 
-    # Save the proposal to the specific account
-    proposal = beaker.LocalStateValue(stack_type=pt.TealType.bytes)
+    # A global counter for generating IDs
+    current_proposal_id = beaker.GlobalStateValue(
+        stack_type=pt.TealType.uint64, default=pt.Int(0)
+    )
 
-    # Votes for the account's proposal
-    votes = beaker.LocalStateValue(stack_type=pt.TealType.uint64)
+    # Save the proposals in box storage, mapped to the ID
+    proposals = BoxMapping(
+        key_type=pt.abi.Uint64, value_type=pt.abi.String, prefix=pt.Bytes("p-")
+    )
+
+    # Votes for the id's proposal
+    votes = BoxMapping(
+        key_type=pt.abi.Uint64, value_type=pt.abi.Uint64, prefix=pt.Bytes("v-")
+    )
 
     # Indicates which proposal currently has the most votes
     winning_proposal = beaker.GlobalStateValue(
-        stack_type=pt.TealType.bytes, default=pt.Bytes("")
+        stack_type=pt.TealType.uint64, default=pt.Int(0)
     )
 
 
@@ -27,16 +37,24 @@ def create() -> pt.Expr:
     return app.initialize_global_state()
 
 
-# In local state:
-# proposal[txn.sender] = given proposal
-# votes[txn.sender] = 0
+# In box storage:
+# proposal[id] = given proposal
+# votes[id] = 0
 @app.opt_in
 def add_proposal(proposal: pt.abi.String) -> pt.Expr:
+    proposal_id = app.state.current_proposal_id.get()
+    new_id = proposal_id + pt.Int(1)
+    abi_proposal_id = pt.abi.Uint64()
+    abi_zero = pt.abi.Uint64()
+
     return pt.Seq(
+        abi_proposal_id.set(proposal_id),
+        abi_zero.set(pt.Int(0)),
         # Set proposal to given proposal content
-        app.state.proposal[pt.Txn.sender()].set(proposal.get()),
+        app.state.proposals[abi_proposal_id].set(proposal),
         # Set votes to zero
-        app.state.votes[pt.Txn.sender()].set(pt.Int(0)),
+        app.state.votes[abi_proposal_id].set(abi_zero),
+        app.state.current_proposal_id.set(new_id),
     )
 
 
