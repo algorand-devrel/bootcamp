@@ -1,5 +1,5 @@
 {
-    "name": "DAO",
+    "name": "dao",
     "methods": [
         {
             "name": "create",
@@ -24,7 +24,7 @@
             "name": "vote",
             "args": [
                 {
-                    "type": "account",
+                    "type": "address",
                     "name": "proposer"
                 }
             ],
