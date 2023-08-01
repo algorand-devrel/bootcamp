@@ -3,6 +3,29 @@ import pyteal as pt
 
 from beaker.lib.storage import BoxMapping
 
+from typing import Literal
+
+
+# Currently:
+#   String stored in box storage
+#   That string can be anything
+#
+# What we want:
+#   Datatype representing nft data
+#   That nft data must be specific types
+#
+# ASA ARC3 Fields:
+# URL: URL to the JSON/image data
+# Name: Name of the asset
+# Unit name: shorthand name/ticker for the asset
+# Hash: Hash of the metadata in the URL
+class Proposal(pt.abi.NamedTuple):
+    name: pt.abi.Field[pt.abi.String]
+    url: pt.abi.Field[pt.abi.String]
+    unit_name: pt.abi.Field[pt.abi.String]
+    # byte[32]
+    hash: pt.abi.Field[pt.abi.StaticArray[pt.abi.Byte, Literal[32]]]
+
 
 class DAOState:
     # Box Storage
@@ -60,9 +83,9 @@ def add_proposal(proposal: pt.abi.String) -> pt.Expr:
 
 @app.external
 def vote(proposal_id: pt.abi.Uint64) -> pt.Expr:
-    abi_current_votes = app.state.votes[proposal_id]
+    box_current_votes = app.state.votes[proposal_id]
 
-    new_votes = pt.Btoi(abi_current_votes.get()) + pt.Int(1)
+    new_votes = pt.Btoi(box_current_votes.get()) + pt.Int(1)
     abi_new_votes = pt.abi.Uint64()
 
     winning_proposal = app.state.winning_proposal.get()
