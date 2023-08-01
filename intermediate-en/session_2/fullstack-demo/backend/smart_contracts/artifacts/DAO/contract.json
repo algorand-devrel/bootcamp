@@ -12,7 +12,7 @@
             "name": "add_proposal",
             "args": [
                 {
-                    "type": "string",
+                    "type": "(string,string,string,byte[32])",
                     "name": "proposal"
                 }
             ],
@@ -28,6 +28,13 @@
                     "name": "proposer"
                 }
             ],
+            "returns": {
+                "type": "void"
+            }
+        },
+        {
+            "name": "mint",
+            "args": [],
             "returns": {
                 "type": "void"
             }
