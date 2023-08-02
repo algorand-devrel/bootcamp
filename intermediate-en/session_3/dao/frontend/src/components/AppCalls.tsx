@@ -2,11 +2,19 @@
 /* eslint-disable no-console */
 import * as algokit from '@algorandfoundation/algokit-utils'
 import { useWallet } from '@txnlab/use-wallet'
+import algosdk from 'algosdk'
 import { useSnackbar } from 'notistack'
 import { useState } from 'react'
 import { Web3Storage } from 'web3.storage'
 import { DaoClient } from '../contracts/dao'
 import { getAlgodConfigFromViteEnvironment } from '../utils/network/getAlgoClientConfigs'
+
+const PER_BOX_MBR = 0.0025e6
+const PER_BYTE_MBR = 0.0004e6
+/**
+ * Proposal: [name, url, unitName, hash]
+ */
+type Proposal = [string, string, string, Uint8Array]
 
 type AppCallProps = {
   appID: number
@@ -66,6 +74,7 @@ const AppCalls = (props: AppCallProps) => {
 
         try {
           await appClient.create.bare()
+          await appClient.appClient.fundAppAccount(algokit.microAlgos(100_000))
         } catch (e) {
           enqueueSnackbar(`Error deploying the contract: ${(e as Error).message}`, { variant: 'error' })
           setLoading(false)
@@ -128,7 +137,27 @@ const AppCalls = (props: AppCallProps) => {
 
         const url = `ipfs://${metadataRoot}/metadata.json#arc3`
 
-        console.log(url, hash)
+        const proposalID = 0
+        const encodedProposalID = algosdk.encodeUint64(proposalID)
+
+        // bytes = (size of key (uint64) + size of value (uint64) + size of prefix (2))
+        const costVoteBox = PER_BOX_MBR + PER_BYTE_MBR * (8 + 8 + 2)
+
+        // bytes = (size of key (uint64) + size of prefix (2) + size of encoded data structure)
+        const tupleType = algosdk.ABIType.from('(string,string,string,byte[32])')
+        const encodedTuple = tupleType.encode([props.name, url, props.unitName, hash] as Proposal)
+        const costProposalBox = PER_BOX_MBR + PER_BYTE_MBR * (8 + 2 + encodedTuple.byteLength)
+
+        await appClient.appClient.fundAppAccount(algokit.microAlgos(costVoteBox + costProposalBox))
+
+        const proposalKey = new Uint8Array([...Buffer.from('p-'), ...encodedProposalID])
+        const votesKey = new Uint8Array([...Buffer.from('v-'), ...encodedProposalID])
+        await appClient.addProposal(
+          {
+            proposal: [props.name, props.unitName, url, hash] as Proposal,
+          },
+          { boxes: [proposalKey, votesKey] },
+        )
       }
       break
     case 'vote':
