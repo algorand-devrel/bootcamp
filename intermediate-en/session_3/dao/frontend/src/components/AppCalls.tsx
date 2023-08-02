@@ -90,6 +90,7 @@ const AppCalls = (props: AppCallProps) => {
     case 'add_proposal':
       text = 'Propose'
       callMethod = async () => {
+        setLoading(true)
         if (props.file === undefined) {
           enqueueSnackbar('File is missing!', { variant: 'error' })
           throw Error('File is missing')
@@ -154,19 +155,42 @@ const AppCalls = (props: AppCallProps) => {
         const votesKey = new Uint8Array([...Buffer.from('v-'), ...encodedProposalID])
         await appClient.addProposal(
           {
-            proposal: [props.name, props.unitName, url, hash] as Proposal,
+            proposal: [props.name, url, props.unitName, hash] as Proposal,
           },
           { boxes: [proposalKey, votesKey] },
         )
+        setLoading(false)
       }
       break
     case 'vote':
       text = 'Vote'
-      callMethod = async () => {}
+      callMethod = async () => {
+        setLoading(true)
+
+        const encodedProposalID = algosdk.encodeUint64(props.proposalID)
+        const voteKey = new Uint8Array([...Buffer.from('v-'), ...encodedProposalID])
+        await appClient.vote(
+          {
+            proposal_id: props.proposalID,
+          },
+          {
+            boxes: [voteKey],
+          },
+        )
+        setLoading(false)
+      }
       break
     case 'mint':
       text = 'Mint'
-      callMethod = async () => {}
+      callMethod = async () => {
+        setLoading(true)
+        const encodedProposalID = algosdk.encodeUint64(0)
+        const proposalKey = new Uint8Array([...Buffer.from('p-'), ...encodedProposalID])
+
+        await appClient.appClient.fundAppAccount(algokit.microAlgos(100_000))
+        await appClient.mint({}, { boxes: [proposalKey], sendParams: { fee: algokit.microAlgos(2_000) } })
+        setLoading(false)
+      }
       break
   }
 

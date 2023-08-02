@@ -137,6 +137,7 @@ def mint() -> pt.Expr:
                 pt.TxnField.config_asset_name: name.get(),
                 pt.TxnField.config_asset_unit_name: unit_name.get(),
                 pt.TxnField.config_asset_metadata_hash: metdata_hash.encode(),
+                pt.TxnField.fee: pt.Int(0),
             }
         ),
     )

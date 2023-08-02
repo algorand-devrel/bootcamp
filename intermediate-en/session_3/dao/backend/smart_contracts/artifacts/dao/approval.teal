@@ -255,6 +255,8 @@ extract 2 0
 itxn_field ConfigAssetUnitName
 frame_dig 5
 itxn_field ConfigAssetMetadataHash
+intc_0 // 0
+itxn_field Fee
 itxn_submit
 retsub
 
