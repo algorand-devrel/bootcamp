@@ -2,15 +2,7 @@ image:
   file: .gitpod.Dockerfile
 tasks:
   - name: start localnet
-    command: >
-      gp sync-await algokit-upgrade && 
-      algokit localnet start && 
-      exit
-  - name: upgrade algokit
-    command: >
-      pipx upgrade algokit && 
-      gp sync-done algokit-upgrade  &&
-      exit
+    command: algokit localnet start && exit
 vscode:
   extensions:
     - ms-python.python
