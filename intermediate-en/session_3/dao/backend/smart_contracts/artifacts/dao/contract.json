@@ -1,13 +1,6 @@
 {
-    "name": "dao",
+    "name": "DAO",
     "methods": [
-        {
-            "name": "create",
-            "args": [],
-            "returns": {
-                "type": "void"
-            }
-        },
         {
             "name": "add_proposal",
             "args": [
@@ -24,8 +17,8 @@
             "name": "vote",
             "args": [
                 {
-                    "type": "address",
-                    "name": "proposer"
+                    "type": "uint64",
+                    "name": "proposal_id"
                 }
             ],
             "returns": {
