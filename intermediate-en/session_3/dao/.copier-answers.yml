@@ -1,6 +1,6 @@
 # Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
-_commit: 0.2.1-22-gd5c2296
-_src_path: https://github.com/algorandfoundation/algokit-fullstack-template
+_commit: 0.3.0
+_src_path: gh:algorandfoundation/algokit-fullstack-template
 author_email: your@email.tld
 author_name: Your-Name
 cloud_provider: none

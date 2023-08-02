@@ -1,20 +1,37 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+/* eslint-disable no-console */
 import * as algokit from '@algorandfoundation/algokit-utils'
-import { TransactionSignerAccount } from '@algorandfoundation/algokit-utils/types/account'
-import { AppDetails } from '@algorandfoundation/algokit-utils/types/app-client'
 import { useWallet } from '@txnlab/use-wallet'
 import { useSnackbar } from 'notistack'
 import { useState } from 'react'
 import { DaoClient } from '../contracts/dao'
-import { getAlgodConfigFromViteEnvironment, getIndexerConfigFromViteEnvironment } from '../utils/network/getAlgoClientConfigs'
+import { getAlgodConfigFromViteEnvironment } from '../utils/network/getAlgoClientConfigs'
 
-interface AppCallsInterface {
-  openModal: boolean
-  setModalState: (value: boolean) => void
-}
+type AppCallProps = {
+  appID: number
+} & (
+  | {
+      method: 'create'
+      setAppID: React.Dispatch<React.SetStateAction<number>>
+    }
+  | {
+      method: 'add_proposal'
+      name: string
+      unitName: string
+      file: File | undefined
+      web3StorageToken: string
+    }
+  | {
+      method: 'vote'
+      proposalID: number
+    }
+  | {
+      method: 'mint'
+    }
+)
 
-const AppCalls = ({ openModal, setModalState }: AppCallsInterface) => {
+const AppCalls = (props: AppCallProps) => {
   const [loading, setLoading] = useState<boolean>(false)
-  const [contractInput, setContractInput] = useState<string>('')
 
   const algodConfig = getAlgodConfigFromViteEnvironment()
   const algodClient = algokit.getAlgoClient({
@@ -23,77 +40,63 @@ const AppCalls = ({ openModal, setModalState }: AppCallsInterface) => {
     token: algodConfig.token,
   })
 
-  const indexerConfig = getIndexerConfigFromViteEnvironment()
-  const indexer = algokit.getAlgoIndexerClient({
-    server: indexerConfig.server,
-    port: indexerConfig.port,
-    token: indexerConfig.token,
-  })
-
   const { enqueueSnackbar } = useSnackbar()
   const { signer, activeAddress } = useWallet()
 
-  const sendAppCall = async () => {
-    setLoading(true)
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const sender = { signer, addr: activeAddress! }
 
-    const appDetails = {
-      resolveBy: 'creatorAndName',
-      sender: { signer, addr: activeAddress } as TransactionSignerAccount,
-      creatorAddress: activeAddress,
-      findExistingUsing: indexer,
-    } as AppDetails
+  const appClient = new DaoClient(
+    {
+      resolveBy: 'id',
+      id: props.appID,
+      sender,
+    },
+    algodClient,
+  )
 
-    const appClient = new DaoClient(appDetails, algodClient)
+  let text: string
+  let callMethod: () => Promise<void>
+  switch (props.method) {
+    case 'create':
+      text = 'Create App'
+      callMethod = async () => {
+        setLoading(true)
 
-    // Please note, in typical production scenarios,
-    // you wouldn't want to use deploy directly from your frontend.
-    // Instead, you would deploy your contract on your backend and reference it by id.
-    // Given the simplicity of the starter contract, we are deploying it on the frontend
-    // for demonstration purposes.
-    const deployParams = {
-      onSchemaBreak: 'append',
-      onUpdate: 'append',
-    }
-    await appClient.deploy(deployParams).catch((e: Error) => {
-      enqueueSnackbar(`Error deploying the contract: ${e.message}`, { variant: 'error' })
-      setLoading(false)
-      return
-    })
+        try {
+          await appClient.create.bare()
+        } catch (e) {
+          enqueueSnackbar(`Error deploying the contract: ${(e as Error).message}`, { variant: 'error' })
+          setLoading(false)
+          return
+        }
 
-    const response = await appClient.hello({ name: contractInput }).catch((e: Error) => {
-      enqueueSnackbar(`Error calling the contract: ${e.message}`, { variant: 'error' })
-      setLoading(false)
-      return
-    })
+        const { appId } = await appClient.appClient.getAppReference()
+        setLoading(false)
 
-    enqueueSnackbar(`Response from the contract: ${response?.return}`, { variant: 'success' })
-    setLoading(false)
+        props.setAppID(Number(appId))
+      }
+      break
+    case 'add_proposal':
+      text = 'Propose'
+      callMethod = async () => {
+        if (props.file === undefined) enqueueSnackbar('File is missing!', { variant: 'error' })
+      }
+      break
+    case 'vote':
+      text = 'Vote'
+      callMethod = async () => {}
+      break
+    case 'mint':
+      text = 'Mint'
+      callMethod = async () => {}
+      break
   }
 
   return (
-    <dialog id="appcalls_modal" className={`modal ${openModal ? 'modal-open' : ''} bg-slate-200`}>
-      <form method="dialog" className="modal-box">
-        <h3 className="font-bold text-lg">Say hello to your Algorand smart contract</h3>
-        <br />
-        <input
-          type="text"
-          placeholder="Provide input to hello function"
-          className="input input-bordered w-full"
-          value={contractInput}
-          onChange={(e) => {
-            setContractInput(e.target.value)
-          }}
-        />
-        <div className="modal-action ">
-          <button className="btn" onClick={() => setModalState(!openModal)}>
-            Close
-          </button>
-          <button className={`btn`} onClick={sendAppCall}>
-            {loading ? <span className="loading loading-spinner" /> : 'Send application call'}
-          </button>
-        </div>
-      </form>
-    </dialog>
+    <button className={`btn m-2`} onClick={callMethod}>
+      {loading ? <span className="loading loading-spinner" /> : text}
+    </button>
   )
 }
 

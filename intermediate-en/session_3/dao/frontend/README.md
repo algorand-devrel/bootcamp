@@ -58,4 +58,27 @@ This project makes use of React and Tailwind to provider a base project configur
 It has also been configured to have a productive dev experience out of the box in [VS Code](https://code.visualstudio.com/), see the [.vscode](./.vscode) folder.
 # Integrating with smart contracts and application clients
 
-Refer to the detailed guidance on [integrating with smart contracts and application clients](./src/contracts/README.md). In essence, for any smart contract codebase generated with AlgoKit or ther tools that produce compile contracts into ARC34 compliant app specifications, you can use the `algokit generate` command to generate TypeScript or Python typed client. Once generated simply drag and drop the generated client into `./src/contracts` and import it into your React components as you see fit.
+Refer to the detailed guidance on [integrating with smart contracts and application clients](./src/contracts/README.md). In essence, for any smart contract codebase generated with AlgoKit or other tools that produce compile contracts into ARC34 compliant app specifications, you can use the `algokit generate` command to generate TypeScript or Python typed client. Once generated simply drag and drop the generated client into `./src/contracts` and import it into your React components as you see fit.
+
+# Vite compatibility with `js-algorand-sdk` and `algokit clients`
+
+If you are receiving `address malformed` errors when sending direct calls to abi methods on AlgoKit typed clients where ABI parameters expect ABI transactions to be passed, this is a known edge case and a bug that occurs on [Vite in dev mode](https://github.com/vitejs/vite/issues/9528). A fix is in the works on [js-algorand-sdk](https://github.com/algorand/js-algorand-sdk/issues/740) side (which is used as a main low-level dependency by AlgoKit to generate typed clients), but in the meantime you can use a simple workaround described below:
+
+```ts
+Instead of:
+
+const response = await myAlgoKitTypedClient
+  .someExternalMethod({
+    some_txn_param: someTxnObject,
+  })
+
+use:
+
+const response = await appClient
+  .compose()
+  .someExternalMethod({
+    some_txn_param: someTxnObject,
+  })
+  .execute()
+```
+

@@ -58,7 +58,7 @@ class DAOState:
 app = beaker.Application("DAO", state=DAOState)
 
 
-@app.create
+@app.create(bare=True)
 def create() -> pt.Expr:
     return app.initialize_global_state()
 
@@ -66,7 +66,7 @@ def create() -> pt.Expr:
 # In box storage:
 # proposal[id] = given proposal
 # votes[id] = 0
-@app.opt_in
+@app.external
 def add_proposal(proposal: Proposal) -> pt.Expr:
     proposal_id = app.state.current_proposal_id.get()
     new_id = proposal_id + pt.Int(1)

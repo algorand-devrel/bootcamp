@@ -1,8 +1,8 @@
 #pragma version 8
-intcblock 0 1 4 2
-bytecblock 0x77696e6e696e675f70726f706f73616c 0x
-txna ApplicationArgs 0
-pushbytes 0x4c5c61ba // "create()void"
+intcblock 0 1 2 4
+bytecblock 0x762d 0x63757272656e745f70726f706f73616c5f6964 0x77696e6e696e675f70726f706f73616c 0x702d 0x
+txn NumAppArgs
+intc_0 // 0
 ==
 bnz main_l8
 txna ApplicationArgs 0
@@ -10,7 +10,7 @@ pushbytes 0xefa8b44b // "add_proposal((string,string,string,byte[32]))void"
 ==
 bnz main_l7
 txna ApplicationArgs 0
-pushbytes 0x628ce32d // "vote(address)void"
+pushbytes 0x31d5c300 // "vote(uint64)void"
 ==
 bnz main_l6
 txna ApplicationArgs 0
@@ -27,7 +27,7 @@ intc_0 // 0
 !=
 &&
 assert
-callsub mintcaster_7
+callsub mintcaster_6
 intc_1 // 1
 return
 main_l6:
@@ -39,7 +39,7 @@ intc_0 // 0
 !=
 &&
 assert
-callsub votecaster_6
+callsub votecaster_5
 intc_1 // 1
 return
 main_l7:
@@ -51,30 +51,32 @@ intc_0 // 0
 !=
 &&
 assert
-callsub addproposalcaster_5
+callsub addproposalcaster_4
 intc_1 // 1
 return
 main_l8:
 txn OnCompletion
 intc_0 // NoOp
 ==
+bnz main_l10
+err
+main_l10:
 txn ApplicationID
 intc_0 // 0
 ==
-&&
 assert
-callsub createcaster_4
+callsub create_0
 intc_1 // 1
 return
 
 // create
 create_0:
 proto 0 0
-pushbytes 0x63757272656e745f70726f706f73616c5f6964 // "current_proposal_id"
+bytec_1 // "current_proposal_id"
 intc_0 // 0
 app_global_put
-bytec_0 // "winning_proposal"
-bytec_1 // ""
+bytec_2 // "winning_proposal"
+intc_0 // 0
 app_global_put
 retsub
 
@@ -82,28 +84,57 @@ retsub
 addproposal_1:
 proto 1 0
 intc_0 // 0
-intc_0 // 0
+dup
+bytec_1 // "current_proposal_id"
+app_global_get
 frame_bury 0
-txn Sender
-box_del
-pop
-txn Sender
-frame_dig -1
-box_put
-txn Sender
-box_del
-pop
-txn Sender
+intc_0 // 0
+frame_bury 1
+bytec_3 // "p-"
 frame_dig 0
 itob
+concat
+box_del
+pop
+bytec_3 // "p-"
+frame_dig 0
+itob
+concat
+frame_dig -1
 box_put
+bytec_0 // "v-"
+frame_dig 0
+itob
+concat
+box_del
+pop
+bytec_0 // "v-"
+frame_dig 0
+itob
+concat
+frame_dig 1
+itob
+box_put
+bytec_1 // "current_proposal_id"
+bytec_1 // "current_proposal_id"
+app_global_get
+intc_1 // 1
++
+app_global_put
 retsub
 
 // vote
 vote_2:
 proto 1 0
 intc_0 // 0
+dup
+bytec_2 // "winning_proposal"
+app_global_get
+frame_bury 1
+bytec_0 // "v-"
 frame_dig -1
+itob
+concat
 box_get
 store 1
 store 0
@@ -113,8 +144,24 @@ load 0
 btoi
 intc_1 // 1
 +
-bytec_0 // "winning_proposal"
-app_global_get
+frame_bury 0
+bytec_0 // "v-"
+frame_dig -1
+itob
+concat
+box_get
+store 1
+store 0
+load 1
+assert
+load 0
+btoi
+intc_1 // 1
++
+bytec_0 // "v-"
+frame_dig 1
+itob
+concat
 box_get
 store 3
 store 2
@@ -124,25 +171,20 @@ load 2
 btoi
 >
 bz vote_2_l2
-bytec_0 // "winning_proposal"
+bytec_2 // "winning_proposal"
 frame_dig -1
 app_global_put
 vote_2_l2:
+bytec_0 // "v-"
 frame_dig -1
-box_get
-store 1
-store 0
-load 1
-assert
-load 0
-btoi
-intc_1 // 1
-+
-frame_bury 0
-frame_dig -1
+itob
+concat
 box_del
 pop
+bytec_0 // "v-"
 frame_dig -1
+itob
+concat
 frame_dig 0
 itob
 box_put
@@ -152,42 +194,15 @@ retsub
 mint_3:
 proto 0 0
 intc_0 // 0
-bytec_1 // ""
+bytec 4 // ""
 dupn 4
-frame_dig 1
-frame_dig 1
-intc_2 // 4
-extract_uint16
-dig 1
-len
-substring3
-frame_bury 2
-frame_dig 1
-extract 6 32
-frame_bury 3
-frame_dig 1
-frame_dig 1
-intc_0 // 0
-extract_uint16
-frame_dig 1
-intc_3 // 2
-extract_uint16
-substring3
-frame_bury 4
-frame_dig 1
-frame_dig 1
-intc_3 // 2
-extract_uint16
-frame_dig 1
-intc_2 // 4
-extract_uint16
-substring3
-frame_bury 5
-bytec_0 // "winning_proposal"
+bytec_2 // "winning_proposal"
 app_global_get
 frame_bury 0
+bytec_3 // "p-"
 frame_dig 0
 itob
+concat
 box_get
 store 5
 store 4
@@ -195,6 +210,35 @@ load 5
 assert
 load 4
 frame_bury 1
+frame_dig 1
+frame_dig 1
+intc_2 // 2
+extract_uint16
+frame_dig 1
+intc_3 // 4
+extract_uint16
+substring3
+frame_bury 2
+frame_dig 1
+frame_dig 1
+intc_0 // 0
+extract_uint16
+frame_dig 1
+intc_2 // 2
+extract_uint16
+substring3
+frame_bury 3
+frame_dig 1
+frame_dig 1
+intc_3 // 4
+extract_uint16
+dig 1
+len
+substring3
+frame_bury 4
+frame_dig 1
+extract 6 32
+frame_bury 5
 itxn_begin
 pushint 3 // acfg
 itxn_field TypeEnum
@@ -204,26 +248,20 @@ frame_dig 2
 extract 2 0
 itxn_field ConfigAssetURL
 frame_dig 3
-itxn_field ConfigAssetMetadataHash
-frame_dig 4
 extract 2 0
 itxn_field ConfigAssetName
-frame_dig 5
+frame_dig 4
 extract 2 0
 itxn_field ConfigAssetUnitName
+frame_dig 5
+itxn_field ConfigAssetMetadataHash
 itxn_submit
 retsub
 
-// create_caster
-createcaster_4:
-proto 0 0
-callsub create_0
-retsub
-
 // add_proposal_caster
-addproposalcaster_5:
+addproposalcaster_4:
 proto 0 0
-bytec_1 // ""
+bytec 4 // ""
 txna ApplicationArgs 1
 frame_bury 0
 frame_dig 0
@@ -231,17 +269,18 @@ callsub addproposal_1
 retsub
 
 // vote_caster
-votecaster_6:
+votecaster_5:
 proto 0 0
-bytec_1 // ""
+intc_0 // 0
 txna ApplicationArgs 1
+btoi
 frame_bury 0
 frame_dig 0
 callsub vote_2
 retsub
 
 // mint_caster
-mintcaster_7:
+mintcaster_6:
 proto 0 0
 callsub mint_3
 retsub

@@ -30,7 +30,7 @@ This project uses [GitHub Actions](https://docs.github.com/en/actions/learn-gith
 
 For pushes to `main` branch, after the above checks pass, the following deployment actions are performed:
   - The smart contract(s) are deployed to TestNet using [AlgoNode](https://algonode.io).
-  - The frontend application is deployed to a provider of your choice (Netflify, Vercel, etc.). See [frontend README](frontend/README.md) for more information.
+  - The frontend application is deployed to a provider of your choice (Netlify, Vercel, etc.). See [frontend README](frontend/README.md) for more information.
 
 > Please note deployment of smart contracts is done via `algokit deploy` command which can be invoked both via CI as seen on this project, or locally. For more information on how to use `algokit deploy` please see [AlgoKit documentation](https://github.com/algorandfoundation/algokit-cli/blob/main/docs/features/deploy.md).
 
