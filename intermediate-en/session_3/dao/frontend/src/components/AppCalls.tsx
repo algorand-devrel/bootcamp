@@ -4,6 +4,7 @@ import * as algokit from '@algorandfoundation/algokit-utils'
 import { useWallet } from '@txnlab/use-wallet'
 import { useSnackbar } from 'notistack'
 import { useState } from 'react'
+import { Web3Storage } from 'web3.storage'
 import { DaoClient } from '../contracts/dao'
 import { getAlgodConfigFromViteEnvironment } from '../utils/network/getAlgoClientConfigs'
 
@@ -80,7 +81,54 @@ const AppCalls = (props: AppCallProps) => {
     case 'add_proposal':
       text = 'Propose'
       callMethod = async () => {
-        if (props.file === undefined) enqueueSnackbar('File is missing!', { variant: 'error' })
+        if (props.file === undefined) {
+          enqueueSnackbar('File is missing!', { variant: 'error' })
+          throw Error('File is missing')
+        }
+
+        /*
+        Generate ARC3 url and metadata hash based on the file
+        props.file -> upload to IPFS -> get URL -> get hash
+        Metadata.json:
+          * decimals: 0
+          * name: props.name
+          * unitName: props.unitName
+          * image: props.file uploaded to IPFS
+          * image_mimetype: props.file.type
+          * properties: {}
+        URL:
+          * use ipfs:// protocol
+          * point to metadata.json
+          * end with #arc3
+        Hash:
+          * sha256 of the metadata.json
+        */
+        const w3s = new Web3Storage({ token: props.web3StorageToken })
+
+        const imageRoot = await w3s.put([props.file], { name: props.file.name })
+
+        const metadata = {
+          decimals: 0,
+          name: props.name,
+          unitName: props.unitName,
+          image: `ipfs://${imageRoot}/${props.file.name}`,
+          image_mimetype: props.file.type,
+          properties: {},
+        }
+
+        const metadataJson = JSON.stringify(metadata)
+
+        const metadataFile = new File([metadataJson], 'metadata.json', { type: 'text/plain' })
+
+        const metadataRoot = await w3s.put([metadataFile], { name: 'metadata.json' })
+
+        const msgBuffer = new TextEncoder().encode(metadataJson)
+
+        const hash = new Uint8Array(await crypto.subtle.digest('SHA-256', msgBuffer))
+
+        const url = `ipfs://${metadataRoot}/metadata.json#arc3`
+
+        console.log(url, hash)
       }
       break
     case 'vote':
