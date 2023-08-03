@@ -1,0 +1,68 @@
+{
+  "configurations": [
+    {
+      "type": "msedge",
+      "request": "launch",
+      "name": "Run (Edge)",
+      "url": "http://localhost:5173",
+      "webRoot": "${workspaceFolder}",
+      "presentation": {
+        "hidden": false,
+        "group": "2. Web"
+      }
+    },
+    {
+      "type": "chrome",
+      "request": "launch",
+      "name": "Run (Chrome)",
+      "url": "http://localhost:5173",
+      "webRoot": "${workspaceFolder}",
+      "presentation": {
+        "hidden": false,
+        "group": "2. Web"
+      }
+    },
+    {
+      "type": "firefox",
+      "request": "launch",
+      "name": "Run (Firefox)",
+      "url": "http://localhost:5173",
+      "webRoot": "${workspaceFolder}",
+      "presentation": {
+        "hidden": false,
+        "group": "2. Web"
+      }
+    },
+    {
+      "name": "Run dApp",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "cwd": "${workspaceRoot}",
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**", "node_modules/**"],
+      "presentation": {
+        "hidden": false,
+        "group": "1. Run Project",
+        "order": 1
+      }
+    },
+    {
+      "name": "Run dApp (+ LocalNet)",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "cwd": "${workspaceRoot}",
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**", "node_modules/**"],
+      "preLaunchTask": "Start AlgoKit LocalNet",
+      "presentation": {
+        "hidden": false,
+        "group": "1. Run Project",
+        "order": 1
+      }
+    }
+  ]
+}
