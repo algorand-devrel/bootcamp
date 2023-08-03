@@ -28,6 +28,7 @@ export default function App() {
   const [openWalletModal, setOpenWalletModal] = useState<boolean>(false)
   const { activeAddress } = useWallet()
   const [appID, setAppID] = useState<number>(0)
+  const [assetID, setAssetID] = useState<number>(0)
   const [nftName, setNftName] = useState<string>('DAO NFT')
   const [unitName, setUnitName] = useState<string>('DNFT')
   const [fileUpload, setFileUpload] = useState<File | undefined>(undefined)
@@ -151,7 +152,17 @@ export default function App() {
                     <AppCalls appID={appID} method="vote" proposalID={voteProposalID} />
 
                     <div className="divider" />
-                    <AppCalls appID={appID} method="mint" />
+                    <AppCalls appID={appID} method="mint" setAssetID={setAssetID} />
+                    <label className="label m-2">
+                      Minted Asset
+                      <input
+                        type="number"
+                        value={assetID}
+                        className="input input-bordered"
+                        readOnly={true}
+                        onChange={(e) => (e.target.valueAsNumber ? setAssetID(e.target.valueAsNumber) : setAssetID(0))}
+                      />
+                    </label>
                   </div>
                 )}
 
