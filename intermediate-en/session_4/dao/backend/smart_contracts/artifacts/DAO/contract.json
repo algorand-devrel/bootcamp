@@ -2,6 +2,18 @@
     "name": "DAO",
     "methods": [
         {
+            "name": "create",
+            "args": [
+                {
+                    "type": "uint64",
+                    "name": "minter_app_id"
+                }
+            ],
+            "returns": {
+                "type": "void"
+            }
+        },
+        {
             "name": "add_proposal",
             "args": [
                 {
@@ -27,7 +39,12 @@
         },
         {
             "name": "mint",
-            "args": [],
+            "args": [
+                {
+                    "type": "application",
+                    "name": "minter_app_ref"
+                }
+            ],
             "returns": {
                 "type": "uint64"
             }
