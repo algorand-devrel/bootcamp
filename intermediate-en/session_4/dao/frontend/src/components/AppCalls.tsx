@@ -138,9 +138,6 @@ const AppCalls = (props: AppCallProps) => {
 
         const url = `ipfs://${metadataRoot}/metadata.json#arc3`
 
-        const proposalID = 0
-        const encodedProposalID = algosdk.encodeUint64(proposalID)
-
         // bytes = (size of key (uint64) + size of value (uint64) + size of prefix (2))
         const costVoteBox = PER_BOX_MBR + PER_BYTE_MBR * (8 + 8 + 2)
 
@@ -150,6 +147,11 @@ const AppCalls = (props: AppCallProps) => {
         const costProposalBox = PER_BOX_MBR + PER_BYTE_MBR * (8 + 2 + encodedTuple.byteLength)
 
         await appClient.appClient.fundAppAccount(algokit.microAlgos(costVoteBox + costProposalBox))
+
+        // Get the current proposal ID from our app
+        // Read the proposal ID from the global state
+        const proposalID = (await appClient.getGlobalState()).current_proposal_id!.asBigInt()
+        const encodedProposalID = algosdk.encodeUint64(proposalID)
 
         const proposalKey = new Uint8Array([...Buffer.from('p-'), ...encodedProposalID])
         const votesKey = new Uint8Array([...Buffer.from('v-'), ...encodedProposalID])
@@ -169,12 +171,17 @@ const AppCalls = (props: AppCallProps) => {
 
         const encodedProposalID = algosdk.encodeUint64(props.proposalID)
         const voteKey = new Uint8Array([...Buffer.from('v-'), ...encodedProposalID])
+
+        const winningProposalID = (await appClient.getGlobalState()).winning_proposal!.asBigInt()
+        const encodedWinningProposalID = algosdk.encodeUint64(winningProposalID)
+        const winningProposalVoteKey = new Uint8Array([...Buffer.from('v-'), ...encodedWinningProposalID])
+
         await appClient.vote(
           {
             proposal_id: props.proposalID,
           },
           {
-            boxes: [voteKey],
+            boxes: [voteKey, winningProposalVoteKey],
           },
         )
         setLoading(false)
@@ -184,7 +191,7 @@ const AppCalls = (props: AppCallProps) => {
       text = 'Mint'
       callMethod = async () => {
         setLoading(true)
-        const encodedProposalID = algosdk.encodeUint64(0)
+        const encodedProposalID = algosdk.encodeUint64((await appClient.getGlobalState()).winning_proposal!.asBigInt())
         const proposalKey = new Uint8Array([...Buffer.from('p-'), ...encodedProposalID])
 
         await appClient.appClient.fundAppAccount(algokit.microAlgos(100_000))
