@@ -111,7 +111,7 @@ def vote(proposal_id: pt.abi.Uint64) -> pt.Expr:
 
 
 @app.external
-def mint() -> pt.Expr:
+def mint(*, output: pt.abi.Uint64) -> pt.Expr:
     # Read the winning proposal
     # Get the proposal data structure for the winning proposal
     # Create an asset based on that data structure
@@ -140,4 +140,5 @@ def mint() -> pt.Expr:
                 pt.TxnField.fee: pt.Int(0),
             }
         ),
+        output.set(pt.InnerTxn.created_asset_id())
     )

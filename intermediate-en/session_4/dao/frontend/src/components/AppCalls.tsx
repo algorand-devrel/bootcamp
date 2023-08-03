@@ -14,7 +14,7 @@ const PER_BYTE_MBR = 0.0004e6
 /**
  * Proposal: [name, url, unitName, hash]
  */
-type Proposal = [string, string, string, Uint8Array]
+type ProposalTuple = [string, string, string, Uint8Array]
 
 type AppCallProps = {
   appID: number
@@ -36,6 +36,7 @@ type AppCallProps = {
     }
   | {
       method: 'mint'
+      setAssetID: React.Dispatch<React.SetStateAction<number>>
     }
 )
 
@@ -143,7 +144,7 @@ const AppCalls = (props: AppCallProps) => {
 
         // bytes = (size of key (uint64) + size of prefix (2) + size of encoded data structure)
         const tupleType = algosdk.ABIType.from('(string,string,string,byte[32])')
-        const encodedTuple = tupleType.encode([props.name, url, props.unitName, hash] as Proposal)
+        const encodedTuple = tupleType.encode([props.name, url, props.unitName, hash] as ProposalTuple)
         const costProposalBox = PER_BOX_MBR + PER_BYTE_MBR * (8 + 2 + encodedTuple.byteLength)
 
         await appClient.appClient.fundAppAccount(algokit.microAlgos(costVoteBox + costProposalBox))
@@ -157,7 +158,7 @@ const AppCalls = (props: AppCallProps) => {
         const votesKey = new Uint8Array([...Buffer.from('v-'), ...encodedProposalID])
         await appClient.addProposal(
           {
-            proposal: [props.name, url, props.unitName, hash] as Proposal,
+            proposal: [props.name, url, props.unitName, hash] as ProposalTuple,
           },
           { boxes: [proposalKey, votesKey] },
         )
@@ -195,7 +196,9 @@ const AppCalls = (props: AppCallProps) => {
         const proposalKey = new Uint8Array([...Buffer.from('p-'), ...encodedProposalID])
 
         await appClient.appClient.fundAppAccount(algokit.microAlgos(100_000))
-        await appClient.mint({}, { boxes: [proposalKey], sendParams: { fee: algokit.microAlgos(2_000) } })
+        const result = await appClient.mint({}, { boxes: [proposalKey], sendParams: { fee: algokit.microAlgos(2_000) } })
+        const assetID = result.return?.valueOf()
+        props.setAssetID(Number(assetID))
         setLoading(false)
       }
       break
