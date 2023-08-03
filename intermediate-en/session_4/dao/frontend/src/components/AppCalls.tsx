@@ -6,6 +6,7 @@ import algosdk from 'algosdk'
 import { useSnackbar } from 'notistack'
 import { useState } from 'react'
 import { Web3Storage } from 'web3.storage'
+import { MinterClient } from '../contracts/Minter'
 import { DaoClient } from '../contracts/dao'
 import { getAlgodConfigFromViteEnvironment } from '../utils/network/getAlgoClientConfigs'
 
@@ -22,6 +23,7 @@ type AppCallProps = {
   | {
       method: 'create'
       setAppID: React.Dispatch<React.SetStateAction<number>>
+      setMinterAppID: React.Dispatch<React.SetStateAction<number>>
     }
   | {
       method: 'add_proposal'
@@ -37,6 +39,7 @@ type AppCallProps = {
   | {
       method: 'mint'
       setAssetID: React.Dispatch<React.SetStateAction<number>>
+      minterAppID: number
     }
 )
 
@@ -56,7 +59,7 @@ const AppCalls = (props: AppCallProps) => {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const sender = { signer, addr: activeAddress! }
 
-  const appClient = new DaoClient(
+  const daoClient = new DaoClient(
     {
       resolveBy: 'id',
       id: props.appID,
@@ -74,15 +77,27 @@ const AppCalls = (props: AppCallProps) => {
         setLoading(true)
 
         try {
-          await appClient.create.bare()
-          await appClient.appClient.fundAppAccount(algokit.microAlgos(100_000))
+          const minterClient = new MinterClient(
+            {
+              resolveBy: 'id',
+              id: 0,
+              sender,
+            },
+            algodClient,
+          )
+
+          await minterClient.create.bare()
+          const minter_app_id = (await minterClient.appClient.getAppReference()).appId
+          await daoClient.create.create({ minter_app_id })
+          await daoClient.appClient.fundAppAccount(algokit.microAlgos(100_000))
+          props.setMinterAppID(Number(minter_app_id))
         } catch (e) {
           enqueueSnackbar(`Error deploying the contract: ${(e as Error).message}`, { variant: 'error' })
           setLoading(false)
           return
         }
 
-        const { appId } = await appClient.appClient.getAppReference()
+        const { appId } = await daoClient.appClient.getAppReference()
         setLoading(false)
 
         props.setAppID(Number(appId))
@@ -147,16 +162,16 @@ const AppCalls = (props: AppCallProps) => {
         const encodedTuple = tupleType.encode([props.name, url, props.unitName, hash] as ProposalTuple)
         const costProposalBox = PER_BOX_MBR + PER_BYTE_MBR * (8 + 2 + encodedTuple.byteLength)
 
-        await appClient.appClient.fundAppAccount(algokit.microAlgos(costVoteBox + costProposalBox))
+        await daoClient.appClient.fundAppAccount(algokit.microAlgos(costVoteBox + costProposalBox))
 
         // Get the current proposal ID from our app
         // Read the proposal ID from the global state
-        const proposalID = (await appClient.getGlobalState()).current_proposal_id!.asBigInt()
+        const proposalID = (await daoClient.getGlobalState()).current_proposal_id!.asBigInt()
         const encodedProposalID = algosdk.encodeUint64(proposalID)
 
         const proposalKey = new Uint8Array([...Buffer.from('p-'), ...encodedProposalID])
         const votesKey = new Uint8Array([...Buffer.from('v-'), ...encodedProposalID])
-        await appClient.addProposal(
+        await daoClient.addProposal(
           {
             proposal: [props.name, url, props.unitName, hash] as ProposalTuple,
           },
@@ -173,11 +188,11 @@ const AppCalls = (props: AppCallProps) => {
         const encodedProposalID = algosdk.encodeUint64(props.proposalID)
         const voteKey = new Uint8Array([...Buffer.from('v-'), ...encodedProposalID])
 
-        const winningProposalID = (await appClient.getGlobalState()).winning_proposal!.asBigInt()
+        const winningProposalID = (await daoClient.getGlobalState()).winning_proposal!.asBigInt()
         const encodedWinningProposalID = algosdk.encodeUint64(winningProposalID)
         const winningProposalVoteKey = new Uint8Array([...Buffer.from('v-'), ...encodedWinningProposalID])
 
-        await appClient.vote(
+        await daoClient.vote(
           {
             proposal_id: props.proposalID,
           },
@@ -192,11 +207,22 @@ const AppCalls = (props: AppCallProps) => {
       text = 'Mint'
       callMethod = async () => {
         setLoading(true)
-        const encodedProposalID = algosdk.encodeUint64((await appClient.getGlobalState()).winning_proposal!.asBigInt())
+        const encodedProposalID = algosdk.encodeUint64((await daoClient.getGlobalState()).winning_proposal!.asBigInt())
         const proposalKey = new Uint8Array([...Buffer.from('p-'), ...encodedProposalID])
+        const minterClient = new MinterClient(
+          {
+            resolveBy: 'id',
+            id: props.minterAppID,
+            sender,
+          },
+          algodClient,
+        )
 
-        await appClient.appClient.fundAppAccount(algokit.microAlgos(100_000))
-        const result = await appClient.mint({}, { boxes: [proposalKey], sendParams: { fee: algokit.microAlgos(2_000) } })
+        await minterClient.appClient.fundAppAccount(algokit.microAlgos(200_000))
+        const result = await daoClient.mint(
+          { minter_app_ref: props.minterAppID },
+          { boxes: [proposalKey], sendParams: { fee: algokit.microAlgos(3_000) } },
+        )
         const assetID = result.return?.valueOf()
         props.setAssetID(Number(assetID))
         setLoading(false)

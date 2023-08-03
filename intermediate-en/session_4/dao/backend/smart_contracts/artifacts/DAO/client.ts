@@ -26,6 +26,11 @@ import { SendTransactionResult, TransactionToSign, SendTransactionFrom } from '@
 import { Algodv2, OnApplicationComplete, Transaction, TransactionWithSigner, AtomicTransactionComposer } from 'algosdk'
 export const APP_SPEC: AppSpec = {
   "hints": {
+    "create(uint64)void": {
+      "call_config": {
+        "no_op": "CREATE"
+      }
+    },
     "add_proposal((string,string,string,byte[32]))void": {
       "structs": {
         "proposal": {
@@ -59,20 +64,20 @@ export const APP_SPEC: AppSpec = {
         "no_op": "CALL"
       }
     },
-    "mint()uint64": {
+    "mint(application)uint64": {
       "call_config": {
         "no_op": "CALL"
       }
     }
   },
   "source": {
-    "approval": "I3ByYWdtYSB2ZXJzaW9uIDgKaW50Y2Jsb2NrIDAgMSAyIDQKYnl0ZWNibG9jayAweDc2MmQgMHg2Mzc1NzI3MjY1NmU3NDVmNzA3MjZmNzA2ZjczNjE2YzVmNjk2NCAweDc3Njk2ZTZlNjk2ZTY3NWY3MDcyNmY3MDZmNzM2MTZjIDB4NzAyZCAweAp0eG4gTnVtQXBwQXJncwppbnRjXzAgLy8gMAo9PQpibnogbWFpbl9sOAp0eG5hIEFwcGxpY2F0aW9uQXJncyAwCnB1c2hieXRlcyAweGVmYThiNDRiIC8vICJhZGRfcHJvcG9zYWwoKHN0cmluZyxzdHJpbmcsc3RyaW5nLGJ5dGVbMzJdKSl2b2lkIgo9PQpibnogbWFpbl9sNwp0eG5hIEFwcGxpY2F0aW9uQXJncyAwCnB1c2hieXRlcyAweDMxZDVjMzAwIC8vICJ2b3RlKHVpbnQ2NCl2b2lkIgo9PQpibnogbWFpbl9sNgp0eG5hIEFwcGxpY2F0aW9uQXJncyAwCnB1c2hieXRlcyAweDk5ZjE5YTMzIC8vICJtaW50KCl1aW50NjQiCj09CmJueiBtYWluX2w1CmVycgptYWluX2w1Ogp0eG4gT25Db21wbGV0aW9uCmludGNfMCAvLyBOb09wCj09CnR4biBBcHBsaWNhdGlvbklECmludGNfMCAvLyAwCiE9CiYmCmFzc2VydApjYWxsc3ViIG1pbnRjYXN0ZXJfNgppbnRjXzEgLy8gMQpyZXR1cm4KbWFpbl9sNjoKdHhuIE9uQ29tcGxldGlvbgppbnRjXzAgLy8gTm9PcAo9PQp0eG4gQXBwbGljYXRpb25JRAppbnRjXzAgLy8gMAohPQomJgphc3NlcnQKY2FsbHN1YiB2b3RlY2FzdGVyXzUKaW50Y18xIC8vIDEKcmV0dXJuCm1haW5fbDc6CnR4biBPbkNvbXBsZXRpb24KaW50Y18wIC8vIE5vT3AKPT0KdHhuIEFwcGxpY2F0aW9uSUQKaW50Y18wIC8vIDAKIT0KJiYKYXNzZXJ0CmNhbGxzdWIgYWRkcHJvcG9zYWxjYXN0ZXJfNAppbnRjXzEgLy8gMQpyZXR1cm4KbWFpbl9sODoKdHhuIE9uQ29tcGxldGlvbgppbnRjXzAgLy8gTm9PcAo9PQpibnogbWFpbl9sMTAKZXJyCm1haW5fbDEwOgp0eG4gQXBwbGljYXRpb25JRAppbnRjXzAgLy8gMAo9PQphc3NlcnQKY2FsbHN1YiBjcmVhdGVfMAppbnRjXzEgLy8gMQpyZXR1cm4KCi8vIGNyZWF0ZQpjcmVhdGVfMDoKcHJvdG8gMCAwCmJ5dGVjXzEgLy8gImN1cnJlbnRfcHJvcG9zYWxfaWQiCmludGNfMCAvLyAwCmFwcF9nbG9iYWxfcHV0CmJ5dGVjXzIgLy8gIndpbm5pbmdfcHJvcG9zYWwiCmludGNfMCAvLyAwCmFwcF9nbG9iYWxfcHV0CnJldHN1YgoKLy8gYWRkX3Byb3Bvc2FsCmFkZHByb3Bvc2FsXzE6CnByb3RvIDEgMAppbnRjXzAgLy8gMApkdXAKYnl0ZWNfMSAvLyAiY3VycmVudF9wcm9wb3NhbF9pZCIKYXBwX2dsb2JhbF9nZXQKZnJhbWVfYnVyeSAwCmludGNfMCAvLyAwCmZyYW1lX2J1cnkgMQpieXRlY18zIC8vICJwLSIKZnJhbWVfZGlnIDAKaXRvYgpjb25jYXQKYm94X2RlbApwb3AKYnl0ZWNfMyAvLyAicC0iCmZyYW1lX2RpZyAwCml0b2IKY29uY2F0CmZyYW1lX2RpZyAtMQpib3hfcHV0CmJ5dGVjXzAgLy8gInYtIgpmcmFtZV9kaWcgMAppdG9iCmNvbmNhdApib3hfZGVsCnBvcApieXRlY18wIC8vICJ2LSIKZnJhbWVfZGlnIDAKaXRvYgpjb25jYXQKZnJhbWVfZGlnIDEKaXRvYgpib3hfcHV0CmJ5dGVjXzEgLy8gImN1cnJlbnRfcHJvcG9zYWxfaWQiCmJ5dGVjXzEgLy8gImN1cnJlbnRfcHJvcG9zYWxfaWQiCmFwcF9nbG9iYWxfZ2V0CmludGNfMSAvLyAxCisKYXBwX2dsb2JhbF9wdXQKcmV0c3ViCgovLyB2b3RlCnZvdGVfMjoKcHJvdG8gMSAwCmludGNfMCAvLyAwCmR1cApieXRlY18yIC8vICJ3aW5uaW5nX3Byb3Bvc2FsIgphcHBfZ2xvYmFsX2dldApmcmFtZV9idXJ5IDEKYnl0ZWNfMCAvLyAidi0iCmZyYW1lX2RpZyAtMQppdG9iCmNvbmNhdApib3hfZ2V0CnN0b3JlIDEKc3RvcmUgMApsb2FkIDEKYXNzZXJ0CmxvYWQgMApidG9pCmludGNfMSAvLyAxCisKZnJhbWVfYnVyeSAwCmJ5dGVjXzAgLy8gInYtIgpmcmFtZV9kaWcgLTEKaXRvYgpjb25jYXQKYm94X2dldApzdG9yZSAxCnN0b3JlIDAKbG9hZCAxCmFzc2VydApsb2FkIDAKYnRvaQppbnRjXzEgLy8gMQorCmJ5dGVjXzAgLy8gInYtIgpmcmFtZV9kaWcgMQppdG9iCmNvbmNhdApib3hfZ2V0CnN0b3JlIDMKc3RvcmUgMgpsb2FkIDMKYXNzZXJ0CmxvYWQgMgpidG9pCj4KYnogdm90ZV8yX2wyCmJ5dGVjXzIgLy8gIndpbm5pbmdfcHJvcG9zYWwiCmZyYW1lX2RpZyAtMQphcHBfZ2xvYmFsX3B1dAp2b3RlXzJfbDI6CmJ5dGVjXzAgLy8gInYtIgpmcmFtZV9kaWcgLTEKaXRvYgpjb25jYXQKYm94X2RlbApwb3AKYnl0ZWNfMCAvLyAidi0iCmZyYW1lX2RpZyAtMQppdG9iCmNvbmNhdApmcmFtZV9kaWcgMAppdG9iCmJveF9wdXQKcmV0c3ViCgovLyBtaW50Cm1pbnRfMzoKcHJvdG8gMCAxCmludGNfMCAvLyAwCmR1cApieXRlYyA0IC8vICIiCmR1cG4gNApieXRlY18yIC8vICJ3aW5uaW5nX3Byb3Bvc2FsIgphcHBfZ2xvYmFsX2dldApmcmFtZV9idXJ5IDEKYnl0ZWNfMyAvLyAicC0iCmZyYW1lX2RpZyAxCml0b2IKY29uY2F0CmJveF9nZXQKc3RvcmUgNQpzdG9yZSA0CmxvYWQgNQphc3NlcnQKbG9hZCA0CmZyYW1lX2J1cnkgMgpmcmFtZV9kaWcgMgpmcmFtZV9kaWcgMgppbnRjXzIgLy8gMgpleHRyYWN0X3VpbnQxNgpmcmFtZV9kaWcgMgppbnRjXzMgLy8gNApleHRyYWN0X3VpbnQxNgpzdWJzdHJpbmczCmZyYW1lX2J1cnkgMwpmcmFtZV9kaWcgMgpmcmFtZV9kaWcgMgppbnRjXzAgLy8gMApleHRyYWN0X3VpbnQxNgpmcmFtZV9kaWcgMgppbnRjXzIgLy8gMgpleHRyYWN0X3VpbnQxNgpzdWJzdHJpbmczCmZyYW1lX2J1cnkgNApmcmFtZV9kaWcgMgpmcmFtZV9kaWcgMgppbnRjXzMgLy8gNApleHRyYWN0X3VpbnQxNgpkaWcgMQpsZW4Kc3Vic3RyaW5nMwpmcmFtZV9idXJ5IDUKZnJhbWVfZGlnIDIKZXh0cmFjdCA2IDMyCmZyYW1lX2J1cnkgNgppdHhuX2JlZ2luCnB1c2hpbnQgMyAvLyBhY2ZnCml0eG5fZmllbGQgVHlwZUVudW0KaW50Y18xIC8vIDEKaXR4bl9maWVsZCBDb25maWdBc3NldFRvdGFsCmZyYW1lX2RpZyAzCmV4dHJhY3QgMiAwCml0eG5fZmllbGQgQ29uZmlnQXNzZXRVUkwKZnJhbWVfZGlnIDQKZXh0cmFjdCAyIDAKaXR4bl9maWVsZCBDb25maWdBc3NldE5hbWUKZnJhbWVfZGlnIDUKZXh0cmFjdCAyIDAKaXR4bl9maWVsZCBDb25maWdBc3NldFVuaXROYW1lCmZyYW1lX2RpZyA2Cml0eG5fZmllbGQgQ29uZmlnQXNzZXRNZXRhZGF0YUhhc2gKaW50Y18wIC8vIDAKaXR4bl9maWVsZCBGZWUKaXR4bl9zdWJtaXQKaXR4biBDcmVhdGVkQXNzZXRJRApmcmFtZV9idXJ5IDAKcmV0c3ViCgovLyBhZGRfcHJvcG9zYWxfY2FzdGVyCmFkZHByb3Bvc2FsY2FzdGVyXzQ6CnByb3RvIDAgMApieXRlYyA0IC8vICIiCnR4bmEgQXBwbGljYXRpb25BcmdzIDEKZnJhbWVfYnVyeSAwCmZyYW1lX2RpZyAwCmNhbGxzdWIgYWRkcHJvcG9zYWxfMQpyZXRzdWIKCi8vIHZvdGVfY2FzdGVyCnZvdGVjYXN0ZXJfNToKcHJvdG8gMCAwCmludGNfMCAvLyAwCnR4bmEgQXBwbGljYXRpb25BcmdzIDEKYnRvaQpmcmFtZV9idXJ5IDAKZnJhbWVfZGlnIDAKY2FsbHN1YiB2b3RlXzIKcmV0c3ViCgovLyBtaW50X2Nhc3RlcgptaW50Y2FzdGVyXzY6CnByb3RvIDAgMAppbnRjXzAgLy8gMApjYWxsc3ViIG1pbnRfMwpmcmFtZV9idXJ5IDAKcHVzaGJ5dGVzIDB4MTUxZjdjNzUgLy8gMHgxNTFmN2M3NQpmcmFtZV9kaWcgMAppdG9iCmNvbmNhdApsb2cKcmV0c3Vi",
+    "approval": "I3ByYWdtYSB2ZXJzaW9uIDgKaW50Y2Jsb2NrIDAgMQpieXRlY2Jsb2NrIDB4NzYyZCAweDYzNzU3MjcyNjU2ZTc0NWY3MDcyNmY3MDZmNzM2MTZjNWY2OTY0IDB4Nzc2OTZlNmU2OTZlNjc1ZjcwNzI2ZjcwNmY3MzYxNmMgMHg2ZDY5NmU3NDY1NzI1ZjYxNzA3MDVmNjk2NCAweDcwMmQgMHgKdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMApwdXNoYnl0ZXMgMHgyNDBkMmY2NyAvLyAiY3JlYXRlKHVpbnQ2NCl2b2lkIgo9PQpibnogbWFpbl9sOAp0eG5hIEFwcGxpY2F0aW9uQXJncyAwCnB1c2hieXRlcyAweGVmYThiNDRiIC8vICJhZGRfcHJvcG9zYWwoKHN0cmluZyxzdHJpbmcsc3RyaW5nLGJ5dGVbMzJdKSl2b2lkIgo9PQpibnogbWFpbl9sNwp0eG5hIEFwcGxpY2F0aW9uQXJncyAwCnB1c2hieXRlcyAweDMxZDVjMzAwIC8vICJ2b3RlKHVpbnQ2NCl2b2lkIgo9PQpibnogbWFpbl9sNgp0eG5hIEFwcGxpY2F0aW9uQXJncyAwCnB1c2hieXRlcyAweDk0YzYxMjg0IC8vICJtaW50KGFwcGxpY2F0aW9uKXVpbnQ2NCIKPT0KYm56IG1haW5fbDUKZXJyCm1haW5fbDU6CnR4biBPbkNvbXBsZXRpb24KaW50Y18wIC8vIE5vT3AKPT0KdHhuIEFwcGxpY2F0aW9uSUQKaW50Y18wIC8vIDAKIT0KJiYKYXNzZXJ0CmNhbGxzdWIgbWludGNhc3Rlcl83CmludGNfMSAvLyAxCnJldHVybgptYWluX2w2Ogp0eG4gT25Db21wbGV0aW9uCmludGNfMCAvLyBOb09wCj09CnR4biBBcHBsaWNhdGlvbklECmludGNfMCAvLyAwCiE9CiYmCmFzc2VydApjYWxsc3ViIHZvdGVjYXN0ZXJfNgppbnRjXzEgLy8gMQpyZXR1cm4KbWFpbl9sNzoKdHhuIE9uQ29tcGxldGlvbgppbnRjXzAgLy8gTm9PcAo9PQp0eG4gQXBwbGljYXRpb25JRAppbnRjXzAgLy8gMAohPQomJgphc3NlcnQKY2FsbHN1YiBhZGRwcm9wb3NhbGNhc3Rlcl81CmludGNfMSAvLyAxCnJldHVybgptYWluX2w4Ogp0eG4gT25Db21wbGV0aW9uCmludGNfMCAvLyBOb09wCj09CnR4biBBcHBsaWNhdGlvbklECmludGNfMCAvLyAwCj09CiYmCmFzc2VydApjYWxsc3ViIGNyZWF0ZWNhc3Rlcl80CmludGNfMSAvLyAxCnJldHVybgoKLy8gY3JlYXRlCmNyZWF0ZV8wOgpwcm90byAxIDAKYnl0ZWNfMSAvLyAiY3VycmVudF9wcm9wb3NhbF9pZCIKaW50Y18wIC8vIDAKYXBwX2dsb2JhbF9wdXQKYnl0ZWNfMyAvLyAibWludGVyX2FwcF9pZCIKaW50Y18wIC8vIDAKYXBwX2dsb2JhbF9wdXQKYnl0ZWNfMiAvLyAid2lubmluZ19wcm9wb3NhbCIKaW50Y18wIC8vIDAKYXBwX2dsb2JhbF9wdXQKYnl0ZWNfMyAvLyAibWludGVyX2FwcF9pZCIKZnJhbWVfZGlnIC0xCmFwcF9nbG9iYWxfcHV0CnJldHN1YgoKLy8gYWRkX3Byb3Bvc2FsCmFkZHByb3Bvc2FsXzE6CnByb3RvIDEgMAppbnRjXzAgLy8gMApkdXAKYnl0ZWNfMSAvLyAiY3VycmVudF9wcm9wb3NhbF9pZCIKYXBwX2dsb2JhbF9nZXQKZnJhbWVfYnVyeSAwCmludGNfMCAvLyAwCmZyYW1lX2J1cnkgMQpieXRlYyA0IC8vICJwLSIKZnJhbWVfZGlnIDAKaXRvYgpjb25jYXQKYm94X2RlbApwb3AKYnl0ZWMgNCAvLyAicC0iCmZyYW1lX2RpZyAwCml0b2IKY29uY2F0CmZyYW1lX2RpZyAtMQpib3hfcHV0CmJ5dGVjXzAgLy8gInYtIgpmcmFtZV9kaWcgMAppdG9iCmNvbmNhdApib3hfZGVsCnBvcApieXRlY18wIC8vICJ2LSIKZnJhbWVfZGlnIDAKaXRvYgpjb25jYXQKZnJhbWVfZGlnIDEKaXRvYgpib3hfcHV0CmJ5dGVjXzEgLy8gImN1cnJlbnRfcHJvcG9zYWxfaWQiCmJ5dGVjXzEgLy8gImN1cnJlbnRfcHJvcG9zYWxfaWQiCmFwcF9nbG9iYWxfZ2V0CmludGNfMSAvLyAxCisKYXBwX2dsb2JhbF9wdXQKcmV0c3ViCgovLyB2b3RlCnZvdGVfMjoKcHJvdG8gMSAwCmludGNfMCAvLyAwCmR1cApieXRlY18yIC8vICJ3aW5uaW5nX3Byb3Bvc2FsIgphcHBfZ2xvYmFsX2dldApmcmFtZV9idXJ5IDEKYnl0ZWNfMCAvLyAidi0iCmZyYW1lX2RpZyAtMQppdG9iCmNvbmNhdApib3hfZ2V0CnN0b3JlIDEKc3RvcmUgMApsb2FkIDEKYXNzZXJ0CmxvYWQgMApidG9pCmludGNfMSAvLyAxCisKZnJhbWVfYnVyeSAwCmJ5dGVjXzAgLy8gInYtIgpmcmFtZV9kaWcgLTEKaXRvYgpjb25jYXQKYm94X2dldApzdG9yZSAxCnN0b3JlIDAKbG9hZCAxCmFzc2VydApsb2FkIDAKYnRvaQppbnRjXzEgLy8gMQorCmJ5dGVjXzAgLy8gInYtIgpmcmFtZV9kaWcgMQppdG9iCmNvbmNhdApib3hfZ2V0CnN0b3JlIDMKc3RvcmUgMgpsb2FkIDMKYXNzZXJ0CmxvYWQgMgpidG9pCj4KYnogdm90ZV8yX2wyCmJ5dGVjXzIgLy8gIndpbm5pbmdfcHJvcG9zYWwiCmZyYW1lX2RpZyAtMQphcHBfZ2xvYmFsX3B1dAp2b3RlXzJfbDI6CmJ5dGVjXzAgLy8gInYtIgpmcmFtZV9kaWcgLTEKaXRvYgpjb25jYXQKYm94X2RlbApwb3AKYnl0ZWNfMCAvLyAidi0iCmZyYW1lX2RpZyAtMQppdG9iCmNvbmNhdApmcmFtZV9kaWcgMAppdG9iCmJveF9wdXQKcmV0c3ViCgovLyBtaW50Cm1pbnRfMzoKcHJvdG8gMSAxCmludGNfMCAvLyAwCmR1cApieXRlYyA1IC8vICIiCmR1cApieXRlY18yIC8vICJ3aW5uaW5nX3Byb3Bvc2FsIgphcHBfZ2xvYmFsX2dldApmcmFtZV9idXJ5IDEKYnl0ZWMgNCAvLyAicC0iCmZyYW1lX2RpZyAxCml0b2IKY29uY2F0CmJveF9nZXQKc3RvcmUgNQpzdG9yZSA0CmxvYWQgNQphc3NlcnQKbG9hZCA0CmZyYW1lX2J1cnkgMgppdHhuX2JlZ2luCnB1c2hpbnQgNiAvLyBhcHBsCml0eG5fZmllbGQgVHlwZUVudW0KYnl0ZWNfMyAvLyAibWludGVyX2FwcF9pZCIKYXBwX2dsb2JhbF9nZXQKaXR4bl9maWVsZCBBcHBsaWNhdGlvbklECnB1c2hieXRlcyAweGI0MTJkY2Y1IC8vICJtaW50X3Byb3Bvc2FsKChzdHJpbmcsc3RyaW5nLHN0cmluZyxieXRlWzMyXSkpdWludDY0IgppdHhuX2ZpZWxkIEFwcGxpY2F0aW9uQXJncwpmcmFtZV9kaWcgMgppdHhuX2ZpZWxkIEFwcGxpY2F0aW9uQXJncwppdHhuX3N1Ym1pdAppdHhuIExhc3RMb2cKZXh0cmFjdCA0IDAKYnRvaQpmcmFtZV9idXJ5IDAKcmV0c3ViCgovLyBjcmVhdGVfY2FzdGVyCmNyZWF0ZWNhc3Rlcl80Ogpwcm90byAwIDAKaW50Y18wIC8vIDAKdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMQpidG9pCmZyYW1lX2J1cnkgMApmcmFtZV9kaWcgMApjYWxsc3ViIGNyZWF0ZV8wCnJldHN1YgoKLy8gYWRkX3Byb3Bvc2FsX2Nhc3RlcgphZGRwcm9wb3NhbGNhc3Rlcl81Ogpwcm90byAwIDAKYnl0ZWMgNSAvLyAiIgp0eG5hIEFwcGxpY2F0aW9uQXJncyAxCmZyYW1lX2J1cnkgMApmcmFtZV9kaWcgMApjYWxsc3ViIGFkZHByb3Bvc2FsXzEKcmV0c3ViCgovLyB2b3RlX2Nhc3Rlcgp2b3RlY2FzdGVyXzY6CnByb3RvIDAgMAppbnRjXzAgLy8gMAp0eG5hIEFwcGxpY2F0aW9uQXJncyAxCmJ0b2kKZnJhbWVfYnVyeSAwCmZyYW1lX2RpZyAwCmNhbGxzdWIgdm90ZV8yCnJldHN1YgoKLy8gbWludF9jYXN0ZXIKbWludGNhc3Rlcl83Ogpwcm90byAwIDAKaW50Y18wIC8vIDAKZHVwCnR4bmEgQXBwbGljYXRpb25BcmdzIDEKaW50Y18wIC8vIDAKZ2V0Ynl0ZQpmcmFtZV9idXJ5IDEKZnJhbWVfZGlnIDEKY2FsbHN1YiBtaW50XzMKZnJhbWVfYnVyeSAwCnB1c2hieXRlcyAweDE1MWY3Yzc1IC8vIDB4MTUxZjdjNzUKZnJhbWVfZGlnIDAKaXRvYgpjb25jYXQKbG9nCnJldHN1Yg==",
     "clear": "I3ByYWdtYSB2ZXJzaW9uIDgKcHVzaGludCAwIC8vIDAKcmV0dXJu"
   },
   "state": {
     "global": {
       "num_byte_slices": 0,
-      "num_uints": 2
+      "num_uints": 3
     },
     "local": {
       "num_byte_slices": 0,
@@ -85,6 +90,11 @@ export const APP_SPEC: AppSpec = {
         "current_proposal_id": {
           "type": "uint64",
           "key": "current_proposal_id",
+          "descr": ""
+        },
+        "minter_app_id": {
+          "type": "uint64",
+          "key": "minter_app_id",
           "descr": ""
         },
         "winning_proposal": {
@@ -103,6 +113,18 @@ export const APP_SPEC: AppSpec = {
   "contract": {
     "name": "DAO",
     "methods": [
+      {
+        "name": "create",
+        "args": [
+          {
+            "type": "uint64",
+            "name": "minter_app_id"
+          }
+        ],
+        "returns": {
+          "type": "void"
+        }
+      },
       {
         "name": "add_proposal",
         "args": [
@@ -129,7 +151,12 @@ export const APP_SPEC: AppSpec = {
       },
       {
         "name": "mint",
-        "args": [],
+        "args": [
+          {
+            "type": "application",
+            "name": "minter_app_ref"
+          }
+        ],
         "returns": {
           "type": "uint64"
         }
@@ -137,9 +164,7 @@ export const APP_SPEC: AppSpec = {
     ],
     "networks": {}
   },
-  "bare_call_config": {
-    "no_op": "CREATE"
-  }
+  "bare_call_config": {}
 }
 
 /**
@@ -197,6 +222,13 @@ export type Dao = {
    * Maps method signatures / names to their argument and return types.
    */
   methods:
+    & Record<'create(uint64)void' | 'create', {
+      argsObj: {
+        minter_app_id: bigint | number
+      }
+      argsTuple: [minter_app_id: bigint | number]
+      returns: void
+    }>
     & Record<'add_proposal((string,string,string,byte[32]))void' | 'add_proposal', {
       argsObj: {
         proposal: [string, string, string, Uint8Array]
@@ -211,10 +243,11 @@ export type Dao = {
       argsTuple: [proposal_id: bigint | number]
       returns: void
     }>
-    & Record<'mint()uint64' | 'mint', {
+    & Record<'mint(application)uint64' | 'mint', {
       argsObj: {
+        minter_app_ref: number | bigint
       }
-      argsTuple: []
+      argsTuple: [minter_app_ref: number | bigint]
       returns: bigint
     }>
   /**
@@ -223,6 +256,7 @@ export type Dao = {
   state: {
     global: {
       'current_proposal_id'?: IntegerState
+      'minter_app_id'?: IntegerState
       'winning_proposal'?: IntegerState
     }
   }
@@ -279,7 +313,7 @@ export type DaoCreateCalls = (typeof DaoCallFactory)['create']
  * Defines supported create methods for this smart contract
  */
 export type DaoCreateCallParams =
-  | (TypedCallParams<undefined> & (OnCompleteNoOp))
+  | (TypedCallParams<'create(uint64)void'> & (OnCompleteNoOp))
 /**
  * Defines arguments required for the deploy method.
  */
@@ -302,15 +336,16 @@ export abstract class DaoCallFactory {
   static get create() {
     return {
       /**
-       * Constructs a create call for the DAO smart contract using a bare call
+       * Constructs a create call for the DAO smart contract using the create(uint64)void ABI method
        *
-       * @param params Any parameters for the call
+       * @param args Any args for the contract call
+       * @param params Any additional parameters for the call
        * @returns A TypedCallParams object for the call
        */
-      bare(params: BareCallArgs & AppClientCallCoreParams & CoreAppCallArgs & AppClientCompilationParams & (OnCompleteNoOp) = {}) {
+      create(args: MethodArgs<'create(uint64)void'>, params: AppClientCallCoreParams & CoreAppCallArgs & AppClientCompilationParams & (OnCompleteNoOp) = {}) {
         return {
-          method: undefined,
-          methodArgs: undefined,
+          method: 'create(uint64)void' as const,
+          methodArgs: Array.isArray(args) ? args : [args.minter_app_id],
           ...params,
         }
       },
@@ -346,16 +381,16 @@ export abstract class DaoCallFactory {
     }
   }
   /**
-   * Constructs a no op call for the mint()uint64 ABI method
+   * Constructs a no op call for the mint(application)uint64 ABI method
    *
    * @param args Any args for the contract call
    * @param params Any additional parameters for the call
    * @returns A TypedCallParams object for the call
    */
-  static mint(args: MethodArgs<'mint()uint64'>, params: AppClientCallCoreParams & CoreAppCallArgs) {
+  static mint(args: MethodArgs<'mint(application)uint64'>, params: AppClientCallCoreParams & CoreAppCallArgs) {
     return {
-      method: 'mint()uint64' as const,
-      methodArgs: Array.isArray(args) ? args : [],
+      method: 'mint(application)uint64' as const,
+      methodArgs: Array.isArray(args) ? args : [args.minter_app_ref],
       ...params,
     }
   }
@@ -436,13 +471,14 @@ export class DaoClient {
     const $this = this
     return {
       /**
-       * Creates a new instance of the DAO smart contract using a bare call.
+       * Creates a new instance of the DAO smart contract using the create(uint64)void ABI method.
        *
-       * @param args The arguments for the bare call
+       * @param args The arguments for the smart contract call
+       * @param params Any additional parameters for the call
        * @returns The create result
        */
-      bare(args: BareCallArgs & AppClientCallCoreParams & AppClientCompilationParams & CoreAppCallArgs & (OnCompleteNoOp) = {}): Promise<AppCallTransactionResultOfType<undefined>> {
-        return $this.appClient.create(args) as unknown as Promise<AppCallTransactionResultOfType<undefined>>
+      async create(args: MethodArgs<'create(uint64)void'>, params: AppClientCallCoreParams & AppClientCompilationParams & (OnCompleteNoOp) = {}): Promise<AppCallTransactionResultOfType<MethodReturn<'create(uint64)void'>>> {
+        return $this.mapReturnValue(await $this.appClient.create(DaoCallFactory.create.create(args, params)))
       },
     }
   }
@@ -480,13 +516,13 @@ export class DaoClient {
   }
 
   /**
-   * Calls the mint()uint64 ABI method.
+   * Calls the mint(application)uint64 ABI method.
    *
    * @param args The arguments for the contract call
    * @param params Any additional parameters for the call
    * @returns The result of the call
    */
-  public mint(args: MethodArgs<'mint()uint64'>, params: AppClientCallCoreParams & CoreAppCallArgs = {}) {
+  public mint(args: MethodArgs<'mint(application)uint64'>, params: AppClientCallCoreParams & CoreAppCallArgs = {}) {
     return this.call(DaoCallFactory.mint(args, params))
   }
 
@@ -543,6 +579,9 @@ export class DaoClient {
       get current_proposal_id() {
         return DaoClient.getIntegerState(state, 'current_proposal_id')
       },
+      get minter_app_id() {
+        return DaoClient.getIntegerState(state, 'minter_app_id')
+      },
       get winning_proposal() {
         return DaoClient.getIntegerState(state, 'winning_proposal')
       },
@@ -565,7 +604,7 @@ export class DaoClient {
         resultMappers.push(undefined)
         return this
       },
-      mint(args: MethodArgs<'mint()uint64'>, params?: AppClientCallCoreParams & CoreAppCallArgs) {
+      mint(args: MethodArgs<'mint(application)uint64'>, params?: AppClientCallCoreParams & CoreAppCallArgs) {
         promiseChain = promiseChain.then(() => client.mint(args, {...params, sendParams: {...params?.sendParams, skipSending: true, atc}}))
         resultMappers.push(undefined)
         return this
@@ -614,13 +653,13 @@ export type DaoComposer<TReturns extends [...any[]] = []> = {
   vote(args: MethodArgs<'vote(uint64)void'>, params?: AppClientCallCoreParams & CoreAppCallArgs): DaoComposer<[...TReturns, MethodReturn<'vote(uint64)void'>]>
 
   /**
-   * Calls the mint()uint64 ABI method.
+   * Calls the mint(application)uint64 ABI method.
    *
    * @param args The arguments for the contract call
    * @param params Any additional parameters for the call
    * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
    */
-  mint(args: MethodArgs<'mint()uint64'>, params?: AppClientCallCoreParams & CoreAppCallArgs): DaoComposer<[...TReturns, MethodReturn<'mint()uint64'>]>
+  mint(args: MethodArgs<'mint(application)uint64'>, params?: AppClientCallCoreParams & CoreAppCallArgs): DaoComposer<[...TReturns, MethodReturn<'mint(application)uint64'>]>
 
   /**
    * Makes a clear_state call to an existing instance of the DAO smart contract.

@@ -28,6 +28,7 @@ export default function App() {
   const [openWalletModal, setOpenWalletModal] = useState<boolean>(false)
   const { activeAddress } = useWallet()
   const [appID, setAppID] = useState<number>(0)
+  const [minterAppID, setMinterAppID] = useState<number>(0)
   const [assetID, setAssetID] = useState<number>(0)
   const [nftName, setNftName] = useState<string>('DAO NFT')
   const [unitName, setUnitName] = useState<string>('DNFT')
@@ -77,7 +78,9 @@ export default function App() {
                   Wallet Connection
                 </button>
 
-                {activeAddress && appID == 0 && <AppCalls appID={appID} method="create" setAppID={setAppID} />}
+                {activeAddress && appID == 0 && (
+                  <AppCalls appID={appID} method="create" setAppID={setAppID} setMinterAppID={setMinterAppID} />
+                )}
 
                 {activeAddress && appID !== 0 && (
                   <div>
@@ -152,7 +155,7 @@ export default function App() {
                     <AppCalls appID={appID} method="vote" proposalID={voteProposalID} />
 
                     <div className="divider" />
-                    <AppCalls appID={appID} method="mint" setAssetID={setAssetID} />
+                    <AppCalls appID={appID} method="mint" setAssetID={setAssetID} minterAppID={minterAppID} />
                     <label className="label m-2">
                       Minted Asset
                       <input

@@ -54,21 +54,28 @@ class DAOState:
         stack_type=pt.TealType.uint64, default=pt.Int(0)
     )
 
+    # App ID of the miner contract
+    minter_app_id = beaker.GlobalStateValue(stack_type=pt.TealType.uint64)
 
-app = beaker.Application("DAO", state=DAOState)
+
+dao = beaker.Application("DAO", state=DAOState)
+minter = beaker.Application("Minter")
 
 
-@app.create(bare=True)
-def create() -> pt.Expr:
-    return app.initialize_global_state()
+@dao.create()
+def create(minter_app_id: pt.abi.Uint64) -> pt.Expr:
+    return pt.Seq(
+        dao.initialize_global_state(), 
+        dao.state.minter_app_id.set(minter_app_id.get())
+    )
 
 
 # In box storage:
 # proposal[id] = given proposal
 # votes[id] = 0
-@app.external
+@dao.external
 def add_proposal(proposal: Proposal) -> pt.Expr:
-    proposal_id = app.state.current_proposal_id.get()
+    proposal_id = dao.state.current_proposal_id.get()
     new_id = proposal_id + pt.Int(1)
     abi_proposal_id = pt.abi.Uint64()
     abi_zero = pt.abi.Uint64()
@@ -77,68 +84,51 @@ def add_proposal(proposal: Proposal) -> pt.Expr:
         abi_proposal_id.set(proposal_id),
         abi_zero.set(pt.Int(0)),
         # Set proposal to given proposal content
-        app.state.proposals[abi_proposal_id].set(proposal),
+        dao.state.proposals[abi_proposal_id].set(proposal),
         # Set votes to zero
-        app.state.votes[abi_proposal_id].set(abi_zero),
-        app.state.current_proposal_id.set(new_id),
+        dao.state.votes[abi_proposal_id].set(abi_zero),
+        dao.state.current_proposal_id.set(new_id),
     )
 
 
-@app.external
+@dao.external
 def vote(proposal_id: pt.abi.Uint64) -> pt.Expr:
-    box_current_votes = app.state.votes[proposal_id]
+    box_current_votes = dao.state.votes[proposal_id]
 
     new_votes = pt.Btoi(box_current_votes.get()) + pt.Int(1)
     abi_new_votes = pt.abi.Uint64()
 
-    winning_proposal = app.state.winning_proposal.get()
+    winning_proposal = dao.state.winning_proposal.get()
     abi_winning_proposal = pt.abi.Uint64()
 
-    abi_winning_proposal_votes = app.state.votes[abi_winning_proposal]
+    abi_winning_proposal_votes = dao.state.votes[abi_winning_proposal]
     winning_proposal_votes = pt.Btoi(abi_winning_proposal_votes.get())
 
     return pt.Seq(
         abi_winning_proposal.set(winning_proposal),
         abi_new_votes.set(new_votes),
-        # If new amount of votes for the given proposal is more than the winning proposal
+        # If new amount of votes for the given proposal is 
+        # more than the winning proposal
         pt.If(new_votes > winning_proposal_votes).Then(
             # Then set the winning proposal to the given proposal
-            app.state.winning_proposal.set(proposal_id.get())
+            dao.state.winning_proposal.set(proposal_id.get())
         ),
         # Update proposal vote count
-        app.state.votes[proposal_id].set(abi_new_votes),
+        dao.state.votes[proposal_id].set(abi_new_votes),
     )
 
-
-@app.external
-def mint(*, output: pt.abi.Uint64) -> pt.Expr:
-    # Read the winning proposal
-    # Get the proposal data structure for the winning proposal
-    # Create an asset based on that data structure
-    winning_proposal_id = pt.abi.Uint64()
+@dao.external
+def mint(minter_app_ref: pt.abi.Application, *, output: pt.abi.Uint64) -> pt.Expr:
+    winning_proposal_id = dao.state.winning_proposal.get()
+    abi_winning_proposal_id = pt.abi.Uint64()
     winning_proposal = Proposal()
-
-    url = pt.abi.String()
-    name = pt.abi.String()
-    unit_name = pt.abi.String()
-    metdata_hash = pt.abi.make(byte32)
     return pt.Seq(
-        winning_proposal_id.set(app.state.winning_proposal.get()),
-        app.state.proposals[winning_proposal_id].store_into(winning_proposal),
-        winning_proposal.url.store_into(url),
-        winning_proposal.name.store_into(name),
-        winning_proposal.unit_name.store_into(unit_name),
-        winning_proposal.metadata_hash.store_into(metdata_hash),
-        pt.InnerTxnBuilder.Execute(
-            {
-                pt.TxnField.type_enum: pt.TxnType.AssetConfig,
-                pt.TxnField.config_asset_total: pt.Int(1),
-                pt.TxnField.config_asset_url: url.get(),
-                pt.TxnField.config_asset_name: name.get(),
-                pt.TxnField.config_asset_unit_name: unit_name.get(),
-                pt.TxnField.config_asset_metadata_hash: metdata_hash.encode(),
-                pt.TxnField.fee: pt.Int(0),
-            }
+        abi_winning_proposal_id.set(winning_proposal_id),
+        dao.state.proposals[abi_winning_proposal_id].store_into(winning_proposal),
+        pt.InnerTxnBuilder.ExecuteMethodCall(
+            app_id=dao.state.minter_app_id.get(),
+            method_signature=f"mint_proposal({Proposal().type_spec()})uint64",
+            args=[winning_proposal]
         ),
-        output.set(pt.InnerTxn.created_asset_id())
+        output.set(pt.Btoi(pt.Suffix(pt.InnerTxn.last_log(), pt.Int(4))))
     )

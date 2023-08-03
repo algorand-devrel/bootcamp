@@ -1,8 +1,8 @@
 #pragma version 8
-intcblock 0 1 2 4
-bytecblock 0x762d 0x63757272656e745f70726f706f73616c5f6964 0x77696e6e696e675f70726f706f73616c 0x702d 0x
-txn NumAppArgs
-intc_0 // 0
+intcblock 0 1
+bytecblock 0x762d 0x63757272656e745f70726f706f73616c5f6964 0x77696e6e696e675f70726f706f73616c 0x6d696e7465725f6170705f6964 0x702d 0x
+txna ApplicationArgs 0
+pushbytes 0x240d2f67 // "create(uint64)void"
 ==
 bnz main_l8
 txna ApplicationArgs 0
@@ -14,7 +14,7 @@ pushbytes 0x31d5c300 // "vote(uint64)void"
 ==
 bnz main_l6
 txna ApplicationArgs 0
-pushbytes 0x99f19a33 // "mint()uint64"
+pushbytes 0x94c61284 // "mint(application)uint64"
 ==
 bnz main_l5
 err
@@ -27,7 +27,7 @@ intc_0 // 0
 !=
 &&
 assert
-callsub mintcaster_6
+callsub mintcaster_7
 intc_1 // 1
 return
 main_l6:
@@ -39,7 +39,7 @@ intc_0 // 0
 !=
 &&
 assert
-callsub votecaster_5
+callsub votecaster_6
 intc_1 // 1
 return
 main_l7:
@@ -51,32 +51,36 @@ intc_0 // 0
 !=
 &&
 assert
-callsub addproposalcaster_4
+callsub addproposalcaster_5
 intc_1 // 1
 return
 main_l8:
 txn OnCompletion
 intc_0 // NoOp
 ==
-bnz main_l10
-err
-main_l10:
 txn ApplicationID
 intc_0 // 0
 ==
+&&
 assert
-callsub create_0
+callsub createcaster_4
 intc_1 // 1
 return
 
 // create
 create_0:
-proto 0 0
+proto 1 0
 bytec_1 // "current_proposal_id"
+intc_0 // 0
+app_global_put
+bytec_3 // "minter_app_id"
 intc_0 // 0
 app_global_put
 bytec_2 // "winning_proposal"
 intc_0 // 0
+app_global_put
+bytec_3 // "minter_app_id"
+frame_dig -1
 app_global_put
 retsub
 
@@ -90,13 +94,13 @@ app_global_get
 frame_bury 0
 intc_0 // 0
 frame_bury 1
-bytec_3 // "p-"
+bytec 4 // "p-"
 frame_dig 0
 itob
 concat
 box_del
 pop
-bytec_3 // "p-"
+bytec 4 // "p-"
 frame_dig 0
 itob
 concat
@@ -192,15 +196,15 @@ retsub
 
 // mint
 mint_3:
-proto 0 1
+proto 1 1
 intc_0 // 0
 dup
-bytec 4 // ""
-dupn 4
+bytec 5 // ""
+dup
 bytec_2 // "winning_proposal"
 app_global_get
 frame_bury 1
-bytec_3 // "p-"
+bytec 4 // "p-"
 frame_dig 1
 itob
 concat
@@ -211,62 +215,38 @@ load 5
 assert
 load 4
 frame_bury 2
-frame_dig 2
-frame_dig 2
-intc_2 // 2
-extract_uint16
-frame_dig 2
-intc_3 // 4
-extract_uint16
-substring3
-frame_bury 3
-frame_dig 2
-frame_dig 2
-intc_0 // 0
-extract_uint16
-frame_dig 2
-intc_2 // 2
-extract_uint16
-substring3
-frame_bury 4
-frame_dig 2
-frame_dig 2
-intc_3 // 4
-extract_uint16
-dig 1
-len
-substring3
-frame_bury 5
-frame_dig 2
-extract 6 32
-frame_bury 6
 itxn_begin
-pushint 3 // acfg
+pushint 6 // appl
 itxn_field TypeEnum
-intc_1 // 1
-itxn_field ConfigAssetTotal
-frame_dig 3
-extract 2 0
-itxn_field ConfigAssetURL
-frame_dig 4
-extract 2 0
-itxn_field ConfigAssetName
-frame_dig 5
-extract 2 0
-itxn_field ConfigAssetUnitName
-frame_dig 6
-itxn_field ConfigAssetMetadataHash
-intc_0 // 0
-itxn_field Fee
+bytec_3 // "minter_app_id"
+app_global_get
+itxn_field ApplicationID
+pushbytes 0xb412dcf5 // "mint_proposal((string,string,string,byte[32]))uint64"
+itxn_field ApplicationArgs
+frame_dig 2
+itxn_field ApplicationArgs
 itxn_submit
-itxn CreatedAssetID
+itxn LastLog
+extract 4 0
+btoi
 frame_bury 0
 retsub
 
-// add_proposal_caster
-addproposalcaster_4:
+// create_caster
+createcaster_4:
 proto 0 0
-bytec 4 // ""
+intc_0 // 0
+txna ApplicationArgs 1
+btoi
+frame_bury 0
+frame_dig 0
+callsub create_0
+retsub
+
+// add_proposal_caster
+addproposalcaster_5:
+proto 0 0
+bytec 5 // ""
 txna ApplicationArgs 1
 frame_bury 0
 frame_dig 0
@@ -274,7 +254,7 @@ callsub addproposal_1
 retsub
 
 // vote_caster
-votecaster_5:
+votecaster_6:
 proto 0 0
 intc_0 // 0
 txna ApplicationArgs 1
@@ -285,9 +265,15 @@ callsub vote_2
 retsub
 
 // mint_caster
-mintcaster_6:
+mintcaster_7:
 proto 0 0
 intc_0 // 0
+dup
+txna ApplicationArgs 1
+intc_0 // 0
+getbyte
+frame_bury 1
+frame_dig 1
 callsub mint_3
 frame_bury 0
 pushbytes 0x151f7c75 // 0x151f7c75

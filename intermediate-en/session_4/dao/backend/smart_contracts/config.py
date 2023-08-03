@@ -6,7 +6,8 @@ from algosdk.v2client.algod import AlgodClient
 from algosdk.v2client.indexer import IndexerClient
 from beaker import Application
 
-from smart_contracts.dao.contract import app as dao_app
+from smart_contracts.dao.contract import dao as dao_app
+from smart_contracts.minter.contract import minter as minter_app
 
 
 @dataclasses.dataclass
@@ -18,4 +19,4 @@ class SmartContract:
 
 
 # define contracts to build
-contracts = [SmartContract(app=dao_app)]
+contracts = [SmartContract(app=dao_app), SmartContract(app=minter_app)]

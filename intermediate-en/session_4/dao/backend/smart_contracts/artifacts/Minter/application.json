@@ -1,0 +1,77 @@
+{
+    "hints": {
+        "mint_proposal((string,string,string,byte[32]))uint64": {
+            "structs": {
+                "proposal": {
+                    "name": "Proposal",
+                    "elements": [
+                        [
+                            "name",
+                            "string"
+                        ],
+                        [
+                            "url",
+                            "string"
+                        ],
+                        [
+                            "unit_name",
+                            "string"
+                        ],
+                        [
+                            "metadata_hash",
+                            "byte[32]"
+                        ]
+                    ]
+                }
+            },
+            "call_config": {
+                "no_op": "CALL"
+            }
+        }
+    },
+    "source": {
+        "approval": "I3ByYWdtYSB2ZXJzaW9uIDgKaW50Y2Jsb2NrIDAgMSAyIDQKYnl0ZWNibG9jayAweAp0eG4gTnVtQXBwQXJncwppbnRjXzAgLy8gMAo9PQpibnogbWFpbl9sNAp0eG5hIEFwcGxpY2F0aW9uQXJncyAwCnB1c2hieXRlcyAweGI0MTJkY2Y1IC8vICJtaW50X3Byb3Bvc2FsKChzdHJpbmcsc3RyaW5nLHN0cmluZyxieXRlWzMyXSkpdWludDY0Igo9PQpibnogbWFpbl9sMwplcnIKbWFpbl9sMzoKdHhuIE9uQ29tcGxldGlvbgppbnRjXzAgLy8gTm9PcAo9PQp0eG4gQXBwbGljYXRpb25JRAppbnRjXzAgLy8gMAohPQomJgphc3NlcnQKY2FsbHN1YiBtaW50cHJvcG9zYWxjYXN0ZXJfMQppbnRjXzEgLy8gMQpyZXR1cm4KbWFpbl9sNDoKdHhuIE9uQ29tcGxldGlvbgppbnRjXzAgLy8gTm9PcAo9PQpibnogbWFpbl9sNgplcnIKbWFpbl9sNjoKdHhuIEFwcGxpY2F0aW9uSUQKaW50Y18wIC8vIDAKPT0KYXNzZXJ0CmludGNfMSAvLyAxCnJldHVybgoKLy8gbWludF9wcm9wb3NhbAptaW50cHJvcG9zYWxfMDoKcHJvdG8gMSAxCmludGNfMCAvLyAwCmJ5dGVjXzAgLy8gIiIKZHVwbiAzCmZyYW1lX2RpZyAtMQpmcmFtZV9kaWcgLTEKaW50Y18yIC8vIDIKZXh0cmFjdF91aW50MTYKZnJhbWVfZGlnIC0xCmludGNfMyAvLyA0CmV4dHJhY3RfdWludDE2CnN1YnN0cmluZzMKZnJhbWVfYnVyeSAxCmZyYW1lX2RpZyAtMQpmcmFtZV9kaWcgLTEKaW50Y18wIC8vIDAKZXh0cmFjdF91aW50MTYKZnJhbWVfZGlnIC0xCmludGNfMiAvLyAyCmV4dHJhY3RfdWludDE2CnN1YnN0cmluZzMKZnJhbWVfYnVyeSAyCmZyYW1lX2RpZyAtMQpmcmFtZV9kaWcgLTEKaW50Y18zIC8vIDQKZXh0cmFjdF91aW50MTYKZGlnIDEKbGVuCnN1YnN0cmluZzMKZnJhbWVfYnVyeSAzCmZyYW1lX2RpZyAtMQpleHRyYWN0IDYgMzIKZnJhbWVfYnVyeSA0Cml0eG5fYmVnaW4KcHVzaGludCAzIC8vIGFjZmcKaXR4bl9maWVsZCBUeXBlRW51bQppbnRjXzEgLy8gMQppdHhuX2ZpZWxkIENvbmZpZ0Fzc2V0VG90YWwKZnJhbWVfZGlnIDEKZXh0cmFjdCAyIDAKaXR4bl9maWVsZCBDb25maWdBc3NldFVSTApmcmFtZV9kaWcgMgpleHRyYWN0IDIgMAppdHhuX2ZpZWxkIENvbmZpZ0Fzc2V0TmFtZQpmcmFtZV9kaWcgMwpleHRyYWN0IDIgMAppdHhuX2ZpZWxkIENvbmZpZ0Fzc2V0VW5pdE5hbWUKZnJhbWVfZGlnIDQKaXR4bl9maWVsZCBDb25maWdBc3NldE1ldGFkYXRhSGFzaAppbnRjXzAgLy8gMAppdHhuX2ZpZWxkIEZlZQppdHhuX3N1Ym1pdAppdHhuIENyZWF0ZWRBc3NldElECmZyYW1lX2J1cnkgMApyZXRzdWIKCi8vIG1pbnRfcHJvcG9zYWxfY2FzdGVyCm1pbnRwcm9wb3NhbGNhc3Rlcl8xOgpwcm90byAwIDAKaW50Y18wIC8vIDAKYnl0ZWNfMCAvLyAiIgp0eG5hIEFwcGxpY2F0aW9uQXJncyAxCmZyYW1lX2J1cnkgMQpmcmFtZV9kaWcgMQpjYWxsc3ViIG1pbnRwcm9wb3NhbF8wCmZyYW1lX2J1cnkgMApwdXNoYnl0ZXMgMHgxNTFmN2M3NSAvLyAweDE1MWY3Yzc1CmZyYW1lX2RpZyAwCml0b2IKY29uY2F0CmxvZwpyZXRzdWI=",
+        "clear": "I3ByYWdtYSB2ZXJzaW9uIDgKcHVzaGludCAwIC8vIDAKcmV0dXJu"
+    },
+    "state": {
+        "global": {
+            "num_byte_slices": 0,
+            "num_uints": 0
+        },
+        "local": {
+            "num_byte_slices": 0,
+            "num_uints": 0
+        }
+    },
+    "schema": {
+        "global": {
+            "declared": {},
+            "reserved": {}
+        },
+        "local": {
+            "declared": {},
+            "reserved": {}
+        }
+    },
+    "contract": {
+        "name": "Minter",
+        "methods": [
+            {
+                "name": "mint_proposal",
+                "args": [
+                    {
+                        "type": "(string,string,string,byte[32])",
+                        "name": "proposal"
+                    }
+                ],
+                "returns": {
+                    "type": "uint64"
+                }
+            }
+        ],
+        "networks": {}
+    },
+    "bare_call_config": {
+        "no_op": "CREATE"
+    }
+}
