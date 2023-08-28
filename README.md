@@ -1,14 +1,13 @@
 # Algorand Developer Bootcamp
-Sign up for future sessions on the Algorand Developer Portal Events page: [https://developer.algorand.org/events](https://developer.algorand.org/events)
+Sign up for future sessions on the Algorand Developer Portal Events page: [https://developer.algorand.org/bootcamps](https://developer.algorand.org/bootcamps)
 
-# Active Content
-Multiple Bootcamp courses may be running simultaneously. Please navigate to your appropriate series and language:
--	[Beginner (ES)](beginner-es/README.md)
--	[Intermediate (EN)](intermediate-en/README.md)
+## Gitpod link
+Get started working on this repo in Gitpod without needing to setup local environment. A gitpod account is required, but sign-in with Github can be used.
 
-# Archived Content
-Completed Bootcamp courses may be found on the [branches]( https://github.com/algorand-devrel/bootcamp/branches) page of this repo. The most recent content is listed toward the top in the following format:
-**`YYYY-MM-DD-language-level`**
+https://gitpod.io/#https://github.com/algorand-devrel/bootcamp
 
-# Video Recordings
-The [@AlgoDevs YouTube Channel](https://youtube.com/@AlgoDevs) hosts videos for each episode. Navigate to the course using the links above, then locate the episode link within the README.md file.
+## Video Recordings
+- Episode #1 [Developer Onboarding using JS SDK & AlgoKit](https://youtu.be/hIMdJzVs4gg)
+- Episode #2 [Build & Deploy: Auction dApp](https://youtu.be/foTbYZhXvqA)
+- Episode #3 [Interactions: Frontend Development w/ React](https://youtu.be/NEnVNqqt-80)
+- Episode #4 [Test & Debug](https://www.youtube.com/watch?v=Gq1Xc6m_eY4)
