@@ -1,4 +1,4 @@
-# Beginner bootcamp para desarrolladores en español
+# Beginner bootcamp en Algorand para desarrolladores en español
 Recuerda registrarte para futuros bootcamps y programas en: [https://developer.algorand.org/events](https://developer.algorand.org/events)
 
 ## Link de gitpod
