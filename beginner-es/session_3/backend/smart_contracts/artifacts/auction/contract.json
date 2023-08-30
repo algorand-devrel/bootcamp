@@ -1,0 +1,18 @@
+{
+    "name": "auction",
+    "methods": [
+        {
+            "name": "hello",
+            "args": [
+                {
+                    "type": "string",
+                    "name": "name"
+                }
+            ],
+            "returns": {
+                "type": "string"
+            }
+        }
+    ],
+    "networks": {}
+}

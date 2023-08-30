@@ -1,0 +1,71 @@
+#pragma version 8
+intcblock 0 1
+bytecblock 0x
+txn NumAppArgs
+intc_0 // 0
+==
+bnz main_l4
+txna ApplicationArgs 0
+pushbytes 0x02bece11 // "hello(string)string"
+==
+bnz main_l3
+err
+main_l3:
+txn OnCompletion
+intc_0 // NoOp
+==
+txn ApplicationID
+intc_0 // 0
+!=
+&&
+assert
+callsub hellocaster_1
+intc_1 // 1
+return
+main_l4:
+txn OnCompletion
+intc_0 // NoOp
+==
+bnz main_l6
+err
+main_l6:
+txn ApplicationID
+intc_0 // 0
+==
+assert
+intc_1 // 1
+return
+
+// hello
+hello_0:
+proto 1 1
+bytec_0 // ""
+pushbytes 0x48656c6c6f2c20 // "Hello, "
+frame_dig -1
+extract 2 0
+concat
+frame_bury 0
+frame_dig 0
+len
+itob
+extract 6 0
+frame_dig 0
+concat
+frame_bury 0
+retsub
+
+// hello_caster
+hellocaster_1:
+proto 0 0
+bytec_0 // ""
+dup
+txna ApplicationArgs 1
+frame_bury 1
+frame_dig 1
+callsub hello_0
+frame_bury 0
+pushbytes 0x151f7c75 // 0x151f7c75
+frame_dig 0
+concat
+log
+retsub

@@ -1,0 +1,18 @@
+# Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
+_commit: 0.4.0
+_src_path: gh:algorandfoundation/algokit-fullstack-template
+author_email: evert@algorand.foundation
+author_name: Evert
+cloud_provider: none
+contract_name: auction
+ide_vscode: true
+preset_name: starter
+project_name: session_3
+python_linter: none
+use_dispenser: false
+use_github_actions: true
+use_python_black: true
+use_python_mypy: false
+use_python_pip_audit: true
+use_python_pytest: true
+
