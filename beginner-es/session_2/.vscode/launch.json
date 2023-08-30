@@ -1,0 +1,31 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Build & Deploy Beaker application",
+      "type": "python",
+      "request": "launch",
+      "module": "smart_contracts",
+      "cwd": "${workspaceFolder}",
+      "preLaunchTask": "Start AlgoKit LocalNet",
+      "envFile": "${workspaceFolder}/.env.localnet"
+    },
+    {
+      "name": "Deploy Built Beaker application",
+      "type": "python",
+      "request": "launch",
+      "module": "smart_contracts",
+      "args": ["deploy"],
+      "cwd": "${workspaceFolder}",
+      "envFile": "${workspaceFolder}/.env.localnet"
+    },
+    {
+      "name": "Build Beaker application",
+      "type": "python",
+      "request": "launch",
+      "module": "smart_contracts",
+      "args": ["build"],
+      "cwd": "${workspaceFolder}"
+    }
+  ]
+}

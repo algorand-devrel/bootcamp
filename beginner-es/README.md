@@ -15,3 +15,5 @@ Si deseas configurar todo tu entorno, puedes encontrar un video completo en espa
 ## Videos de sesiones
 
 - Sesión 1: Intro a Algorand: Javascript SDK y Algokit - [https://drive.google.com/file/d/106vxQDjqLi3oV7sWLsutC29CUX9YCAwW/view?usp=sharing](https://drive.google.com/file/d/106vxQDjqLi3oV7sWLsutC29CUX9YCAwW/view?usp=sharing)
+
+- Sesión 2: Intro a Pyteal y Beaker + Contrato de Subastas - [https://drive.google.com/file/d/13MZ8irj5BDoZ3ZGmmtlRA93a7YBeqWVS/view?usp=sharing](https://drive.google.com/file/d/13MZ8irj5BDoZ3ZGmmtlRA93a7YBeqWVS/view?usp=sharing)
