@@ -1,16 +1,36 @@
 #pragma version 8
-intcblock 0 1
-bytecblock 0x
+intcblock 0 1 4
+bytecblock 0x686967686573745f626964 0x77696e6e6572 0x6173615f6964 0x61756374696f6e5f656e64 0x
 txn NumAppArgs
 intc_0 // 0
 ==
-bnz main_l4
+bnz main_l14
 txna ApplicationArgs 0
-pushbytes 0x02bece11 // "hello(string)string"
+pushbytes 0x7dceceee // "optin_to_asset(pay,asset)void"
 ==
-bnz main_l3
+bnz main_l13
+txna ApplicationArgs 0
+pushbytes 0x09a5a790 // "start(uint64,uint64,axfer)void"
+==
+bnz main_l12
+txna ApplicationArgs 0
+pushbytes 0x39042aee // "bid(pay,account)void"
+==
+bnz main_l11
+txna ApplicationArgs 0
+pushbytes 0x1ec12bef // "claim_asset(asset)void"
+==
+bnz main_l10
+txna ApplicationArgs 0
+pushbytes 0xb5890686 // "claim_bid()void"
+==
+bnz main_l9
+txna ApplicationArgs 0
+pushbytes 0xe65522fd // "get_time()uint64"
+==
+bnz main_l8
 err
-main_l3:
+main_l8:
 txn OnCompletion
 intc_0 // NoOp
 ==
@@ -19,53 +39,320 @@ intc_0 // 0
 !=
 &&
 assert
-callsub hellocaster_1
+callsub gettimecaster_12
 intc_1 // 1
 return
-main_l4:
+main_l9:
 txn OnCompletion
 intc_0 // NoOp
 ==
-bnz main_l6
+txn ApplicationID
+intc_0 // 0
+!=
+&&
+assert
+callsub claimbidcaster_11
+intc_1 // 1
+return
+main_l10:
+txn OnCompletion
+intc_0 // NoOp
+==
+txn ApplicationID
+intc_0 // 0
+!=
+&&
+assert
+callsub claimassetcaster_10
+intc_1 // 1
+return
+main_l11:
+txn OnCompletion
+intc_0 // NoOp
+==
+txn ApplicationID
+intc_0 // 0
+!=
+&&
+assert
+callsub bidcaster_9
+intc_1 // 1
+return
+main_l12:
+txn OnCompletion
+intc_0 // NoOp
+==
+txn ApplicationID
+intc_0 // 0
+!=
+&&
+assert
+callsub startcaster_8
+intc_1 // 1
+return
+main_l13:
+txn OnCompletion
+intc_0 // NoOp
+==
+txn ApplicationID
+intc_0 // 0
+!=
+&&
+assert
+callsub optintoassetcaster_7
+intc_1 // 1
+return
+main_l14:
+txn OnCompletion
+intc_0 // NoOp
+==
+bnz main_l16
 err
-main_l6:
+main_l16:
 txn ApplicationID
 intc_0 // 0
 ==
 assert
+callsub create_0
 intc_1 // 1
 return
 
-// hello
-hello_0:
-proto 1 1
-bytec_0 // ""
-pushbytes 0x48656c6c6f2c20 // "Hello, "
+// create
+create_0:
+proto 0 0
+bytec_2 // "asa_id"
+intc_0 // 0
+app_global_put
+bytec_3 // "auction_end"
+intc_0 // 0
+app_global_put
+bytec_0 // "highest_bid"
+intc_0 // 0
+app_global_put
+bytec_1 // "winner"
+bytec 4 // ""
+app_global_put
+retsub
+
+// optin_to_asset
+optintoasset_1:
+proto 2 0
+frame_dig -2
+gtxns Receiver
+global CurrentApplicationAddress
+==
+assert
+bytec_2 // "asa_id"
 frame_dig -1
-extract 2 0
-concat
-frame_bury 0
-frame_dig 0
-len
-itob
-extract 6 0
-frame_dig 0
-concat
+txnas Assets
+app_global_put
+itxn_begin
+intc_2 // axfer
+itxn_field TypeEnum
+global CurrentApplicationAddress
+itxn_field AssetReceiver
+intc_0 // 0
+itxn_field AssetAmount
+frame_dig -1
+txnas Assets
+itxn_field XferAsset
+intc_0 // 0
+itxn_field Fee
+itxn_submit
+retsub
+
+// start
+start_2:
+proto 3 0
+bytec_0 // "highest_bid"
+frame_dig -2
+app_global_put
+bytec_3 // "auction_end"
+global LatestTimestamp
+frame_dig -3
++
+app_global_put
+retsub
+
+// bid
+bid_3:
+proto 2 0
+frame_dig -2
+gtxns Amount
+bytec_0 // "highest_bid"
+app_global_get
+>
+assert
+bytec_1 // "winner"
+app_global_get
+bytec 4 // ""
+!=
+bz bid_3_l2
+itxn_begin
+intc_1 // pay
+itxn_field TypeEnum
+bytec_1 // "winner"
+app_global_get
+itxn_field Receiver
+bytec_0 // "highest_bid"
+app_global_get
+itxn_field Amount
+intc_0 // 0
+itxn_field Fee
+itxn_submit
+bid_3_l2:
+bytec_1 // "winner"
+frame_dig -2
+gtxns Sender
+app_global_put
+bytec_0 // "highest_bid"
+frame_dig -2
+gtxns Amount
+app_global_put
+retsub
+
+// claim_asset
+claimasset_4:
+proto 1 0
+itxn_begin
+intc_2 // axfer
+itxn_field TypeEnum
+bytec_1 // "winner"
+app_global_get
+itxn_field AssetReceiver
+intc_1 // 1
+itxn_field AssetAmount
+bytec_2 // "asa_id"
+app_global_get
+itxn_field XferAsset
+intc_0 // 0
+itxn_field Fee
+itxn_submit
+retsub
+
+// claim_bid
+claimbid_5:
+proto 0 0
+itxn_begin
+intc_1 // pay
+itxn_field TypeEnum
+global CreatorAddress
+itxn_field Receiver
+bytec_0 // "highest_bid"
+app_global_get
+itxn_field Amount
+intc_0 // 0
+itxn_field Fee
+itxn_submit
+retsub
+
+// get_time
+gettime_6:
+proto 0 1
+intc_0 // 0
+global LatestTimestamp
 frame_bury 0
 retsub
 
-// hello_caster
-hellocaster_1:
+// optin_to_asset_caster
+optintoassetcaster_7:
 proto 0 0
-bytec_0 // ""
+intc_0 // 0
 dup
 txna ApplicationArgs 1
+intc_0 // 0
+getbyte
 frame_bury 1
+txn GroupIndex
+intc_1 // 1
+-
+frame_bury 0
+frame_dig 0
+gtxns TypeEnum
+intc_1 // pay
+==
+assert
+frame_dig 0
 frame_dig 1
-callsub hello_0
+callsub optintoasset_1
+retsub
+
+// start_caster
+startcaster_8:
+proto 0 0
+intc_0 // 0
+dupn 2
+txna ApplicationArgs 1
+btoi
+frame_bury 0
+txna ApplicationArgs 2
+btoi
+frame_bury 1
+txn GroupIndex
+intc_1 // 1
+-
+frame_bury 2
+frame_dig 2
+gtxns TypeEnum
+intc_2 // axfer
+==
+assert
+frame_dig 0
+frame_dig 1
+frame_dig 2
+callsub start_2
+retsub
+
+// bid_caster
+bidcaster_9:
+proto 0 0
+intc_0 // 0
+dup
+txna ApplicationArgs 1
+intc_0 // 0
+getbyte
+frame_bury 1
+txn GroupIndex
+intc_1 // 1
+-
+frame_bury 0
+frame_dig 0
+gtxns TypeEnum
+intc_1 // pay
+==
+assert
+frame_dig 0
+frame_dig 1
+callsub bid_3
+retsub
+
+// claim_asset_caster
+claimassetcaster_10:
+proto 0 0
+intc_0 // 0
+txna ApplicationArgs 1
+intc_0 // 0
+getbyte
+frame_bury 0
+frame_dig 0
+callsub claimasset_4
+retsub
+
+// claim_bid_caster
+claimbidcaster_11:
+proto 0 0
+callsub claimbid_5
+retsub
+
+// get_time_caster
+gettimecaster_12:
+proto 0 0
+intc_0 // 0
+callsub gettime_6
 frame_bury 0
 pushbytes 0x151f7c75 // 0x151f7c75
 frame_dig 0
+itob
 concat
 log
 retsub

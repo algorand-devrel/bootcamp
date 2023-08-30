@@ -2,15 +2,81 @@
     "name": "auction",
     "methods": [
         {
-            "name": "hello",
+            "name": "optin_to_asset",
             "args": [
                 {
-                    "type": "string",
-                    "name": "name"
+                    "type": "pay",
+                    "name": "payment_to_contract"
+                },
+                {
+                    "type": "asset",
+                    "name": "asset"
                 }
             ],
             "returns": {
-                "type": "string"
+                "type": "void"
+            }
+        },
+        {
+            "name": "start",
+            "args": [
+                {
+                    "type": "uint64",
+                    "name": "length"
+                },
+                {
+                    "type": "uint64",
+                    "name": "min"
+                },
+                {
+                    "type": "axfer",
+                    "name": "axfer"
+                }
+            ],
+            "returns": {
+                "type": "void"
+            }
+        },
+        {
+            "name": "bid",
+            "args": [
+                {
+                    "type": "pay",
+                    "name": "payment"
+                },
+                {
+                    "type": "account",
+                    "name": "prewinner"
+                }
+            ],
+            "returns": {
+                "type": "void"
+            }
+        },
+        {
+            "name": "claim_asset",
+            "args": [
+                {
+                    "type": "asset",
+                    "name": "asset"
+                }
+            ],
+            "returns": {
+                "type": "void"
+            }
+        },
+        {
+            "name": "claim_bid",
+            "args": [],
+            "returns": {
+                "type": "void"
+            }
+        },
+        {
+            "name": "get_time",
+            "args": [],
+            "returns": {
+                "type": "uint64"
             }
         }
     ],

@@ -1,14 +1,22 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+/* eslint-disable no-console */
 import * as algokit from '@algorandfoundation/algokit-utils'
-import { AppDetails } from '@algorandfoundation/algokit-utils/types/app-client'
 import { useWallet } from '@txnlab/use-wallet'
+import algosdk, { ABIArgument } from 'algosdk'
 import { useSnackbar } from 'notistack'
 import { useState } from 'react'
+import { AuctionState } from '../App'
 import { AuctionClient } from '../contracts/auction'
-import { getAlgodConfigFromViteEnvironment, getIndexerConfigFromViteEnvironment } from '../utils/network/getAlgoClientConfigs'
+import { getAlgodConfigFromViteEnvironment } from '../utils/network/getAlgoClientConfigs'
 
 type Methods = 'create' | 'start' | 'bid'
 
-const AppCalls = (props: { method: Methods; appID: number; setAppID?: React.Dispatch<React.SetStateAction<number>> }) => {
+const AppCalls = (props: {
+  method: Methods
+  setAuctionState: React.Dispatch<React.SetStateAction<AuctionState>>
+  appID: number
+  setAppID?: React.Dispatch<React.SetStateAction<number>>
+}) => {
   const [loading, setLoading] = useState<boolean>(false)
 
   const algodConfig = getAlgodConfigFromViteEnvironment()
@@ -18,24 +26,21 @@ const AppCalls = (props: { method: Methods; appID: number; setAppID?: React.Disp
     token: algodConfig.token,
   })
 
-  const indexerConfig = getIndexerConfigFromViteEnvironment()
-  const indexer = algokit.getAlgoIndexerClient({
-    server: indexerConfig.server,
-    port: indexerConfig.port,
-    token: indexerConfig.token,
-  })
-
   const { enqueueSnackbar } = useSnackbar()
   const { signer, activeAddress } = useWallet()
+
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const sender = { signer, addr: activeAddress! }
 
-  const appDetails = {
-    resolveBy: 'id',
-    id: props.appID,
-    sender,
-  } as AppDetails
+  const appClient = new AuctionClient(
+    {
+      resolveBy: 'id',
+      id: props.appID,
+      sender,
+    },
+    algodClient,
+  )
 
-  const appClient = new AuctionClient(appDetails, algodClient)
   const callMethods = {
     create: async () => {
       if (props.setAppID === undefined) throw Error('setAppID is undefined')
@@ -52,6 +57,109 @@ const AppCalls = (props: { method: Methods; appID: number; setAppID?: React.Disp
       setLoading(false)
 
       props.setAppID(Number(appId))
+    },
+    start: async () => {
+      // opt_into_asset and start_auction logic here
+      setLoading(true)
+
+      const assetIndex = (document.getElementById('asa') as HTMLInputElement).valueAsNumber
+      const appAddress = algosdk.getApplicationAddress(props.appID)
+      const suggestedParams = await algodClient.getTransactionParams().do()
+      const atc = new algosdk.AtomicTransactionComposer()
+
+      // opt_into_asset: Pay the application 0.2 ALGO
+      // MBR === Minimum Balance Requirement
+      // 0.1 ALGO for account MBR
+      // 0.1 ALGO for ASA MBR
+      const payment = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
+        from: activeAddress!,
+        to: appAddress,
+        amount: 200_000,
+        suggestedParams,
+      })
+
+      // opt_into_asset: call opt_into_asset on the application
+      atc.addMethodCall({
+        method: appClient.appClient.getABIMethod('optin_to_asset')!,
+        methodArgs: [{ txn: payment, signer }, assetIndex],
+        suggestedParams: { ...suggestedParams, fee: 2_000, flatFee: true },
+        sender: sender.addr,
+        signer,
+        appID: props.appID,
+      })
+
+      // start auction
+      const startPrice = (document.getElementById('start') as HTMLInputElement).valueAsNumber
+      const length = (document.getElementById('length') as HTMLInputElement).valueAsNumber
+
+      const axfer = algosdk.makeAssetTransferTxnWithSuggestedParamsFromObject({
+        from: activeAddress!,
+        to: appAddress,
+        assetIndex,
+        suggestedParams,
+        amount: 1,
+      })
+
+      atc.addMethodCall({
+        method: appClient.appClient.getABIMethod('start')!,
+        methodArgs: [length, startPrice, { txn: axfer, signer }],
+        suggestedParams,
+        sender: sender.addr,
+        signer,
+        appID: props.appID,
+      })
+
+      try {
+        await atc.execute(algodClient, 3)
+        enqueueSnackbar(`Transaccion enviada con exito`, { variant: 'success' })
+      } catch (e) {
+        console.warn(e)
+        enqueueSnackbar(`Error deploying the contract: ${(e as Error).message}`, { variant: 'error' })
+        setLoading(false)
+        return
+      }
+
+      setLoading(false)
+      props.setAuctionState(AuctionState.Started)
+    },
+    bid: async () => {
+      setLoading(true)
+
+      const appAddress = algosdk.getApplicationAddress(props.appID)
+      const suggestedParams = await algodClient.getTransactionParams().do()
+
+      const bidPayment = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
+        from: activeAddress!,
+        to: appAddress,
+        amount: (document.getElementById('bid') as HTMLInputElement).valueAsNumber,
+        suggestedParams,
+      })
+
+      const atc = new algosdk.AtomicTransactionComposer()
+
+      const winner = (await (await appClient.getGlobalState()).winner?.asByteArray()) as ABIArgument
+
+      atc.addMethodCall({
+        method: appClient.appClient.getABIMethod('bid')!,
+        methodArgs: [{ txn: bidPayment, signer }, winner],
+        sender: sender.addr,
+        signer,
+        appID: props.appID,
+        suggestedParams: { ...suggestedParams, fee: 2_000, flatFee: true },
+      })
+
+      try {
+        await atc.execute(algodClient, 3)
+        const hb = await (await appClient.getGlobalState()).highest_bid?.asNumber()
+        enqueueSnackbar(`Transaccion enviada con exito, apuesta mayor actual: ${hb}`, { variant: 'success' })
+      } catch (e) {
+        console.warn(e)
+        enqueueSnackbar(`Error deploying the contract: ${(e as Error).message}`, { variant: 'error' })
+        setLoading(false)
+        return
+      }
+
+      setLoading(false)
     },
   }
 
