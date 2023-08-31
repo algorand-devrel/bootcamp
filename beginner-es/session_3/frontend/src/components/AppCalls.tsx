@@ -137,11 +137,12 @@ const AppCalls = (props: {
 
       const atc = new algosdk.AtomicTransactionComposer()
 
-      const winner = (await (await appClient.getGlobalState()).winner?.asByteArray()) as ABIArgument
+      const winner = (await appClient.getGlobalState()).winner
+      const prev = (winner?.asString() == "" ? appAddress : winner?.asByteArray()) as ABIArgument
 
       atc.addMethodCall({
         method: appClient.appClient.getABIMethod('bid')!,
-        methodArgs: [{ txn: bidPayment, signer }, winner],
+        methodArgs: [{ txn: bidPayment, signer }, prev],
         sender: sender.addr,
         signer,
         appID: props.appID,
