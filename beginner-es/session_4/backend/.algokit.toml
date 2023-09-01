@@ -1,0 +1,15 @@
+[algokit]
+min_version = "v1.4.0"
+
+[deploy]
+command = "npm run deploy:ci"
+environment_secrets = [
+  "DEPLOYER_MNEMONIC",
+]
+
+[deploy.localnet]
+environment_secrets = []
+
+[generate.smart_contract]
+description = "Adds new smart contract to existing project"
+path = ".algokit/generators/create_contract"
