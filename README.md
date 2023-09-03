@@ -3,8 +3,8 @@ Sign up for future sessions on the Algorand Developer Portal Events page: [https
 
 # Active Content
 Multiple Bootcamp courses may be running simultaneously. Please navigate to your appropriate series and language:
+-	[Beginner (EN)](beginner-en/README.md)
 -	[Beginner (ES)](beginner-es/README.md)
--	[Intermediate (EN)](intermediate-en/README.md)
 
 # Archived Content
 Completed Bootcamp courses may be found on the [branches]( https://github.com/algorand-devrel/bootcamp/branches) page of this repo. The most recent content is listed toward the top in the following format:
