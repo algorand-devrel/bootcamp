@@ -7,7 +7,7 @@ Get started working on this repo in Gitpod without needing to setup local enviro
 https://gitpod.io/#https://github.com/algorand-devrel/bootcamp
 
 ## Video Recordings
-- Episode #1 [Developer Onboarding using JS SDK & AlgoKit](https://youtu.be/hIMdJzVs4gg)
-- Episode #2 [Build & Deploy: Auction dApp](https://youtu.be/foTbYZhXvqA)
-- Episode #3 [Interactions: Frontend Development w/ React](https://youtu.be/NEnVNqqt-80)
-- Episode #4 [Test & Debug](https://www.youtube.com/watch?v=Gq1Xc6m_eY4)
+- Episode #1 [Developer Onboarding using Python SDK & AlgoKit]
+- Episode #2 [Build & Deploy: Auction dApp]
+- Episode #3 [Interactions: Frontend Development w/ React]
+- Episode #4 [Test & Debug]
