@@ -1,8 +1,0 @@
-{
-  "recommendations": [
-    "ms-python.python",
-    "esbenp.prettier-vscode",
-    "bungcip.better-toml",
-    "editorconfig.editorconfig"
-  ]
-}
