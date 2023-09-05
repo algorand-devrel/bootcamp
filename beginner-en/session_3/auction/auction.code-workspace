@@ -1,0 +1,73 @@
+{
+  "folders": [
+    {
+      "path": "./",
+      "name": "ROOT"
+    },
+    {
+      "path": "./backend"
+    },
+    {
+      "path": "./frontend"
+    }
+  ],
+  "settings": {
+    "files.exclude": {
+      "backend/": true,
+      "frontend/": true
+    },
+    "jest.disabledWorkspaceFolders": ["ROOT", "backend"],
+    "dotenv.enableAutocloaking": false
+  },
+  "extensions": {
+    "recommendations": ["joshx.workspace-terminals"]
+  },
+  "tasks": {
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "Build artifacts (+ LocalNet)",
+        "command": "${workspaceFolder}/backend/.venv/bin/python",
+        "windows": {
+          "command": "${workspaceFolder}/backend/.venv/Scripts/python.exe"
+        },
+        "args": ["-m", "smart_contracts", "build"],
+        "options": {
+          "cwd": "${workspaceFolder}/backend"
+        },
+        "dependsOn": "Start AlgoKit LocalNet",
+        "problemMatcher": []
+      },
+      {
+        "label": "Start AlgoKit LocalNet",
+        "command": "algokit",
+        "args": ["localnet", "start"],
+        "type": "shell",
+        "options": {
+          "cwd": "${workspaceFolder}"
+        },
+        "problemMatcher": []
+      }
+    ]
+  },
+  "launch": {
+    "configurations": [],
+    "compounds": [
+      {
+        "preLaunchTask": "Build artifacts (+ LocalNet)",
+        "name": "Run Frontend (+ LocalNet and Smart Contract)",
+        "configurations": [
+          {
+            "name": "Deploy Built Beaker application",
+            "folder": "backend"
+          },
+          { "name": "Run dApp", "folder": "frontend" }
+        ],
+        "presentation": {
+          "hidden": false,
+          "group": "0. Run workspace"
+        }
+      }
+    ]
+  }
+}
