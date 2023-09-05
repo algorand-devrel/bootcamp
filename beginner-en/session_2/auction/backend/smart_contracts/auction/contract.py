@@ -135,7 +135,7 @@ def bid(payment: pt.abi.PaymentTransaction) -> pt.Expr:
     )
 
 
-# claim_asset method that allows the winner to claim the asset
+# reclaim_bids method that allows someone to reclaim bids they have previously placed
 def reclaim_bids() -> pt.Expr:
     # Sends a payment via a inner transaction (InnerTxnBuilder.execute())
     return pt.Seq(
@@ -144,10 +144,17 @@ def reclaim_bids() -> pt.Expr:
     )
 
 
-# delete method that allows the owner to delete the contract and retrieve all extra ALGO
+# claim_asset method that allows the winner to claim the asset
 def claim_asset() -> pt.Expr:
     return pt.Seq(
         # Ensure acution ended
         # Send asset to auction winner (inner txn)
     )
-    
+
+
+# delete method that allows the owner to delete the contract and retrieve all extra ALGO
+def delete() -> pt.Expr:
+    return pt.Seq(
+        # ensure auction is over
+        # Allow creator to withdraw all remaining ALGO
+    )
