@@ -1,0 +1,20 @@
+#pragma version 8
+intcblock 0
+txn NumAppArgs
+intc_0 // 0
+==
+bnz main_l2
+err
+main_l2:
+txn OnCompletion
+intc_0 // NoOp
+==
+bnz main_l4
+err
+main_l4:
+txn ApplicationID
+intc_0 // 0
+==
+assert
+pushint 1 // 1
+return
