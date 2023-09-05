@@ -113,11 +113,41 @@ def start_auction(
     )
     
 # opt_into_app method that allows accounts to opt in to local state
-
+@app.opt_in(bare=True)
+def opt_in() -> pt.Expr:
+    return app.state.claimable_amount[pt.Txn.sender()].set_default()
+    
 # bid method that allows accounts to bid on the auction
-
+    
 # reclaim_bids method that allows someone to reclaim bids they have previously placed
+def bid(payment: pt.abi.PaymentTransaction) -> pt.Expr:
+    return pt.Seq(
+        # Verify the auction hasn't ended
+        # Verify the auction has started
+        # Assert the bid amount is greater than the previous bid
+        # Assert the receiver is the contract address
+        # Update global state: update previous bidder to current caller
+        # Update global state: update previous_bid to current bid
+        # Update local state: Add bid to claimable bids
+        app.state.claimable_amount[pt.Txn.sender()].set(
+            app.state.claimable_amount[pt.Txn.sender()] + payment.get().amount()
+        ),
+    )
+
 
 # claim_asset method that allows the winner to claim the asset
+def reclaim_bids() -> pt.Expr:
+    # Sends a payment via a inner transaction (InnerTxnBuilder.execute())
+    return pt.Seq(
+        # If the claimer is the previous bidder, reuturn claimable bids - previous_bid
+        # Else return full claimable amount
+    )
+
 
 # delete method that allows the owner to delete the contract and retrieve all extra ALGO
+def claim_asset() -> pt.Expr:
+    return pt.Seq(
+        # Ensure acution ended
+        # Send asset to auction winner (inner txn)
+    )
+    
