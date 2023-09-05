@@ -1,0 +1,63 @@
+name: Frontend CI
+
+on:
+    workflow_call:
+        inputs:
+            run-build:
+                required: false
+                type: boolean
+                default: false
+
+jobs:
+    checks:
+        runs-on: "ubuntu-latest"
+        steps:
+            - name: Check out repository
+              uses: actions/checkout@v3
+              with:
+                  fetch-depth: 0
+
+            - name: Setup node
+              uses: actions/setup-node@v3
+              with:
+                  node-version: 18
+
+            - name: Set up Python 3.10
+              uses: actions/setup-python@v4
+              with:
+                  python-version: "3.10"
+
+            - name: Install algokit
+              run: pipx install algokit
+
+            - name: Install dependencies
+              working-directory: ./frontend
+              run: npm ci
+
+            - name: Run linters
+              working-directory: ./frontend
+              run: npm run lint
+
+            - name: Run unit tests
+              working-directory: ./frontend
+              run: npm run test
+
+            - name: Create placeholder .env file
+              if: ${{ inputs.run-build }}
+              uses: makerxstudio/shared-config/.github/actions/env-to-placeholders@main
+              with:
+                env-output-path: ./frontend/.env
+                env-template-path: ./frontend/.env.template
+                env-variable-prefix: VITE_
+
+            - name: Build
+              if: ${{ inputs.run-build }}
+              working-directory: ./frontend
+              run: npm run build
+
+            - name: Archive
+              if: ${{ inputs.run-build }}
+              uses: actions/upload-artifact@v3
+              with:
+                name: dist
+                path: frontend/dist/
