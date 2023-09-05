@@ -1,0 +1,56 @@
+name: Frontend CD
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  lint-and-build:
+    name: CI dApp
+    uses: ./.github/workflows/frontend-ci.yaml
+
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy to Netlify
+    environment: Prod
+    concurrency: "${{ github.workflow }}-prod"
+    needs:
+      - lint-and-build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: dist
+          path: frontend/dist
+
+      - name: Replace template vars
+        uses: makerxstudio/shared-config/.github/actions/placeholder-transforms@main
+        with:
+          app-artifact-path: ./frontend/dist
+          static-site-transforms: |-
+            VITE_ALGOD_TOKEN:${{ secrets.VITE_ALGOD_TOKEN }}
+            VITE_ALGOD_SERVER:${{ vars.VITE_ALGOD_SERVER }}
+            VITE_ALGOD_PORT:${{ vars.VITE_ALGOD_PORT }}
+            VITE_ALGOD_NETWORK:${{ vars.VITE_ALGOD_NETWORK }}
+            VITE_INDEXER_SERVER:${{ vars.VITE_INDEXER_SERVER }}
+            VITE_INDEXER_PORT:${{ vars.VITE_INDEXER_PORT }}
+            VITE_INDEXER_TOKEN:${{ secrets.VITE_INDEXER_TOKEN }}
+            VITE_ENVIRONMENT:${{ vars.VITE_ENVIRONMENT }}
+
+      - name: Install netlify cli
+        working-directory: ./frontend
+        run: npm i netlify-cli
+
+      - name: Publish to netlify
+        working-directory: ./frontend
+        run: netlify deploy --prod --dir "dist"
+        env:
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+      
