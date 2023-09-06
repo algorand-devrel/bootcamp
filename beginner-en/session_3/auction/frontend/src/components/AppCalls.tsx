@@ -1,20 +1,22 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+/* eslint-disable no-console */
 import * as algokit from '@algorandfoundation/algokit-utils'
-import { TransactionSignerAccount } from '@algorandfoundation/algokit-utils/types/account'
-import { AppDetails } from '@algorandfoundation/algokit-utils/types/app-client'
 import { useWallet } from '@txnlab/use-wallet'
 import { useSnackbar } from 'notistack'
 import { useState } from 'react'
+import { AuctionState } from '../App'
 import { AuctionClient } from '../contracts/auction'
-import { getAlgodConfigFromViteEnvironment, getIndexerConfigFromVercelEnvironment } from '../utils/network/getAlgoClientConfigs'
+import { getAlgodConfigFromViteEnvironment } from '../utils/network/getAlgoClientConfigs'
 
-interface AppCallsInterface {
-  openModal: boolean
-  setModalState: (value: boolean) => void
-}
+type Methods = 'create' | 'start' | 'bid'
 
-const AppCalls = ({ openModal, setModalState }: AppCallsInterface) => {
+const AppCalls = (props: {
+  method: Methods
+  setAuctionState: React.Dispatch<React.SetStateAction<AuctionState>>
+  appID: number
+  setAppID?: React.Dispatch<React.SetStateAction<number>>
+}) => {
   const [loading, setLoading] = useState<boolean>(false)
-  const [contractInput, setContractInput] = useState<string>('')
 
   const algodConfig = getAlgodConfigFromViteEnvironment()
   const algodClient = algokit.getAlgoClient({
@@ -23,75 +25,102 @@ const AppCalls = ({ openModal, setModalState }: AppCallsInterface) => {
     token: algodConfig.token,
   })
 
-  const indexerConfig = getIndexerConfigFromVercelEnvironment()
-  const indexer = algokit.getAlgoIndexerClient({
-    server: indexerConfig.server,
-    port: indexerConfig.port,
-    token: indexerConfig.token,
-  })
-
   const { enqueueSnackbar } = useSnackbar()
   const { signer, activeAddress } = useWallet()
 
-  const sendHelloWordAppCall = async () => {
-    setLoading(true)
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const sender = { signer, addr: activeAddress! }
 
-    const appDetails = {
-      resolveBy: 'creatorAndName',
-      sender: { signer, addr: activeAddress } as TransactionSignerAccount,
-      creatorAddress: activeAddress,
-      findExistingUsing: indexer,
-    } as AppDetails
+  const appClient = new AuctionClient(
+    {
+      resolveBy: 'id',
+      id: props.appID,
+      sender,
+    },
+    algodClient,
+  )
 
-    const appClient = new AuctionClient(appDetails, algodClient)
-    const isLocal = await algokit.isLocalNet(algodClient)
+  const callMethods = {
+    create: async () => {
+      if (props.setAppID === undefined) throw Error('setAppID is undefined')
 
-    await appClient
-      .deploy({
-        onSchemaBreak: isLocal ? 'replace' : 'fail',
-        onUpdate: isLocal ? 'update' : 'fail',
-      })
-      .catch((e: Error) => {
+      setLoading(true)
+
+      await appClient.create.bare().catch((e: Error) => {
         enqueueSnackbar(`Error deploying the contract: ${e.message}`, { variant: 'error' })
         setLoading(false)
         return
       })
 
-    const response = await appClient.hello({ name: contractInput }).catch((e: Error) => {
-      enqueueSnackbar(`Error calling the contract: ${e.message}`, { variant: 'error' })
       setLoading(false)
-      return
-    })
 
-    enqueueSnackbar(`Response from the contract: ${response?.return}`, { variant: 'success' })
-    setLoading(false)
+      const { appId } = await appClient.appClient.getAppReference()
+      props.setAppID(Number(appId))
+    },
+    start: async () => {
+      // opt_into_asset and start_auction logic here
+    },
+    bid: async () => {
+      // bid logic here
+    },
   }
 
-  return (
-    <dialog id="appcalls_modal" className={`modal ${openModal ? 'modal-open' : ''} bg-slate-200`}>
-      <form method="dialog" className="modal-box">
-        <h3 className="font-bold text-lg">Say hello to your Algorand smart contract</h3>
-        <br />
-        <input
-          type="text"
-          placeholder="Provide input to hello function"
-          className="input input-bordered w-full"
-          value={contractInput}
-          onChange={(e) => {
-            setContractInput(e.target.value)
-          }}
-        />
-        <div className="modal-action ">
-          <button className="btn" onClick={() => setModalState(!openModal)}>
-            Close
-          </button>
-          <button className={`btn`} onClick={sendHelloWordAppCall}>
-            {loading ? <span className="loading loading-spinner" /> : 'Send application call'}
-          </button>
-        </div>
-      </form>
-    </dialog>
+  let text: string
+  switch (props.method) {
+    case 'create':
+      text = 'Create App'
+      break
+    case 'start':
+      text = 'Start Auction'
+      break
+    case 'bid':
+      text = 'Bid'
+  }
+
+  const callButton = (
+    <button className={`btn m-2`} onClick={callMethods[props.method]}>
+      {loading ? <span className="loading loading-spinner" /> : text}
+    </button>
   )
+
+  switch (props.method) {
+    case 'create':
+      return callButton
+    case 'start':
+      return (
+        <div>
+          <label htmlFor="asa" className="label m-2">
+            Asset ID
+          </label>
+          <input type="number" id="asa" defaultValue="0" className="input input-bordered" />
+          <label htmlFor="asa-amount" className="label m-2">
+            Asset Amount
+          </label>
+          <input type="number" id="asa-amount" defaultValue="0" className="input input-bordered" />
+          <label htmlFor="start" className="label m-2">
+            Start Amount
+          </label>
+          <input type="number" id="start" defaultValue="0" className="input input-bordered" />
+          <label htmlFor="length" className="label m-2">
+            Length
+          </label>
+          <input type="number" id="length" defaultValue="0" className="input input-bordered" />
+          <br />
+          {callButton}
+        </div>
+      )
+    case 'bid':
+      return (
+        <div>
+          <label htmlFor="bid" className="label m-2">
+            Bid Amount
+          </label>
+          <input type="number" id="bid" defaultValue="0" className="input input-bordered" />
+          <br />
+          {callButton}
+        </div>
+      )
+  }
 }
 
 export default AppCalls
