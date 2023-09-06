@@ -130,6 +130,18 @@ def bid(payment: pt.abi.PaymentTransaction) -> pt.Expr:
         pt.Assert(payment.get().amount() > app.state.previous_bid.get()),
         # Assert the receiver is the contract address
         pt.Assert(payment.get().receiver() == pt.Global.current_application_address()),
+        #
+        # OLD WAY:
+        # if there is a previous bidder
+        # then send back the previous bid to their account
+        #
+        # NEW WAY:
+        # save bid amount in local state
+        #
+        # REASON FOR CHANGING:
+        # - Algorand requires any accounts used in an inner transaction, to be pre-defined
+        # - This means there's a possible race condition, only allowing one bid per block
+        #
         # Update global state: update previous bidder to current caller
         app.state.previous_bidder.set(pt.Txn.sender()),
         # Update global state: update previous_bid to current bid
