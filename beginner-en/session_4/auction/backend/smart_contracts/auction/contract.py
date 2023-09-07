@@ -336,8 +336,24 @@ def bid(payment: pt.abi.PaymentTransaction) -> pt.Expr:
         #
         # REASON FOR CHANGING:
         # - Algorand requires any accounts used in an inner transaction, to be pre-defined
+        # - Needs to be pre-defiend, so the AVM can load it into memory
         # - This means there's a possible race condition, only allowing one bid per block
         #
+        # EXAMPLE:
+        # 1. Alice bids 1 ALGO in block 0
+        # - Latest block is block 0
+        # 2. Bob queries the chain to get previous bidder
+        # - Previous bidder is Alice
+        # 3. Carol queries the chain to get previous bidder
+        # - Previous bidder is Alice
+        # 4. Bob tries to bid 2 ALGO in block 1
+        # - Defines Alice as previous bidder
+        # 5. Carol tries to bid 3 ALGO in block 1
+        # - Defines Alice as previous bidder
+        # 6. Block proposer gets Bob's and Carol's bid
+        # - Places Bob's bid first in block 1
+        # 7. Previous bidder is updated to Bob
+        # 8. Carol's transaction is invalid, because her previous bidder is Alice not Bob
         # Update global state: update previous bidder to current caller
         app.state.previous_bidder.set(payment.get().sender()),
         # Update global state: update previous_bid to current bid
