@@ -26,8 +26,8 @@
     "src/**/*.ts",
     "src/**/*.tsx",
     "vite.config.js",
-    "src/utils/{% if use_playwright %}ellipseAddress.spec.tsx{% endif %}",
-    "src/utils/{% if use_playwright %}ellipseAddress.spec.tsx{% endif %}",
+    "src/utils/ellipseAddress.spec.tsx",
+    "src/utils/ellipseAddress.spec.tsx",
     "src/main.tsx.jinja",
     "src/main.tsx.jinja"
   ],
