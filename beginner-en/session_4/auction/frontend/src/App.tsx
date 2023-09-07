@@ -94,6 +94,10 @@ export default function App() {
                   <AppCalls appID={appID} method="bid" setAuctionState={setAuctionState} />
                 )}
 
+                {activeAddress && appID > 0 && auctionState === AuctionState.Started && (
+                  <AppCalls appID={appID} method="reclaim_bids" setAuctionState={setAuctionState} />
+                )}
+
                 <ConnectWallet openModal={openWalletModal} closeModal={toggleWalletModal} />
               </div>
             </div>

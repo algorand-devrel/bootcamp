@@ -1,6 +1,6 @@
 #pragma version 8
 intcblock 0 1 4
-bytecblock 0x61756374696f6e5f656e64 0x617361 0x70726576696f75735f626964 0x636c61696d61626c655f616d6f756e74 0x6173615f616d6f756e74 0x70726576696f75735f626964646572
+bytecblock 0x61756374696f6e5f656e64 0x636c61696d61626c655f616d6f756e74 0x70726576696f75735f626964 0x617361 0x6173615f616d6f756e74 0x70726576696f75735f626964646572
 txn NumAppArgs
 intc_0 // 0
 ==
@@ -128,7 +128,7 @@ return
 // create
 create_0:
 proto 0 0
-bytec_1 // "asa"
+bytec_3 // "asa"
 intc_0 // 0
 app_global_put
 bytec 4 // "asa_amount"
@@ -153,12 +153,12 @@ global CreatorAddress
 ==
 // unauthorized
 assert
-bytec_1 // "asa"
+bytec_3 // "asa"
 app_global_get
 intc_0 // 0
 ==
 assert
-bytec_1 // "asa"
+bytec_3 // "asa"
 frame_dig -1
 txnas Assets
 app_global_put
@@ -207,7 +207,7 @@ bytec 4 // "asa_amount"
 frame_dig -1
 gtxns AssetAmount
 app_global_put
-bytec_1 // "asa"
+bytec_3 // "asa"
 frame_dig -1
 gtxns XferAsset
 app_global_put
@@ -217,7 +217,7 @@ retsub
 optin_3:
 proto 0 0
 txn Sender
-bytec_3 // "claimable_amount"
+bytec_1 // "claimable_amount"
 intc_0 // 0
 app_local_put
 retsub
@@ -225,10 +225,10 @@ retsub
 // bid
 bid_4:
 proto 1 0
-global LatestTimestamp
 bytec_0 // "auction_end"
 app_global_get
-<
+global LatestTimestamp
+>
 assert
 bytec_0 // "auction_end"
 app_global_get
@@ -247,16 +247,17 @@ global CurrentApplicationAddress
 ==
 assert
 bytec 5 // "previous_bidder"
-txn Sender
+frame_dig -1
+gtxns Sender
 app_global_put
 bytec_2 // "previous_bid"
 frame_dig -1
 gtxns Amount
 app_global_put
 txn Sender
-bytec_3 // "claimable_amount"
+bytec_1 // "claimable_amount"
 txn Sender
-bytec_3 // "claimable_amount"
+bytec_1 // "claimable_amount"
 app_local_get
 frame_dig -1
 gtxns Amount
@@ -270,12 +271,12 @@ proto 2 0
 itxn_begin
 intc_1 // pay
 itxn_field TypeEnum
-frame_dig -2
-itxn_field Receiver
-frame_dig -1
-itxn_field Amount
 intc_0 // 0
 itxn_field Fee
+frame_dig -1
+itxn_field Amount
+frame_dig -2
+itxn_field Receiver
 itxn_submit
 retsub
 
@@ -289,19 +290,28 @@ app_global_get
 bnz reclaimbids_6_l2
 txn Sender
 txn Sender
-bytec_3 // "claimable_amount"
+bytec_1 // "claimable_amount"
 app_local_get
 callsub pay_5
+txn Sender
+bytec_1 // "claimable_amount"
+intc_0 // 0
+app_local_put
 b reclaimbids_6_l3
 reclaimbids_6_l2:
 txn Sender
 txn Sender
-bytec_3 // "claimable_amount"
+bytec_1 // "claimable_amount"
 app_local_get
 bytec_2 // "previous_bid"
 app_global_get
 -
 callsub pay_5
+txn Sender
+bytec_1 // "claimable_amount"
+bytec_2 // "previous_bid"
+app_global_get
+app_local_put
 reclaimbids_6_l3:
 retsub
 
@@ -319,7 +329,7 @@ itxn_field TypeEnum
 bytec 5 // "previous_bidder"
 app_global_get
 itxn_field AssetReceiver
-bytec_1 // "asa"
+bytec_3 // "asa"
 app_global_get
 itxn_field XferAsset
 bytec 4 // "asa_amount"
