@@ -1,7 +1,10 @@
 # Algorand Developer Bootcamp
 Sign up for future sessions on the Algorand Developer Portal Events page: [https://developer.algorand.org/events](https://developer.algorand.org/events)
 
-# Active Content
+# THIS REPOSITORY IS READ-ONLY
+The latest version of the bootcamp is hosted at this link: [https://github.com/algorand-bootcamp](https://github.com/algorand-bootcamp)
+
+# ~~Active Content~~
 Multiple Bootcamp courses may be running simultaneously. Please navigate to your appropriate series and language:
 -	[Beginner (EN)](beginner-en/README.md)
 -	[Beginner (ES)](beginner-es/README.md)
