@@ -1,0 +1,33 @@
+{
+  "name": "Debian",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "args": { "VARIANT": "bullseye" }
+  },
+	"features": {
+		"ghcr.io/devcontainers/features/github-cli:1": {
+			"installDirectlyFromGitHubRelease": true,
+			"version": "latest"
+		},
+		"ghcr.io/devcontainers/features/python:1": {
+			"installTools": true,
+			"version": "3.10"
+		},
+		"ghcr.io/devcontainers-contrib/features/poetry:2": {
+			"version": "latest"
+		}
+	},
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-azuretools.vscode-docker"
+      ]
+    }
+  },
+
+  "postCreateCommand": ".devcontainer/post-create.sh",
+
+	"remoteUser": "vscode",
+  "containerUser": "vscode"
+}
